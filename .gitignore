@@ -1,0 +1,29 @@
+# clion
+cmake-build-debug/
+cmake-build-release/
+build/
+CMakeFiles/
+.idea/
+CMakeCache.txt
+Makefile
+
+# cpp
+*.cbp
+
+# mac
+.DS_Store
+
+# config file
+*.ini
+
+# resources
+
+# specific sources
+
+# output
+#output/
+
+# Profile
+#*.json
+
+# Directories
