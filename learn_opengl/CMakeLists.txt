@@ -1,7 +1,5 @@
 add_executable(LearnOpenGL)
 
-find_package(OpenGL REQUIRED)
-
 target_sources(LearnOpenGL
 PUBLIC
 
@@ -12,12 +10,13 @@ PRIVATE
 target_link_libraries(LearnOpenGL
 PRIVATE
 	OpenGL::GL
-	${GLFW3_LIBRARY}
-	glad
+	glfw
+	glad::glad
+	glm::glm
 	core
 )
 
-target_include_directories(LearnOpenGL
-PRIVATE
-	${GLFW3_INCLUDE_DIR}
-)
+#target_include_directories(LearnOpenGL
+#PRIVATE
+#	${GLFW3_INCLUDE_DIR}
+#)

@@ -1,0 +1,19 @@
+{
+  "name": "mapo-engine",
+  "version-string": "1.0.0",
+  "builtin-baseline": "215a2535590f1f63788ac9bd2ed58ad15e6afdff",
+  "dependencies": [
+    {
+      "name": "glad",
+      "version>=": "0.1.36"
+    },
+    {
+      "name": "glfw3",
+      "version>=": "3.4"
+    },
+    {
+      "name": "glm",
+      "version>=": "1.0.1#1"
+    }
+  ]
+}
