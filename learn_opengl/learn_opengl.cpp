@@ -2,8 +2,12 @@
 // Created by Junhao Wang (@forkercat) on 3/2/24.
 //
 
-#include <glad/glad.h>
+#include "core/core.h"
+
+#include "glad/glad.h"
 #include <GLFW/glfw3.h>
+
+#include <iostream>
 
 int main()
 {

@@ -4,4 +4,6 @@
 
 #pragma once
 
-#define LOG(...) printf(__VA_ARGS__)
+#define LOG(...)         \
+	printf(__VA_ARGS__); \
+	printf("\n")
