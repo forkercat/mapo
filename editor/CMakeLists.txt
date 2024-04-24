@@ -1,8 +1,10 @@
+set(SRCROOT ${PROJECT_SOURCE_DIR}/editor)
+
 add_executable(editor "")
 
 target_sources(editor
 PUBLIC
-	editor.h
+	${SRCROOT}/editor.h
 PRIVATE
-	editor.cpp
+	${SRCROOT}/editor.cpp
 )

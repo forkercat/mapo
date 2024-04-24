@@ -1,45 +1,57 @@
----
+# https://github.com/TensorWorks/UE-Clang-Format/blob/main/.clang-format
 Language: Cpp
-BasedOnStyle: Microsoft
+BasedOnStyle: LLVM
+
 AccessModifierOffset: -4
-NamespaceIndentation: All
-PointerAlignment: Left
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
-UseTab: Always
-IndentWidth: 4
-TabWidth: 4
-
-#AllowShortBlocksOnASingleLine: false
-#AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: true
-#AllowShortLambdasOnASingleLine: All
-#AllowShortIfStatementsOnASingleLine: WithoutElse
-#AllowShortLoopsOnASingleLine: false
-
-Cpp11BracedListStyle: false
-
-AllowAllConstructorInitializersOnNextLine: true
-
-AlwaysBreakTemplateDeclarations: Yes
-
-IndentCaseLabels: true
-IndentCaseBlocks: false
-
-SortIncludes: Never
-
-SpacesBeforeTrailingComments: 2
-
-MaxEmptyLinesToKeep: 1
-
-BreakBeforeBraces: Custom
+AlignOperands: DontAlign
+AlignTrailingComments: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortLambdasOnASingleLine: All
 BraceWrapping:
   AfterCaseLabel: true
-  AfterNamespace: false
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: false
+  BeforeWhile: true
+  IndentBraces: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
+#BreakInheritanceList: AfterColon
+BreakBeforeTernaryOperators: true
+#BreakConstructorInitializers: BeforeComma
+BreakStringLiterals: false
+ColumnLimit: 0
+#ConstructorInitializerAllOnOneLineOrOnePerLine: true
+Cpp11BracedListStyle: false
+EmptyLineBeforeAccessModifier: LogicalBlock
+IndentCaseBlocks: false
+IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
+IndentWidth: 4
+NamespaceIndentation: All
+PointerAlignment: Left
+SortIncludes: false
+SpaceBeforeCaseColon: false
+TabWidth: 4
+UseTab: Always
 
-#
-# Break inheritance list and constructor initializers before colon.
-#
-BreakInheritanceList: BeforeColon
-BreakConstructorInitializers: BeforeColon
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
-
+# Custom
+MaxEmptyLinesToKeep: 1
+#BreakInheritanceList: BeforeColon
+#BreakConstructorInitializers: BeforeColon
+#PackConstructorInitializers: NextLineOnly
+#ConstructorInitializerAllOnOneLineOrOnePerLine: false

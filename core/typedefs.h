@@ -7,7 +7,8 @@
 #include <cstdint>
 #include <memory>
 
-namespace mapo {
+namespace mapo
+{
 	// Integers
 	using U64 = std::uint64_t;
 	using U32 = std::uint32_t;
@@ -19,6 +20,8 @@ namespace mapo {
 	using I16 = std::int16_t;
 	using I8 = std::int8_t;
 
+	using USize = size_t;
+
 // Floats
 #ifdef FORCE_FLOAT_64
 	using F32 = double;
@@ -29,10 +32,10 @@ namespace mapo {
 
 	// Reference
 	template <typename T>
-	using Scope = std::unique_ptr<T>;
+	using UniqueRef = std::unique_ptr<T>;
 
 	template <typename T, typename... Args>
-	constexpr Scope<T> CreateScope(Args&&... args)
+	constexpr UniqueRef<T> MakeUniqueRef(Args&&... args)
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
@@ -41,11 +44,12 @@ namespace mapo {
 	using Ref = std::shared_ptr<T>;
 
 	template <typename T, typename... Args>
-	constexpr Ref<T> CreateRef(Args&&... args)
+	constexpr Ref<T> MakeRef(Args&&... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
-}  // namespace mapo
-
 #define BIT(x) (1 << x)
+#define STR(x) #x
+
+} // namespace mapo

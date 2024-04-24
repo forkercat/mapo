@@ -1,0 +1,19 @@
+//
+// Created by Junhao Wang (@forkercat) on 4/21/24.
+//
+
+#pragma once
+
+#include <functional>
+
+namespace mapo
+{
+	// from: https://stackoverflow.com/a/57595105
+	template <typename T, typename... Rest>
+	void HashCombine(std::size_t& seed, const T& v, const Rest&... rest)
+	{
+		seed ^= std::hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		(HashCombine(seed, rest), ...);
+	}
+
+} // namespace mapo

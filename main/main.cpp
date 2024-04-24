@@ -1,12 +1,12 @@
 //
-// Created by Junhao Wang (@forkercat) on 3/2/24.
+// Created by Junhao Wang (@forkercat) on 4/1/24.
 //
 
-#include "core/core.h"
+#include "hello_app.h"
 
 int main()
 {
-	LOG("Hello World!");
+	mapo::HelloApp app{};
 
-	return 0;
+	app.Run();
 }

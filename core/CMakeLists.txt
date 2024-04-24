@@ -11,9 +11,11 @@ PRIVATE
 )
 
 target_include_directories(core
-PUBLIC
-	${CMAKE_SOURCE_DIR}
+PRIVATE # Do not populate the root dir to main or other modules.
+	${PROJECT_SOURCE_DIR}
 )
 
-# DISABLED
-#target_precompile_headers(core PUBLIC pch.h)
+target_link_libraries(core
+PUBLIC
+	glm::glm
+)
