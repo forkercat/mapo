@@ -36,13 +36,15 @@ namespace mapo
 
 		// Make the device not copiable or movable.
 		VulkanDevice(const VulkanDevice&) = delete;
-		void operator=(const VulkanDevice&) = delete;
+		VulkanDevice operator=(const VulkanDevice&) = delete;
 		VulkanDevice(VulkanDevice&&) = delete;
 		VulkanDevice& operator=(VulkanDevice&&) = delete;
 
 		// Getter for Vulkan resources
 		VkCommandPool GetCommandPool() { return m_commandPool; }
 		VkDevice GetDevice() { return m_device; }
+		VkPhysicalDevice GetPhysicalDevice() { return m_physicalDevice; }
+		VkInstance GetInstance() { return m_instance; }
 		VkSurfaceKHR GetSurface() { return m_surface; }
 		VkQueue GetGraphicsQueue() { return m_graphicsQueue; }
 		VkQueue GetPresentQueue() { return m_presentQueue; }

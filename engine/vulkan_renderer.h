@@ -30,6 +30,7 @@ namespace mapo
 		// Public getter.
 		VkRenderPass GetSwapchainRenderPass() const { return m_swapchain->GetRenderPass(); }
 		F32 GetAspectRatio() const { return m_swapchain->GetExtentAspectRatio(); }
+		U32 GetSwapchainImageCount() const { return m_swapchain->GetImageCount(); }
 		bool IsFrameInProgress() const { return m_isFrameStarted; }
 
 		VkCommandBuffer GetCurrentCommandBuffer() const

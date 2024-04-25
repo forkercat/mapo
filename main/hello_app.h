@@ -32,7 +32,7 @@ namespace mapo
 		void Run();
 
 	public:
-		static constexpr U32 WIDTH = 800;
+		static constexpr U32 WIDTH = 960;
 		static constexpr U32 HEIGHT = 600;
 
 	private:

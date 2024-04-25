@@ -7,6 +7,8 @@
 #include "engine/system/simple_render_system.h"
 #include "engine/system/point_light_system.h"
 #include "engine/system/rainbow_system.h"
+#include "engine/system/imgui_system.h"
+
 #include "engine/keyboard_controller.h"
 
 #include <chrono>
@@ -31,6 +33,7 @@ namespace mapo
 				// How many descriptors of this type are available in the pool.
 				.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VulkanSwapchain::MAX_FRAMES_IN_FLIGHT)
 				.Build();
+
 		LoadGameObjects();
 	}
 
@@ -40,6 +43,11 @@ namespace mapo
 
 	void HelloApp::Run()
 	{
+		// Create ImGui system.
+		ImGuiSystem imguiSystem{
+			m_window, m_device, m_renderer.GetSwapchainRenderPass(), m_renderer.GetSwapchainImageCount()
+		};
+
 		// Uniform buffers
 		std::vector<UniqueRef<VulkanBuffer>> uboBuffers(VulkanSwapchain::MAX_FRAMES_IN_FLIGHT);
 
@@ -105,6 +113,9 @@ namespace mapo
 			// Could be nullptr if, for example, the swapchain needs to be recreated.
 			if (VkCommandBuffer commandBuffer = m_renderer.BeginFrame())
 			{
+				// ImGui
+				imguiSystem.NewFrame();
+
 				// Prepare frame info
 				U32 frameIndex = m_renderer.GetCurrentFrameIndex();
 				VulkanFrameInfo frameInfo{
@@ -138,6 +149,10 @@ namespace mapo
 
 				simpleRenderSystem.RenderGameObjects(frameInfo);
 				pointLightSystem.Render(frameInfo);
+
+				// Draw ImGui.
+				imguiSystem.RunExample();
+				imguiSystem.Render(commandBuffer);
 
 				m_renderer.EndSwapchainRenderPass(commandBuffer);
 				m_renderer.EndFrame();

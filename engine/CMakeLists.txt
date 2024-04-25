@@ -18,6 +18,7 @@ PUBLIC
 	# System
 	system/simple_render_system.h
 	system/point_light_system.h
+	system/imgui_system.h
 	system/rainbow_system.h
 PRIVATE
 	window.cpp
@@ -34,6 +35,7 @@ PRIVATE
 	# System
 	system/simple_render_system.cpp
 	system/point_light_system.cpp
+	system/imgui_system.cpp
 )
 
 target_link_libraries(engine
@@ -41,6 +43,7 @@ PUBLIC
 	glfw
 	Vulkan::Vulkan
 	core
+	ImGui
 )
 
 target_include_directories(engine
