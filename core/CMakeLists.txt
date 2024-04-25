@@ -6,6 +6,7 @@ PUBLIC
 	logging.h
 	typedefs.h
 	uassert.h
+	timer.h
 PRIVATE
 	core.cpp
 )
