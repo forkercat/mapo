@@ -70,7 +70,7 @@ using PODType = IntToType<true>;
 /////////////////////////////////////////////////////////////////////////////////
 
 template <typename T, typename A>
-T* NewArray(A& allocator, size_t numBytes, NonPODType)
+T* NewArray(A& allocator, size_t size, NonPODType)
 {
 	union
 	{
@@ -78,26 +78,26 @@ T* NewArray(A& allocator, size_t numBytes, NonPODType)
 		size_t* pAsSizeType;
 		T* pAsT;
 	};
-	pAsVoid = allocator.Allocate(sizeof(T) * numBytes + sizeof(size_t));
+	pAsVoid = allocator.Allocate(sizeof(T) * size + sizeof(size_t));
 
 	// Stores number of instances in the first size_t bytes.
-	*pAsSizeType++ = numBytes;
+	*pAsSizeType++ = size;
 
 	// Constructs instances.
-	const T* const pLast = pAsT + numBytes;
+	const T* const pLast = pAsT + size;
 	while (pAsT < pLast)
 	{
 		new (pAsT++) T; // use placement new
 	}
 
-	return (pAsT - numBytes); // return the first instance, not the base
+	return (pAsT - size); // return the first instance, not the base
 }
 
 template <typename T, typename A>
-T* NewArray(A& allocator, size_t numBytes, PODType)
+T* NewArray(A& allocator, size_t size, PODType)
 {
 	// No extra bytes to hold N for POD (plain old data without a constructor).
-	return static_cast<T*>(allocator.Allocate(sizeof(T) * numBytes));
+	return static_cast<T*>(allocator.Allocate(sizeof(T) * size));
 }
 
 template <typename T>

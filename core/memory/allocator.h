@@ -19,50 +19,73 @@ namespace mapo
 
 		virtual void* Allocate(USize) = 0;
 		virtual void Free(void*) = 0;
-
-		virtual void FreeAll()
-		{
-		}
 	};
 
 	class StdAllocator : public IAllocator
 	{
 	public:
-		void* Allocate(USize numBytes) override
+		void* Allocate(USize size) override
 		{
 			// TODO: Consider alignment!
-			return new U8[numBytes];
+			return std::malloc(size);
 		}
 
 		void Free(void* ptr) override
 		{
-			delete[] ptr;
+			std::free(ptr);
 		}
 	};
 
-	// TODO: Implement this!
-	// TODO: Add CustomAllocator
 	class LinearAllocator : public IAllocator
 	{
 	public:
-		explicit LinearAllocator(USize numBytes, void* start)
+		explicit LinearAllocator(USize size)
+			: m_base(nullptr), m_current(nullptr), m_totalSize(size)
 		{
+			m_base = new U8[size];
+			m_secondBase = m_base;
+			m_current = m_base;
 		}
 
-		void* Allocate(USize numBytes) override
+		~LinearAllocator()
 		{
-			return nullptr;
+			ASSERT_EQ(m_base, m_secondBase, "The base of the linear allocator has been altered!");
+			delete[] m_base;
+		}
+
+		void* Allocate(USize size) override
+		{
+			USize newSize = m_current + size - m_base;
+
+			if (newSize <= m_totalSize)
+			{
+				void* result = m_current;
+				m_current += size;
+				return result;
+			}
+			else
+			{
+				MP_ERROR("Failed to allocate %zu bytes of memory!", size);
+				return nullptr;
+			}
 		}
 
 		void Free(void* ptr) override
 		{
-			MP_ERROR("You should not be calling Free of a Linear allocator!");
-			// BUG: MP_DELETE may call this Free().
+			// MP_ERROR("You should not be calling Free of a Linear allocator!");
 		}
 
-		void FreeAll() override
+		void Reset()
 		{
+			m_current = m_base;
 		}
+
+	private:
+		U8* m_base = nullptr;
+		U8* m_secondBase = nullptr;
+
+		U8* m_current = nullptr;
+		const USize m_totalSize{};
 	};
 
 } // namespace mapo
