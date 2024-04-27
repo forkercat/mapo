@@ -39,63 +39,63 @@ namespace mapo
 
 	namespace MathOp
 	{
-		inline F32 Radians(F32 degrees)
+		MP_FORCE_INLINE F32 Radians(F32 degrees)
 		{
 			return glm::radians(degrees);
 		}
 
-		inline F32 Degrees(F32 radians)
+		MP_FORCE_INLINE F32 Degrees(F32 radians)
 		{
 			return glm::degrees(radians);
 		}
 
 		template <typename T>
-		inline T Abs(T value)
+		MP_FORCE_INLINE T Abs(T value)
 		{
 			return glm::abs(value);
 		}
 
-		inline F32 Sin(F32 value)
+		MP_FORCE_INLINE F32 Sin(F32 value)
 		{
 			return glm::sin(value);
 		}
 
-		inline F32 Cos(F32 value)
+		MP_FORCE_INLINE F32 Cos(F32 value)
 		{
 			return glm::cos(value);
 		}
 
 		template <typename T>
-		inline T Normalize(const T& value)
+		MP_FORCE_INLINE T Normalize(const T& value)
 		{
 			return glm::normalize(value);
 		}
 
 		template <typename T>
-		inline F32 Dot(const T& v1, const T& v2)
+		MP_FORCE_INLINE F32 Dot(const T& v1, const T& v2)
 		{
 			return glm::dot(v1, v2);
 		}
 
-		inline Vector3 Cross(const Vector3& v1, const Vector3& v2)
+		MP_FORCE_INLINE Vector3 Cross(const Vector3& v1, const Vector3& v2)
 		{
 			return glm::cross(v1, v2);
 		}
 
 		template <typename T>
-		inline T Clamp(T value, T minValue, T maxValue)
+		MP_FORCE_INLINE T Clamp(T value, T minValue, T maxValue)
 		{
 			return glm::clamp(value, minValue, maxValue);
 		}
 
 		template <typename T>
-		inline T Max(T v1, T v2)
+		MP_FORCE_INLINE T Max(T v1, T v2)
 		{
 			return glm::max(v1, v2);
 		}
 
 		template <typename T>
-		inline T Min(T v1, T v2)
+		MP_FORCE_INLINE T Min(T v1, T v2)
 		{
 			return glm::max(v1, v2);
 		}

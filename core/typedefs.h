@@ -49,7 +49,26 @@ namespace mapo
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
+} // namespace mapo
+
 #define BIT(x) (1 << x)
 #define STR(x) #x
 
-} // namespace mapo
+// Inline macros
+#ifndef MP_ALWAYS_INLINE
+	#if defined(__GNUC__)
+		#define MP_ALWAYS_INLINE __attribute__((always_inline)) inline
+	#elif defined(_MSC_VER)
+		#define MP_ALWAYS_INLINE __forceinline
+	#else
+		#define MP_ALWAYS_INLINE inline
+	#endif
+#endif
+
+#ifndef MP_FORCE_INLINE
+	#ifdef NDEBUG
+		#define MP_FORCE_INLINE MP_ALWAYS_INLINE
+	#else
+		#define MP_FORCE_INLINE inline
+	#endif
+#endif
