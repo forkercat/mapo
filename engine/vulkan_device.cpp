@@ -18,7 +18,7 @@ namespace mapo
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData)
 	{
-		DEBUG("Validation Output: %s", pCallbackData->pMessage);
+		MP_DEBUG("Validation Output: %s", pCallbackData->pMessage);
 		return VK_FALSE; // Original Vulkan call is not aborted
 	}
 
@@ -99,7 +99,7 @@ namespace mapo
 		VkPhysicalDeviceMemoryProperties memoryProperties;
 		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memoryProperties);
 
-		// PRINT("Memory type count: %u | heap count: %u", memoryProperties.memoryTypeCount,
+		// MP_PRINT("Memory type count: %u | heap count: %u", memoryProperties.memoryTypeCount,
 		// memoryProperties.memoryHeapCount);
 
 		for (U32 typeIndex = 0; typeIndex < memoryProperties.memoryTypeCount; typeIndex++)
@@ -351,7 +351,7 @@ namespace mapo
 
 		ASSERT_NEQ(deviceCount, 0, "Failed to find GPUs with Vulkan support!");
 
-		PRINT("Device count: %u", deviceCount);
+		MP_PRINT("Device count: %u", deviceCount);
 		std::vector<VkPhysicalDevice> devices(deviceCount);
 		vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
 
@@ -367,7 +367,7 @@ namespace mapo
 		ASSERT_NEQ(m_physicalDevice, VK_NULL_HANDLE, "Failed to find a suitable GPU device!");
 
 		vkGetPhysicalDeviceProperties(m_physicalDevice, &properties);
-		PRINT("Physical device: %s", properties.deviceName);
+		MP_PRINT("Physical device: %s", properties.deviceName);
 	}
 
 	void VulkanDevice::CreateLogicalDevice()
@@ -588,7 +588,7 @@ namespace mapo
 
 			if (availableExtensionSet.find(required) == availableExtensionSet.end())
 			{
-				ERROR("Missing required GLFW extension: %s", required);
+				MP_ERROR("Missing required GLFW extension: %s", required);
 			}
 		}
 

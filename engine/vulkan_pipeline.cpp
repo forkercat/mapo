@@ -220,7 +220,7 @@ namespace mapo
 		file.seekg(0);
 		file.read(buffer.data(), fileSize);
 
-		PRINT("Loaded shader %s (%zu bytes)", filepath.c_str(), fileSize);
+		MP_PRINT("Loaded shader %s (%zu bytes)", filepath.c_str(), fileSize);
 
 		file.close();
 		return buffer;

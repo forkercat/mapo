@@ -7,6 +7,8 @@ PUBLIC
 	typedefs.h
 	uassert.h
 	timer.h
+	memory/memory.h
+	memory/allocator.h
 PRIVATE
 	core.cpp
 )

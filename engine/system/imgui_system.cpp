@@ -14,7 +14,7 @@ namespace mapo
 	{
 		if (result != VK_SUCCESS)
 		{
-			ERROR("[ImGui Vulkan] Error: VkResult = %d\n", result);
+			MP_ERROR("[ImGui Vulkan] Error: VkResult = %d\n", result);
 		}
 	}
 
@@ -45,10 +45,9 @@ namespace mapo
 
 		VkResult result = vkCreateDescriptorPool(m_device.GetDevice(), &poolInfo, nullptr, &m_descriptorPool);
 		ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor pool!");
-		* /
 
-			// Set up ImGui context.
-			IMGUI_CHECKVERSION();
+		// Set up ImGui context.
+		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
 		(void)io;

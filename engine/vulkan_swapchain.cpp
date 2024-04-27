@@ -151,7 +151,7 @@ namespace mapo
 
 	void VulkanSwapchain::CreateSwapchain()
 	{
-		PRINT("Creating swapchain...");
+		MP_PRINT("Creating swapchain...");
 		SwapchainSupportDetails swapchainSupport = m_device.GetSwapchainSupport();
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapchainSupport.formats);
@@ -166,7 +166,7 @@ namespace mapo
 			imageCount = std::min(imageCount, swapchainSupport.capabilities.maxImageCount);
 		}
 
-		PRINT("Image count: %u", imageCount);
+		MP_PRINT("Image count: %u", imageCount);
 
 		VkSwapchainCreateInfoKHR swapchainInfo{};
 		swapchainInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -231,7 +231,7 @@ namespace mapo
 
 	void VulkanSwapchain::CreateRenderPass()
 	{
-		PRINT("Creating render pass...");
+		MP_PRINT("Creating render pass...");
 
 		// Attachment: Load or store operations.
 		VkAttachmentDescription colorAttachment{};
@@ -301,7 +301,7 @@ namespace mapo
 
 	void VulkanSwapchain::CreateDepthResources()
 	{
-		PRINT("Creating depth resources...");
+		MP_PRINT("Creating depth resources...");
 
 		m_swapchainDepthFormat = FindDepthFormat();
 
@@ -340,7 +340,7 @@ namespace mapo
 	void VulkanSwapchain::CreateFramebuffers()
 	{
 		m_swapchainFramebuffers.resize(m_swapchainImageViews.size());
-		PRINT("Creating %zu framebuffers...", m_swapchainFramebuffers.size());
+		MP_PRINT("Creating %zu framebuffers...", m_swapchainFramebuffers.size());
 
 		for (USize i = 0; i < m_swapchainImageViews.size(); i++)
 		{
@@ -419,17 +419,17 @@ namespace mapo
 
 		if (mailboxIt != availablePresentModes.end())
 		{
-			PRINT("Present mode: Mailbox");
+			MP_PRINT("Present mode: Mailbox");
 			return *mailboxIt;
 		}
 		// else if (immediateIt != availablePresentModes.end())
 		// {
-		// 	PRINT("Present mode: Immediate");
+		// 	MP_PRINT("Present mode: Immediate");
 		// 	return *immediateIt;
 		// }
 		else
 		{
-			PRINT("Present mode: V-Sync");
+			MP_PRINT("Present mode: V-Sync");
 			return VK_PRESENT_MODE_FIFO_KHR;
 		}
 	}
@@ -438,7 +438,7 @@ namespace mapo
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<U32>::max())
 		{
-			PRINT("Current extent: %d x %d", capabilities.currentExtent.width, capabilities.currentExtent.height);
+			MP_PRINT("Current extent: %d x %d", capabilities.currentExtent.width, capabilities.currentExtent.height);
 			return capabilities.currentExtent;
 		}
 
@@ -448,14 +448,14 @@ namespace mapo
 		//
 		// int widthInPixel{}, heightInPixel{};
 		// glfwGetFramebufferSize(mGlfwWindow, &widthInPixel, &heightInPixel);
-		// PRINT("GLFW framebuffer size: (%dx%d)", widthInPixel, heightInPixel);
+		// MP_PRINT("GLFW framebuffer size: (%dx%d)", widthInPixel, heightInPixel);
 
 		VkExtent2D actualExtent = m_windowExtent;
 		actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
 		actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
-		PRINT("Image extent width range:  [%d, %d]", capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
-		PRINT("Image extent height range: [%d, %d]", capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+		MP_PRINT("Image extent width range:  [%d, %d]", capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+		MP_PRINT("Image extent height range: [%d, %d]", capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
 		return actualExtent;
 	}
