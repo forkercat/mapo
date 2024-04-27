@@ -31,12 +31,12 @@ namespace mapo
 		void* Allocate(USize numBytes) override
 		{
 			// TODO: Consider alignment!
-			return std::malloc(numBytes);
+			return new U8[numBytes];
 		}
 
 		void Free(void* ptr) override
 		{
-			return std::free(ptr);
+			delete[] ptr;
 		}
 	};
 
