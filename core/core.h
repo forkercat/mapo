@@ -8,6 +8,7 @@
 #include "core/typedefs.h"
 #include "core/uassert.h"
 #include "core/math.h"
+#include "core/string.h"
 
 #include "core/memory/memory.h"
 #include "core/memory/allocator.h"

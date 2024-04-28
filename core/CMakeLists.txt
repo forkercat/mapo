@@ -7,10 +7,12 @@ PUBLIC
 	typedefs.h
 	uassert.h
 	timer.h
+	string.h
 	memory/memory.h
 	memory/allocator.h
 PRIVATE
 	core.cpp
+	string.cpp
 )
 
 target_include_directories(core
