@@ -39,6 +39,11 @@ namespace mapo
 
 	namespace MathOp
 	{
+		MP_FORCE_INLINE bool IsPowerOfTwo(U32 value)
+		{
+			return (value & (value - 1)) == 0;
+		}
+
 		MP_FORCE_INLINE F32 Radians(F32 degrees)
 		{
 			return glm::radians(degrees);

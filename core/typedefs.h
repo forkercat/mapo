@@ -20,8 +20,6 @@ namespace mapo
 	using I16 = std::int16_t;
 	using I8 = std::int8_t;
 
-	using USize = size_t;
-
 // Floats
 #ifdef FORCE_FLOAT_64
 	using F32 = double;
