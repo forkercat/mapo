@@ -9,6 +9,12 @@
 #include "core/uassert.h"
 #include "core/math.h"
 #include "core/string.h"
+#include "core/string_name.h"
 
+// templates
+#include "core/templates/hash_map.h"
+#include "core/templates/hash_set.h"
+
+// memory
 #include "core/memory/memory.h"
 #include "core/memory/allocator.h"

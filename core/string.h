@@ -6,8 +6,11 @@
 
 #include "core/typedefs.h"
 
+#include <string> // included to support string operations for now.
+
 namespace mapo
 {
+	// TODO: Implement you own string class!
 	using String = std::string;
 
 	namespace StringOp

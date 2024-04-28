@@ -8,11 +8,17 @@ PUBLIC
 	uassert.h
 	timer.h
 	string.h
+	string_name.h
+	# memory
 	memory/memory.h
 	memory/allocator.h
+	# templates
+	templates/hash_map.h
+	templates/hash_set.h
 PRIVATE
 	core.cpp
 	string.cpp
+	string_name.cpp
 )
 
 target_include_directories(core

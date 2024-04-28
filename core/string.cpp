@@ -4,7 +4,6 @@
 
 #include "string.h"
 
-#include <string>
 #include <cstdio>
 #include <cstdarg>
 
