@@ -33,7 +33,7 @@ namespace mapo
 		VkImageView GetImageView(int index) { return m_swapchainImageViews[index]; }
 
 		// Functions to get swapchain info
-		USize GetImageCount() { return m_swapchainImages.size(); }
+		size_t GetImageCount() { return m_swapchainImages.size(); }
 		VkFormat GetSwapchainImageFormat() { return m_swapchainImageFormat; }
 		VkExtent2D GetSwapchainExtent() { return m_swapchainExtent; }
 		U32 GetWidth() { return m_swapchainExtent.width; }
@@ -93,7 +93,7 @@ namespace mapo
 		std::vector<VkFence> m_inFlightFences; // size = 2
 		std::vector<VkFence> m_imagesInFlight; // size = 3
 
-		USize m_currentFrame = 0;
+		size_t m_currentFrame = 0;
 	};
 
 } // namespace mapo

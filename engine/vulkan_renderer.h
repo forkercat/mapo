@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-#include "engine/window.h"
+#include "engine/vulkan_window.h"
 #include "engine/model.h"
 
 #include "engine/vulkan_device.h"
@@ -21,7 +21,7 @@ namespace mapo
 	class VulkanRenderer
 	{
 	public:
-		VulkanRenderer(Window& window, VulkanDevice& device);
+		VulkanRenderer(VulkanWindow& window, VulkanDevice& device);
 		~VulkanRenderer();
 
 		VulkanRenderer(const VulkanRenderer&) = delete;
@@ -58,7 +58,7 @@ namespace mapo
 		void RecreateSwapchain();
 
 	private:
-		Window& m_window;
+		VulkanWindow& m_window;
 		VulkanDevice& m_device;
 
 		UniqueRef<VulkanSwapchain> m_swapchain;

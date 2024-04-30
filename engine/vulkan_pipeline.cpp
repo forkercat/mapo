@@ -214,7 +214,7 @@ namespace mapo
 
 		ASSERT(file.is_open(), "Failed to open shader file: %s", filepath.c_str());
 
-		USize fileSize = static_cast<USize>(file.tellg());
+		size_t fileSize = static_cast<size_t>(file.tellg());
 		std::vector<char> buffer(fileSize);
 
 		file.seekg(0);

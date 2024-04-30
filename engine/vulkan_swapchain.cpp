@@ -45,7 +45,7 @@ namespace mapo
 			m_swapchain = nullptr;
 		}
 
-		for (USize i = 0; i < m_depthImages.size(); i++)
+		for (size_t i = 0; i < m_depthImages.size(); i++)
 		{
 			vkDestroyImageView(m_device.GetDevice(), m_depthImageViews[i], nullptr);
 			vkDestroyImage(m_device.GetDevice(), m_depthImages[i], nullptr);
@@ -59,7 +59,7 @@ namespace mapo
 
 		vkDestroyRenderPass(m_device.GetDevice(), m_renderPass, nullptr);
 
-		for (USize i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			vkDestroySemaphore(m_device.GetDevice(), m_renderFinishedSemaphores[i], nullptr);
 			vkDestroySemaphore(m_device.GetDevice(), m_imageAvailableSemaphores[i], nullptr);
@@ -223,7 +223,7 @@ namespace mapo
 	{
 		m_swapchainImageViews.resize(m_swapchainImages.size());
 
-		for (USize i = 0; i < m_swapchainImages.size(); i++)
+		for (size_t i = 0; i < m_swapchainImages.size(); i++)
 		{
 			m_swapchainImageViews[i] = CreateImageView(m_swapchainImages[i], m_swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
@@ -309,7 +309,7 @@ namespace mapo
 		m_depthImageMemorys.resize(GetImageCount());
 		m_depthImageViews.resize(GetImageCount());
 
-		for (USize i = 0; i < m_depthImages.size(); i++)
+		for (size_t i = 0; i < m_depthImages.size(); i++)
 		{
 			VkImageCreateInfo imageInfo{};
 			imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -342,7 +342,7 @@ namespace mapo
 		m_swapchainFramebuffers.resize(m_swapchainImageViews.size());
 		MP_PRINT("Creating %zu framebuffers...", m_swapchainFramebuffers.size());
 
-		for (USize i = 0; i < m_swapchainImageViews.size(); i++)
+		for (size_t i = 0; i < m_swapchainImageViews.size(); i++)
 		{
 			std::array<VkImageView, 2> imageViews = { m_swapchainImageViews[i], m_depthImageViews[i] };
 
@@ -374,7 +374,7 @@ namespace mapo
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (USize i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			VkResult result1 = vkCreateSemaphore(m_device.GetDevice(), &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]);
 			VkResult result2 = vkCreateSemaphore(m_device.GetDevice(), &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]);

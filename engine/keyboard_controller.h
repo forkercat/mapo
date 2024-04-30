@@ -7,7 +7,7 @@
 #include "core/core.h"
 
 #include "engine/game_object.h"
-#include "engine/window.h"
+#include "engine/vulkan_window.h"
 
 namespace mapo
 {

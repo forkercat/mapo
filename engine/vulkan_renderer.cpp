@@ -6,7 +6,7 @@
 
 namespace mapo
 {
-	VulkanRenderer::VulkanRenderer(Window& window, VulkanDevice& device)
+	VulkanRenderer::VulkanRenderer(VulkanWindow& window, VulkanDevice& device)
 		: m_window(window), m_device(device)
 	{
 		RecreateSwapchain();

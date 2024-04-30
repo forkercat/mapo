@@ -18,7 +18,7 @@ namespace mapo
 		}
 	}
 
-	ImGuiSystem::ImGuiSystem(Window& window, VulkanDevice& device, VkRenderPass renderPass, U32 imageCount)
+	ImGuiSystem::ImGuiSystem(VulkanWindow& window, VulkanDevice& device, VkRenderPass renderPass, U32 imageCount)
 		: m_device(device)
 	{
 		// Set up descriptor.

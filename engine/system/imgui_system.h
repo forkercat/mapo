@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-#include "engine/window.h"
+#include "engine/vulkan_window.h"
 #include "engine/vulkan_device.h"
 
 namespace mapo
@@ -14,7 +14,7 @@ namespace mapo
 	class ImGuiSystem
 	{
 	public:
-		ImGuiSystem(Window& window, VulkanDevice& device, VkRenderPass renderPass, U32 imageCount);
+		ImGuiSystem(VulkanWindow& window, VulkanDevice& device, VkRenderPass renderPass, U32 imageCount);
 		~ImGuiSystem();
 
 		ImGuiSystem(const ImGuiSystem&) = delete;

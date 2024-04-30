@@ -61,7 +61,7 @@ namespace mapo
 	// Class member functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VulkanDevice::VulkanDevice(Window& window)
+	VulkanDevice::VulkanDevice(VulkanWindow& window)
 		: m_window(window)
 	{
 		CreateInstance();

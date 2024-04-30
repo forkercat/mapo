@@ -19,6 +19,8 @@ PRIVATE
 	core.cpp
 	string.cpp
 	string_name.cpp
+	# memory
+	memory/allocator.cpp
 )
 
 target_include_directories(core

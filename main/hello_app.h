@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-#include "engine/window.h"
+#include "engine/vulkan_window.h"
 #include "engine/game_object.h"
 #include "engine/camera.h"
 
@@ -39,7 +39,7 @@ namespace mapo
 		void LoadGameObjects();
 
 	private:
-		Window m_window{ WIDTH, HEIGHT, "Hello Vulkan!" };
+		VulkanWindow m_window{ WIDTH, HEIGHT, "Hello Vulkan!" };
 		VulkanDevice m_device{ m_window };
 		VulkanRenderer m_renderer{ m_window, m_device };
 

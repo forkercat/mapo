@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "engine/window.h"
+#include "engine/vulkan_window.h"
 
 #include <vector>
 #include <optional>
@@ -31,7 +31,7 @@ namespace mapo
 	class VulkanDevice
 	{
 	public:
-		VulkanDevice(Window& window);
+		VulkanDevice(VulkanWindow& window);
 		~VulkanDevice();
 
 		// Make the device not copiable or movable.
@@ -95,7 +95,7 @@ namespace mapo
 		VkInstance m_instance;
 		VkDebugUtilsMessengerEXT m_debugMessenger;
 		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
-		Window& m_window;
+		VulkanWindow& m_window;
 		VkCommandPool m_commandPool;
 
 		VkDevice m_device;

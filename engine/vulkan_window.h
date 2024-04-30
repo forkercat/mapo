@@ -13,14 +13,14 @@
 
 namespace mapo
 {
-	class Window
+	class VulkanWindow
 	{
 	public:
-		Window(U32 width, U32 height, std::string name);
-		~Window();
+		VulkanWindow(U32 width, U32 height, std::string name);
+		~VulkanWindow();
 
-		Window(const Window&) = delete;
-		Window& operator=(const Window&) = delete;
+		VulkanWindow(const VulkanWindow&) = delete;
+		VulkanWindow& operator=(const VulkanWindow&) = delete;
 
 		bool ShouldClose() { return glfwWindowShouldClose(m_nativeWindow); }
 		bool WasWindowResized() { return m_framebufferResized; }
