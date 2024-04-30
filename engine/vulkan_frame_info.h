@@ -20,7 +20,7 @@ namespace mapo
 		VkCommandBuffer commandBuffer;
 		VkDescriptorSet globalDescriptorSet;
 		Camera& camera;
-		GameObject::Map& gameObjects;
+		std::vector<GameObject>& gameObjects;
 	};
 
 } // namespace mapo

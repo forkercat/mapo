@@ -7,8 +7,8 @@
 #include "core/core.h"
 
 #include "engine/game_object.h"
+#include "engine/component.h"
 
-#include <memory>
 #include <random>
 #include <vector>
 
@@ -40,10 +40,15 @@ namespace mapo
 
 				std::uniform_int_distribution<int> randInt{ 0, static_cast<int>(m_colors.size()) - 1 };
 
-				for (auto& object : gameObjects)
+				for (GameObject& gameObject : gameObjects)
 				{
-					int randValue = randInt(m_rng);
-					object.color = m_colors[randValue];
+					if (gameObject.HasComponent<MaterialComponent>())
+					{
+						auto& material = gameObject.GetComponent<MaterialComponent>();
+
+						int randValue = randInt(m_rng);
+						material.color = m_colors[randValue];
+					}
 				}
 			}
 		}

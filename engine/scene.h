@@ -8,25 +8,29 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <vector>
+
 namespace mapo
 {
+	class GameObject;
+
 	class Scene
 	{
 	public:
-		Scene()
-		{
-		}
+		Scene();
 
-		void CreateGameObject()
-		{
-		}
+		void OnUpdate(F32 dt);
 
-		void DestroyGameObject()
-		{
-		}
+		GameObject CreateGameObject(const String& name = "");
+
+		void DestroyGameObject(const GameObject& gameObject);
+
+		// TODO: Should not do this.
+		std::vector<GameObject> GetGameObjects();
 
 	private:
 		entt::registry m_registry;
+		friend class GameObject;
 	};
 
 } // namespace mapo

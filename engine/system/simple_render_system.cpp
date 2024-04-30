@@ -4,6 +4,8 @@
 
 #include "simple_render_system.h"
 
+#include "engine/component.h"
+
 namespace mapo
 {
 	struct SimplePushConstantData
@@ -77,19 +79,25 @@ namespace mapo
 			nullptr);
 
 		// Render objects.
-		for (auto& kv : frameInfo.gameObjects)
+		// For now the game object list has been filtered with TransformComponent, i.e., all components.
+		for (GameObject& gameObject : frameInfo.gameObjects)
 		{
-			GameObject& gameObject = kv.second;
+			auto& transform = gameObject.GetComponent<TransformComponent>();
 
-			SimplePushConstantData push{};
-			push.modelMatrix = gameObject.transform.GetTransform();
-			push.normalMatrix = gameObject.transform.GetNormalMatrix(); // glm automatically converts from mat4 to mat3
+			if (gameObject.HasComponent<MeshComponent>())
+			{
+				auto& mesh = gameObject.GetComponent<MeshComponent>();
 
-			vkCmdPushConstants(frameInfo.commandBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
-				sizeof(SimplePushConstantData), &push);
+				SimplePushConstantData push{};
+				push.modelMatrix = transform.GetTransform();
+				push.normalMatrix = transform.GetNormalMatrix(); // glm automatically converts from mat4 to mat3
 
-			gameObject.model->Bind(frameInfo.commandBuffer);
-			gameObject.model->Draw(frameInfo.commandBuffer);
+				vkCmdPushConstants(frameInfo.commandBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
+					sizeof(SimplePushConstantData), &push);
+
+				mesh.model->Bind(frameInfo.commandBuffer);
+				mesh.model->Draw(frameInfo.commandBuffer);
+			}
 		}
 	}
 

@@ -9,6 +9,7 @@
 #include "engine/vulkan_window.h"
 #include "engine/game_object.h"
 #include "engine/camera.h"
+#include "engine/scene.h"
 
 #include "engine/vulkan_device.h"
 #include "engine/vulkan_renderer.h"
@@ -36,7 +37,7 @@ namespace mapo
 		static constexpr U32 HEIGHT = 600;
 
 	private:
-		void LoadGameObjects();
+		void LoadScene();
 
 	private:
 		VulkanWindow m_window{ WIDTH, HEIGHT, "Hello Vulkan!" };
@@ -46,7 +47,7 @@ namespace mapo
 		// Note: Order of declarations matters.
 		UniqueRef<VulkanDescriptorPool> m_globalDescriptorPool{};
 
-		GameObject::Map m_gameObjects;
+		UniqueRef<Scene> m_scene;
 	};
 
 } // namespace mapo

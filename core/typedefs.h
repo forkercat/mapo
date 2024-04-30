@@ -70,3 +70,13 @@ namespace mapo
 		#define MP_FORCE_INLINE inline
 	#endif
 #endif
+
+// No discard
+#ifndef MP_NO_DISCARD
+	#define MP_NO_DISCARD [[nodiscard]]
+#endif
+
+// Allow discard
+#ifndef MP_ALLOW_DISCARD
+	#define MP_ALLOW_DISCARD (void)
+#endif

@@ -11,6 +11,8 @@
 
 #include "engine/keyboard_controller.h"
 
+#include "engine/component.h"
+
 #include <chrono>
 
 namespace mapo
@@ -34,7 +36,7 @@ namespace mapo
 				.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VulkanSwapchain::MAX_FRAMES_IN_FLIGHT)
 				.Build();
 
-		LoadGameObjects();
+		LoadScene();
 	}
 
 	HelloApp::~HelloApp()
@@ -86,12 +88,17 @@ namespace mapo
 			m_device, m_renderer.GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		RainbowSystem rainbowSystem(0.4f);
 
+		// Camera
 		Camera camera;
 		camera.SetViewTarget(Vector3(-1.0f, -2.0f, 2.0f), Vector3(0.0f, 0.0f, 2.5f));
 
-		GameObject viewerObject = GameObject::CreateGameObject();
-		viewerObject.transform.translation.z = -2.5;
+		GameObject viewerObject = m_scene->CreateGameObject("Viewer");
+		viewerObject.GetComponent<TransformComponent>().translation.z = -2.5f;
+
 		KeyboardController cameraController{};
+
+		// Retrieve all game objects before the loop. // GameObject is a lightweight class that just contains entity ids.
+		std::vector<GameObject> sceneGameObjects = m_scene->GetGameObjects();
 
 		std::chrono::time_point currentTime = std::chrono::high_resolution_clock::now();
 
@@ -105,7 +112,8 @@ namespace mapo
 			currentTime = newTime;
 
 			cameraController.MoveInPlaneXZ(m_window.GetNativeWindow(), frameTime, viewerObject);
-			camera.SetViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+			auto& viewerTransform = viewerObject.GetComponent<TransformComponent>();
+			camera.SetViewYXZ(viewerTransform.translation, viewerTransform.rotation);
 
 			F32 aspect = m_renderer.GetAspectRatio();
 			camera.SetPerspectiveProjection(MathOp::Radians(50.f), aspect, 0.1f, 100.f);
@@ -124,7 +132,7 @@ namespace mapo
 					.commandBuffer = commandBuffer,
 					.globalDescriptorSet = globalDescriptorSets[frameIndex],
 					.camera = camera,
-					.gameObjects = m_gameObjects
+					.gameObjects = sceneGameObjects
 				};
 
 				// Update
@@ -162,34 +170,41 @@ namespace mapo
 		vkDeviceWaitIdle(m_device.GetDevice());
 	}
 
-	void HelloApp::LoadGameObjects()
+	void HelloApp::LoadScene()
 	{
 		// Cube
-		// UniqueRef<LveModel> model = LveModel::CreateCubeModel(m_device, { 0.f, 0.f, 0.f });
+		// Ref<Model> model = Model::CreateCubeModel(m_device, { 0.f, 0.f, 0.f });
 
 		// Model
-		UniqueRef<Model> smoothModel = Model::CreateModelFromFile(m_device, "assets/models/smooth_vase.obj");
-		UniqueRef<Model> flatModel = Model::CreateModelFromFile(m_device, "assets/models/flat_vase.obj");
-		UniqueRef<Model> quadModel = Model::CreateModelFromFile(m_device, "assets/models/quad.obj");
+		Ref<Model> smoothModel = Model::CreateModelFromFile(m_device, "assets/models/smooth_vase.obj");
+		Ref<Model> flatModel = Model::CreateModelFromFile(m_device, "assets/models/flat_vase.obj");
+		Ref<Model> quadModel = Model::CreateModelFromFile(m_device, "assets/models/quad.obj");
 
-		GameObject gameObject = GameObject::CreateGameObject();
-		gameObject.model = std::move(smoothModel);
-		gameObject.transform.translation = { -0.5f, 0.5f, 0.0f };
-		gameObject.transform.scale = Vector3(2.0f);
+		m_scene = MakeUniqueRef<Scene>();
 
-		GameObject gameObject2 = GameObject::CreateGameObject();
-		gameObject2.model = std::move(flatModel);
-		gameObject2.transform.translation = { 0.5f, 0.5f, 0.0f };
-		gameObject2.transform.scale = Vector3(2.0f);
+		// 1
+		GameObject gameObject1 = m_scene->CreateGameObject("SmoothVase");
+		gameObject1.AddComponent<MeshComponent>(smoothModel);
 
-		GameObject gameObjectQuad = GameObject::CreateGameObject();
-		gameObjectQuad.model = std::move(quadModel);
-		gameObjectQuad.transform.translation = { 0.0f, 0.5f, 0.0f };
-		gameObjectQuad.transform.scale = { 3.0f, 1.0f, 3.0f };
+		auto& transform1 = gameObject1.GetComponent<TransformComponent>();
+		transform1.translation = { -0.5f, 0.5f, 0.0f };
+		transform1.scale = Vector3(2.0f);
 
-		m_gameObjects.emplace(gameObject.GetId(), std::move(gameObject));
-		m_gameObjects.emplace(gameObject2.GetId(), std::move(gameObject2));
-		m_gameObjects.emplace(gameObjectQuad.GetId(), std::move(gameObjectQuad));
+		// 2
+		GameObject gameObject2 = m_scene->CreateGameObject("FlatVase");
+		gameObject2.AddComponent<MeshComponent>(flatModel);
+
+		auto& transform2 = gameObject2.GetComponent<TransformComponent>();
+		transform2.translation = { 0.5f, 0.5f, 0.0f };
+		transform2.scale = Vector3(2.0f);
+
+		// 3
+		GameObject gameObject3 = m_scene->CreateGameObject("Quad");
+		gameObject3.AddComponent<MeshComponent>(quadModel);
+
+		auto& transform3 = gameObject3.GetComponent<TransformComponent>();
+		transform3.translation = { 0.0f, 0.5f, 0.0f };
+		transform3.scale = { 3.0f, 1.0f, 3.0f };
 	}
 
 } // namespace mapo

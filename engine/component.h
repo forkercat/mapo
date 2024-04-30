@@ -8,6 +8,13 @@
 
 namespace mapo
 {
+	class Model;
+
+	struct TagComponent
+	{
+		String tag{};
+	};
+
 	struct TransformComponent
 	{
 		Vector3 translation{};
@@ -21,7 +28,15 @@ namespace mapo
 
 	struct MeshComponent
 	{
-		int dummy;
+		MeshComponent(Ref<Model> m)
+			: model(m) {}
+
+		Ref<Model> model{};
+	};
+
+	struct MaterialComponent
+	{
+		Vector3 color;
 	};
 
 	struct LightComponent

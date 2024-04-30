@@ -4,6 +4,9 @@
 
 #include "keyboard_controller.h"
 
+#include "engine/game_object.h"
+#include "engine/component.h"
+
 namespace mapo
 {
 	void KeyboardController::MoveInPlaneXZ(GLFWwindow* window, F32 dt, GameObject& gameObject)
@@ -19,16 +22,18 @@ namespace mapo
 		if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS)
 			rotate.x -= 1.0f;
 
+		auto& transform = gameObject.GetComponent<TransformComponent>();
+
 		if (MathOp::Dot(rotate, rotate) > std::numeric_limits<F32>::epsilon())
 		{
-			gameObject.transform.rotation += lookSpeed * dt * MathOp::Normalize(rotate);
+			transform.rotation += lookSpeed * dt * MathOp::Normalize(rotate);
 		}
 
 		// Limit pitch values between about +/- 85ish degrees.
-		gameObject.transform.rotation.x = MathOp::Clamp(gameObject.transform.rotation.x, -1.5f, 1.5f);
-		gameObject.transform.rotation.y = glm::mod(gameObject.transform.rotation.y, GLM_2_PI);
+		transform.rotation.x = MathOp::Clamp(transform.rotation.x, -1.5f, 1.5f);
+		transform.rotation.y = glm::mod(transform.rotation.y, GLM_2_PI);
 
-		float yaw = gameObject.transform.rotation.y;
+		float yaw = transform.rotation.y;
 		const Vector3 forwardDir{ MathOp::Sin(yaw), 0.0f, MathOp::Cos(yaw) };
 		const Vector3 rightDir{ forwardDir.z, 0.0f, -forwardDir.x };
 		const Vector3 upDir{ 0.0f, -1.0f, 0.0f };
@@ -51,7 +56,7 @@ namespace mapo
 
 		if (MathOp::Dot(moveDir, moveDir) > std::numeric_limits<F32>::epsilon())
 		{
-			gameObject.transform.translation += moveSpeed * dt * MathOp::Normalize(moveDir);
+			transform.translation += moveSpeed * dt * MathOp::Normalize(moveDir);
 		}
 	}
 
