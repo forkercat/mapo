@@ -10,7 +10,7 @@
 
 #include <vector>
 
-namespace mapo
+namespace Mapo
 {
 	class GameObject;
 
@@ -33,4 +33,4 @@ namespace mapo
 		friend class GameObject;
 	};
 
-} // namespace mapo
+} // namespace Mapo

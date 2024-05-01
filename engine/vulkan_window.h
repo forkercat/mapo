@@ -11,7 +11,7 @@
 
 #include <string>
 
-namespace mapo
+namespace Mapo
 {
 	class VulkanWindow
 	{
@@ -47,4 +47,4 @@ namespace mapo
 		GLFWwindow* m_nativeWindow;
 	};
 
-} // namespace mapo
+} // namespace Mapo

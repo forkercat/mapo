@@ -9,7 +9,7 @@
 
 #include <vector>
 
-namespace mapo
+namespace Mapo
 {
 	struct VulkanPipelineConfigInfo
 	{
@@ -63,4 +63,4 @@ namespace mapo
 		VkShaderModule m_fragShaderModule;
 	};
 
-} // namespace mapo
+} // namespace Mapo

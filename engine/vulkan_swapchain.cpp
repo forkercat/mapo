@@ -4,7 +4,7 @@
 
 #include "vulkan_swapchain.h"
 
-namespace mapo
+namespace Mapo
 {
 	VulkanSwapchain::VulkanSwapchain(VulkanDevice& device, VkExtent2D windowExtent)
 		: m_device(device), m_windowExtent(windowExtent)
@@ -480,4 +480,4 @@ namespace mapo
 		return imageView;
 	}
 
-} // namespace mapo
+} // namespace Mapo

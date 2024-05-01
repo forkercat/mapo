@@ -8,7 +8,7 @@
 
 #include <fstream>
 
-namespace mapo
+namespace Mapo
 {
 	VulkanPipeline::VulkanPipeline(
 		VulkanDevice& device, const std::string& vertFilepath, const std::string& fragFilepath,
@@ -226,4 +226,4 @@ namespace mapo
 		return buffer;
 	}
 
-} // namespace mapo
+} // namespace Mapo

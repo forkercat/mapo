@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-namespace mapo
+namespace Mapo
 {
 	// Matrix corresponds to Translate * Ry * Rx * Rz * Scale
 	// Rotations correspond to Tait-bryan angles of Y(1), X(2), Z(3)
@@ -71,4 +71,4 @@ namespace mapo
 		};
 	}
 
-} // namespace mapo
+} // namespace Mapo

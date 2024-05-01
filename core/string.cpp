@@ -11,7 +11,7 @@
 
 #define MAX_FORMAT_STRING_LENGTH 256
 
-namespace mapo
+namespace Mapo
 {
 	namespace StringOp
 	{
@@ -31,4 +31,4 @@ namespace mapo
 		}
 
 	} // namespace StringOp
-} // namespace mapo
+} // namespace Mapo

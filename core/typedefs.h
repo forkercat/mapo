@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace mapo
+namespace Mapo
 {
 	// Integers
 	using U64 = std::uint64_t;
@@ -47,7 +47,7 @@ namespace mapo
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
-} // namespace mapo
+} // namespace Mapo
 
 #define BIT(x) (1 << x)
 #define STR(x) #x

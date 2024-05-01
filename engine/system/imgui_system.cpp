@@ -8,7 +8,7 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_vulkan.h>
 
-namespace mapo
+namespace Mapo
 {
 	static void CheckVulkanResultFn(VkResult result)
 	{
@@ -174,4 +174,4 @@ namespace mapo
 		}
 	}
 
-} // namespace mapo
+} // namespace Mapo

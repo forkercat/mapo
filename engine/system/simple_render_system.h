@@ -16,7 +16,7 @@
 #include <vector>
 #include <memory>
 
-namespace mapo
+namespace Mapo
 {
 	class SimpleRenderSystem
 	{
@@ -40,4 +40,4 @@ namespace mapo
 		VkPipelineLayout m_pipelineLayout;
 	};
 
-} // namespace mapo
+} // namespace Mapo

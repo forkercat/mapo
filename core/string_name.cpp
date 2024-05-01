@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace mapo
+namespace Mapo
 {
 	/////////////////////////////////////////////////////////////////////////////////
 	// Crc32
@@ -98,4 +98,4 @@ namespace mapo
 		return it->second;
 	}
 
-} // namespace mapo
+} // namespace Mapo

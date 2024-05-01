@@ -9,7 +9,7 @@
 
 #include <memory>
 
-namespace mapo
+namespace Mapo
 {
 	/////////////////////////////////////////////////////////////////////////////////
 	// Method 1: Using bit-shift operation to align.
@@ -223,4 +223,4 @@ namespace mapo
 		const size_t m_totalSize{};
 	};
 
-} // namespace mapo
+} // namespace Mapo

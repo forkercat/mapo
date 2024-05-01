@@ -15,7 +15,7 @@
 #include <vector>
 #include <memory>
 
-namespace mapo
+namespace Mapo
 {
 	// Renderer class that manages swapchain and command buffers.
 	class VulkanRenderer
@@ -69,4 +69,4 @@ namespace mapo
 		bool m_isFrameStarted = false;
 	};
 
-} // namespace mapo
+} // namespace Mapo

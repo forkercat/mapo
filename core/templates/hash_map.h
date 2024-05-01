@@ -8,10 +8,10 @@
 
 #include <unordered_map>
 
-namespace mapo
+namespace Mapo
 {
 	// TODO: Implement your hash table class!
 	template <typename K, typename V>
 	using HashMap = std::unordered_map<K, V>;
 
-} // namespace mapo
+} // namespace Mapo

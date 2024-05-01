@@ -12,7 +12,7 @@
 #include <random>
 #include <vector>
 
-namespace mapo
+namespace Mapo
 {
 	class RainbowSystem
 	{
@@ -63,4 +63,4 @@ namespace mapo
 		F32 m_elapsedTime;
 	};
 
-} // namespace mapo
+} // namespace Mapo

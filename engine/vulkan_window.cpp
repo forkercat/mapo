@@ -4,7 +4,7 @@
 
 #include "vulkan_window.h"
 
-namespace mapo
+namespace Mapo
 {
 	VulkanWindow::VulkanWindow(U32 width, U32 height, std::string name)
 		: m_width(width), m_height(height), m_windowName(name)
@@ -45,4 +45,4 @@ namespace mapo
 		pWindow->m_height = height;
 	}
 
-} // namespace mapo
+} // namespace Mapo

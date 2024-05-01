@@ -12,19 +12,19 @@
 namespace std
 {
 	template <>
-	struct hash<mapo::Model::Vertex>
+	struct hash<Mapo::Model::Vertex>
 	{
-		size_t operator()(const mapo::Model::Vertex& vertex) const
+		size_t operator()(const Mapo::Model::Vertex& vertex) const
 		{
 			size_t seed = 0;
-			mapo::HashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
+			Mapo::HashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
 			return seed;
 		}
 	};
 
 } // namespace std
 
-namespace mapo
+namespace Mapo
 {
 	std::vector<VkVertexInputBindingDescription> Model::Vertex::GetBindingDescriptions()
 	{
@@ -288,4 +288,4 @@ namespace mapo
 		}
 	}
 
-} // namespace mapo
+} // namespace Mapo

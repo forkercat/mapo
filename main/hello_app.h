@@ -19,7 +19,7 @@
 #include <vector>
 #include <memory>
 
-namespace mapo
+namespace Mapo
 {
 	class HelloApp
 	{
@@ -50,4 +50,4 @@ namespace mapo
 		UniqueRef<Scene> m_scene;
 	};
 
-} // namespace mapo
+} // namespace Mapo

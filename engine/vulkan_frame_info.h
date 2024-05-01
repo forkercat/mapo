@@ -11,7 +11,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace mapo
+namespace Mapo
 {
 	struct VulkanFrameInfo
 	{
@@ -23,4 +23,4 @@ namespace mapo
 		std::vector<GameObject>& gameObjects;
 	};
 
-} // namespace mapo
+} // namespace Mapo

@@ -6,7 +6,7 @@
 
 #include "engine/component.h"
 
-namespace mapo
+namespace Mapo
 {
 	GameObject::GameObject(entt::entity entity, Scene* scene)
 		: m_entityHandle(entity), m_scene(scene)
@@ -22,4 +22,4 @@ namespace mapo
 	{
 	}
 
-} // namespace mapo
+} // namespace Mapo

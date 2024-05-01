@@ -7,7 +7,7 @@
 #include "engine/game_object.h"
 #include "engine/component.h"
 
-namespace mapo
+namespace Mapo
 {
 	Scene::Scene()
 	{
@@ -46,4 +46,4 @@ namespace mapo
 		return gameObjects;
 	}
 
-} // namespace mapo
+} // namespace Mapo

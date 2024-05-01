@@ -7,7 +7,7 @@
 #include <unordered_set>
 #include <set>
 
-namespace mapo
+namespace Mapo
 {
 	/////////////////////////////////////////////////////////////////////////////////
 	// Local callback functions
@@ -640,4 +640,4 @@ namespace mapo
 		return details;
 	}
 
-} // namespace mapo
+} // namespace Mapo

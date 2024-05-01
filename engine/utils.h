@@ -6,7 +6,7 @@
 
 #include <functional>
 
-namespace mapo
+namespace Mapo
 {
 	// from: https://stackoverflow.com/a/57595105
 	template <typename T, typename... Rest>
@@ -16,4 +16,4 @@ namespace mapo
 		(HashCombine(seed, rest), ...);
 	}
 
-} // namespace mapo
+} // namespace Mapo

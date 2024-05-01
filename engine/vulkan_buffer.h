@@ -6,7 +6,7 @@
 
 #include "engine/vulkan_device.h"
 
-namespace mapo
+namespace Mapo
 {
 	// Encapsulates a vulkan buffer. Initially based off VulkanBuffer by Sascha Willems.
 	// https://github.com/SaschaWillems/Vulkan/blob/master/base/VulkanBuffer.h
@@ -78,4 +78,4 @@ namespace mapo
 		VkMemoryPropertyFlags m_memoryPropertyFlags;
 	};
 
-} // namespace mapo
+} // namespace Mapo

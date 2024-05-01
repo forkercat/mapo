@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-namespace mapo
+namespace Mapo
 {
 	// Swapchain class that manages Vulkan swapchain and images, framebuffers, render passes
 	// synchronization primitives, etc.
@@ -96,4 +96,4 @@ namespace mapo
 		size_t m_currentFrame = 0;
 	};
 
-} // namespace mapo
+} // namespace Mapo

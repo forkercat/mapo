@@ -11,7 +11,7 @@
 
 #include <vector>
 
-namespace mapo
+namespace Mapo
 {
 	class Model
 	{
@@ -67,4 +67,4 @@ namespace mapo
 		U32 m_indexCount;
 	};
 
-} // namespace mapo
+} // namespace Mapo

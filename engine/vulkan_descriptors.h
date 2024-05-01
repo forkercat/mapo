@@ -8,7 +8,7 @@
 
 #include "engine/vulkan_device.h"
 
-namespace mapo
+namespace Mapo
 {
 	// Descriptor set layout
 	class VulkanDescriptorSetLayout
@@ -111,4 +111,4 @@ namespace mapo
 		std::vector<VkWriteDescriptorSet> m_writes;
 	};
 
-} // namespace mapo
+} // namespace Mapo

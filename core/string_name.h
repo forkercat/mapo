@@ -7,7 +7,7 @@
 #include "core/typedefs.h"
 #include "core/string.h"
 
-namespace mapo
+namespace Mapo
 {
 	class SName final
 	{
@@ -47,14 +47,14 @@ namespace mapo
 		U32 m_hashValue{};
 	};
 
-} // namespace mapo
+} // namespace Mapo
 
 namespace std
 {
 	template <>
-	struct hash<mapo::SName>
+	struct hash<Mapo::SName>
 	{
-		size_t operator()(const mapo::SName& name) const
+		size_t operator()(const Mapo::SName& name) const
 		{
 			// Let's just return the hash value stored in it.
 			return name.GetHash();

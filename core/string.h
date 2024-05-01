@@ -8,7 +8,7 @@
 
 #include <string> // included to support string operations for now.
 
-namespace mapo
+namespace Mapo
 {
 	// TODO: Implement you own string class!
 	using String = std::string;
@@ -19,4 +19,4 @@ namespace mapo
 
 	} // namespace StringOp
 
-} // namespace mapo
+} // namespace Mapo

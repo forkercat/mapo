@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-namespace mapo
+namespace Mapo
 {
 	class Camera
 	{
@@ -26,4 +26,4 @@ namespace mapo
 		Matrix4 m_viewMatrix{ 1.0f };
 	};
 
-} // namespace mapo
+} // namespace Mapo

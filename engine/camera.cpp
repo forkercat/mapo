@@ -4,7 +4,7 @@
 
 #include "camera.h"
 
-namespace mapo
+namespace Mapo
 {
 	void Camera::SetOrthographicProjection(F32 left, F32 right, F32 top, F32 bottom, F32 near, F32 far)
 	{
@@ -91,4 +91,4 @@ namespace mapo
 		m_viewMatrix[3][2] = -MathOp::Dot(w, position);
 	}
 
-} // namespace mapo
+} // namespace Mapo

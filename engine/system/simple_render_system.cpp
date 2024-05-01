@@ -6,7 +6,7 @@
 
 #include "engine/component.h"
 
-namespace mapo
+namespace Mapo
 {
 	struct SimplePushConstantData
 	{
@@ -101,4 +101,4 @@ namespace mapo
 		}
 	}
 
-} // namespace mapo
+} // namespace Mapo

@@ -7,7 +7,7 @@
 #include "engine/game_object.h"
 #include "engine/component.h"
 
-namespace mapo
+namespace Mapo
 {
 	void KeyboardController::MoveInPlaneXZ(GLFWwindow* window, F32 dt, GameObject& gameObject)
 	{
@@ -60,4 +60,4 @@ namespace mapo
 		}
 	}
 
-} // namespace mapo
+} // namespace Mapo

@@ -9,7 +9,7 @@
 #include <vector>
 #include <optional>
 
-namespace mapo
+namespace Mapo
 {
 	struct SwapchainSupportDetails
 	{
@@ -113,4 +113,4 @@ namespace mapo
 		const std::vector<const char*> m_deviceExtensions{ VK_KHR_SWAPCHAIN_EXTENSION_NAME, "VK_KHR_portability_subset" };
 	};
 
-} // namespace mapo
+} // namespace Mapo

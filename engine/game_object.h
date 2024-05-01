@@ -11,7 +11,7 @@
 
 #include <entt/entity/registry.hpp>
 
-namespace mapo
+namespace Mapo
 {
 	class Scene;
 
@@ -68,4 +68,4 @@ namespace mapo
 		friend class Scene;
 	};
 
-} // namespace mapo
+} // namespace Mapo

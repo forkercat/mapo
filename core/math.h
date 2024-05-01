@@ -12,7 +12,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
-namespace mapo
+namespace Mapo
 {
 	// Type definitions
 
@@ -106,4 +106,4 @@ namespace mapo
 		}
 
 	} // namespace MathOp
-} // namespace mapo
+} // namespace Mapo

@@ -4,7 +4,7 @@
 
 #include "vulkan_buffer.h"
 
-namespace mapo
+namespace Mapo
 {
 	VulkanBuffer::VulkanBuffer(
 		VulkanDevice& device,
@@ -125,4 +125,4 @@ namespace mapo
 		}
 	}
 
-} // namespace mapo
+} // namespace Mapo

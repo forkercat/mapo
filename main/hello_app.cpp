@@ -15,7 +15,7 @@
 
 #include <chrono>
 
-namespace mapo
+namespace Mapo
 {
 	struct GlobalUbo
 	{
@@ -207,4 +207,4 @@ namespace mapo
 		transform3.scale = { 3.0f, 1.0f, 3.0f };
 	}
 
-} // namespace mapo
+} // namespace Mapo

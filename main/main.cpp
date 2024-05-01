@@ -6,7 +6,7 @@
 
 int main()
 {
-	mapo::HelloApp app{};
+	Mapo::HelloApp app{};
 
 	app.Run();
 }

@@ -15,7 +15,7 @@
 #include <vector>
 #include <memory>
 
-namespace mapo
+namespace Mapo
 {
 	class PointLightSystem
 	{
@@ -39,4 +39,4 @@ namespace mapo
 		VkPipelineLayout m_pipelineLayout;
 	};
 
-} // namespace mapo
+} // namespace Mapo

@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-namespace mapo
+namespace Mapo
 {
 	class Model;
 
@@ -45,4 +45,4 @@ namespace mapo
 		Vector3 color;
 	};
 
-} // namespace mapo
+} // namespace Mapo

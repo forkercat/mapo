@@ -4,7 +4,7 @@
 
 #include "point_light_system.h"
 
-namespace mapo
+namespace Mapo
 {
 	PointLightSystem::PointLightSystem(VulkanDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
 		: m_device(device)
@@ -76,4 +76,4 @@ namespace mapo
 		vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
 	}
 
-} // namespace mapo
+} // namespace Mapo

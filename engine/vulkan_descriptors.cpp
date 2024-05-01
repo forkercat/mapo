@@ -4,7 +4,7 @@
 
 #include "vulkan_descriptors.h"
 
-namespace mapo
+namespace Mapo
 {
 	/////////////////////////////////////////////////////////////////////////////////
 	// Descriptor set layout builder
@@ -200,4 +200,4 @@ namespace mapo
 		vkUpdateDescriptorSets(m_descriptorPool.m_device.GetDevice(), m_writes.size(), m_writes.data(), 0, nullptr);
 	}
 
-} // namespace mapo
+} // namespace Mapo

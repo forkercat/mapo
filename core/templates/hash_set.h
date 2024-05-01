@@ -8,10 +8,10 @@
 
 #include <unordered_set>
 
-namespace mapo
+namespace Mapo
 {
 	// TODO: Implement your hash set class!
 	template <typename T>
 	using HashSet = std::unordered_set<T>;
 
-} // namespace mapo
+} // namespace Mapo

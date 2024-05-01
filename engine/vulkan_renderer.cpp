@@ -4,7 +4,7 @@
 
 #include "vulkan_renderer.h"
 
-namespace mapo
+namespace Mapo
 {
 	VulkanRenderer::VulkanRenderer(VulkanWindow& window, VulkanDevice& device)
 		: m_window(window), m_device(device)
@@ -194,4 +194,4 @@ namespace mapo
 		}
 	}
 
-} // namespace mapo
+} // namespace Mapo

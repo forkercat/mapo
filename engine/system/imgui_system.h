@@ -9,7 +9,7 @@
 #include "engine/vulkan_window.h"
 #include "engine/vulkan_device.h"
 
-namespace mapo
+namespace Mapo
 {
 	class ImGuiSystem
 	{
@@ -43,4 +43,4 @@ namespace mapo
 		VkDescriptorPool m_descriptorPool;
 	};
 
-} // namespace mapo
+} // namespace Mapo

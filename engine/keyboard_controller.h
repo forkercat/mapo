@@ -9,7 +9,7 @@
 #include "engine/game_object.h"
 #include "engine/vulkan_window.h"
 
-namespace mapo
+namespace Mapo
 {
 	class KeyboardController
 	{
@@ -37,4 +37,4 @@ namespace mapo
 		F32 lookSpeed = 1.5f;
 	};
 
-} // namespace mapo
+} // namespace Mapo
