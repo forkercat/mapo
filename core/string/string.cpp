@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <cstdarg>
 
-#include "uassert.h"
+#include "core/uassert.h"
 
 #define MAX_FORMAT_STRING_LENGTH 256
 

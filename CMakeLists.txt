@@ -15,6 +15,7 @@ find_package(EnTT CONFIG REQUIRED)
 # Subdirectories
 add_subdirectory(core)
 add_subdirectory(engine)
+add_subdirectory(platform)
 add_subdirectory(main)
 add_subdirectory(editor)
 add_subdirectory(3rdparty)

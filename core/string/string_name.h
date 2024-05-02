@@ -5,7 +5,7 @@
 #pragma once
 
 #include "core/typedefs.h"
-#include "core/string.h"
+#include "string.h"
 
 namespace Mapo
 {
