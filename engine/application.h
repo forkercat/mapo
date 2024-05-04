@@ -57,7 +57,7 @@ namespace Mapo
 	private:
 		ApplicationCommandLineArgs m_commandLineArgs;
 
-		VulkanWindow m_window{ WIDTH, HEIGHT, "Hello Vulkan!" };
+		VulkanWindow m_window;
 		VulkanDevice m_device{ m_window };
 		VulkanRenderer m_renderer{ m_window, m_device };
 

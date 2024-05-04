@@ -29,7 +29,7 @@ namespace Mapo
 	};
 
 	Application::Application(const String& name, ApplicationCommandLineArgs args)
-		: m_commandLineArgs(args)
+		: m_window(WIDTH, HEIGHT, name), m_commandLineArgs(args)
 	{
 		m_globalDescriptorPool =
 			VulkanDescriptorPool::Builder(m_device)
@@ -38,8 +38,6 @@ namespace Mapo
 				// How many descriptors of this type are available in the pool.
 				.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VulkanSwapchain::MAX_FRAMES_IN_FLIGHT)
 				.Build();
-
-		// TODO: Set window name.
 
 		// Self assign.
 		s_appInstance = this;
@@ -84,6 +82,8 @@ namespace Mapo
 		auto& transform3 = gameObject3.GetComponent<TransformComponent>();
 		transform3.translation = { 0.0f, 0.5f, 0.0f };
 		transform3.scale = { 3.0f, 1.0f, 3.0f };
+
+		return true;
 	}
 
 	void Application::Run()
