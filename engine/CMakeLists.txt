@@ -2,20 +2,23 @@ add_library(engine)
 
 target_sources(engine
 PUBLIC
+	entry_point.h
+	application.h
 	model.h
 	game_object.h
 	component.h
 	camera.h
 	keyboard_controller.h
 	utils.h
-	vulkan_window.h
-	vulkan_device.h
-	vulkan_pipeline.h
-	vulkan_swapchain.h
-	vulkan_buffer.h
-	vulkan_renderer.h
-	vulkan_descriptors.h
-	vulkan_frame_info.h
+	# Render
+	render/vulkan_window.h
+	render/vulkan_device.h
+	render/vulkan_pipeline.h
+	render/vulkan_swapchain.h
+	render/vulkan_buffer.h
+	render/vulkan_renderer.h
+	render/vulkan_descriptors.h
+	render/vulkan_frame_info.h
 	# System
 	system/simple_render_system.h
 	system/point_light_system.h
@@ -23,18 +26,20 @@ PUBLIC
 	system/rainbow_system.h
 	scene.h
 PRIVATE
+	application.cpp
 	model.cpp
 	game_object.cpp
 	component.cpp
 	camera.cpp
 	keyboard_controller.cpp
-	vulkan_window.cpp
-	vulkan_device.cpp
-	vulkan_pipeline.cpp
-	vulkan_swapchain.cpp
-	vulkan_buffer.cpp
-	vulkan_renderer.cpp
-	vulkan_descriptors.cpp
+	# Render
+	render/vulkan_window.cpp
+	render/vulkan_device.cpp
+	render/vulkan_pipeline.cpp
+	render/vulkan_swapchain.cpp
+	render/vulkan_buffer.cpp
+	render/vulkan_renderer.cpp
+	render/vulkan_descriptors.cpp
 	# System
 	system/simple_render_system.cpp
 	system/point_light_system.cpp

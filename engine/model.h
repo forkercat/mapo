@@ -6,8 +6,8 @@
 
 #include "core/core.h"
 
-#include "engine/vulkan_device.h"
-#include "engine/vulkan_buffer.h"
+#include "engine/render/vulkan_device.h"
+#include "engine/render/vulkan_buffer.h"
 
 #include <vector>
 

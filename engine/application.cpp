@@ -1,8 +1,8 @@
 //
-// Created by Junhao Wang (@forkercat) on 4/1/24.
+// Created by Junhao Wang (@forkercat) on 5/4/24.
 //
 
-#include "main/hello_app.h"
+#include "application.h"
 
 #include "engine/system/simple_render_system.h"
 #include "engine/system/point_light_system.h"
@@ -17,6 +17,8 @@
 
 namespace Mapo
 {
+	Application* Application::s_appInstance = nullptr;
+
 	struct GlobalUbo
 	{
 		Matrix4 projection{ 1.0f };
@@ -26,7 +28,8 @@ namespace Mapo
 		alignas(16) Vector4 lightColor{ 1.0f, 1.0f, 1.0f, 0.5f }; // w is intensity
 	};
 
-	HelloApp::HelloApp()
+	Application::Application(const String& name, ApplicationCommandLineArgs args)
+		: m_commandLineArgs(args)
 	{
 		m_globalDescriptorPool =
 			VulkanDescriptorPool::Builder(m_device)
@@ -36,14 +39,54 @@ namespace Mapo
 				.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VulkanSwapchain::MAX_FRAMES_IN_FLIGHT)
 				.Build();
 
-		LoadScene();
+		// TODO: Set window name.
+
+		// Self assign.
+		s_appInstance = this;
 	}
 
-	HelloApp::~HelloApp()
+	Application::~Application()
 	{
 	}
 
-	void HelloApp::Run()
+	bool Application::Start()
+	{
+		// Cube
+		// Ref<Model> model = Model::CreateCubeModel(m_device, { 0.f, 0.f, 0.f });
+
+		// Model
+		Ref<Model> smoothModel = Model::CreateModelFromFile(m_device, "assets/models/smooth_vase.obj");
+		Ref<Model> flatModel = Model::CreateModelFromFile(m_device, "assets/models/flat_vase.obj");
+		Ref<Model> quadModel = Model::CreateModelFromFile(m_device, "assets/models/quad.obj");
+
+		m_scene = MakeUniqueRef<Scene>();
+
+		// 1
+		GameObject gameObject1 = m_scene->CreateGameObject("SmoothVase");
+		gameObject1.AddComponent<MeshComponent>(smoothModel);
+
+		auto& transform1 = gameObject1.GetComponent<TransformComponent>();
+		transform1.translation = { -0.5f, 0.5f, 0.0f };
+		transform1.scale = Vector3(2.0f);
+
+		// 2
+		GameObject gameObject2 = m_scene->CreateGameObject("FlatVase");
+		gameObject2.AddComponent<MeshComponent>(flatModel);
+
+		auto& transform2 = gameObject2.GetComponent<TransformComponent>();
+		transform2.translation = { 0.5f, 0.5f, 0.0f };
+		transform2.scale = Vector3(2.0f);
+
+		// 3
+		GameObject gameObject3 = m_scene->CreateGameObject("Quad");
+		gameObject3.AddComponent<MeshComponent>(quadModel);
+
+		auto& transform3 = gameObject3.GetComponent<TransformComponent>();
+		transform3.translation = { 0.0f, 0.5f, 0.0f };
+		transform3.scale = { 3.0f, 1.0f, 3.0f };
+	}
+
+	void Application::Run()
 	{
 		// Create ImGui system.
 		ImGuiSystem imguiSystem{
@@ -168,43 +211,6 @@ namespace Mapo
 		}
 
 		vkDeviceWaitIdle(m_device.GetDevice());
-	}
-
-	void HelloApp::LoadScene()
-	{
-		// Cube
-		// Ref<Model> model = Model::CreateCubeModel(m_device, { 0.f, 0.f, 0.f });
-
-		// Model
-		Ref<Model> smoothModel = Model::CreateModelFromFile(m_device, "assets/models/smooth_vase.obj");
-		Ref<Model> flatModel = Model::CreateModelFromFile(m_device, "assets/models/flat_vase.obj");
-		Ref<Model> quadModel = Model::CreateModelFromFile(m_device, "assets/models/quad.obj");
-
-		m_scene = MakeUniqueRef<Scene>();
-
-		// 1
-		GameObject gameObject1 = m_scene->CreateGameObject("SmoothVase");
-		gameObject1.AddComponent<MeshComponent>(smoothModel);
-
-		auto& transform1 = gameObject1.GetComponent<TransformComponent>();
-		transform1.translation = { -0.5f, 0.5f, 0.0f };
-		transform1.scale = Vector3(2.0f);
-
-		// 2
-		GameObject gameObject2 = m_scene->CreateGameObject("FlatVase");
-		gameObject2.AddComponent<MeshComponent>(flatModel);
-
-		auto& transform2 = gameObject2.GetComponent<TransformComponent>();
-		transform2.translation = { 0.5f, 0.5f, 0.0f };
-		transform2.scale = Vector3(2.0f);
-
-		// 3
-		GameObject gameObject3 = m_scene->CreateGameObject("Quad");
-		gameObject3.AddComponent<MeshComponent>(quadModel);
-
-		auto& transform3 = gameObject3.GetComponent<TransformComponent>();
-		transform3.translation = { 0.0f, 0.5f, 0.0f };
-		transform3.scale = { 3.0f, 1.0f, 3.0f };
 	}
 
 } // namespace Mapo

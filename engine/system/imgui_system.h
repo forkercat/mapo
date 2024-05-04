@@ -6,8 +6,8 @@
 
 #include "core/core.h"
 
-#include "engine/vulkan_window.h"
-#include "engine/vulkan_device.h"
+#include "engine/render/vulkan_window.h"
+#include "engine/render/vulkan_device.h"
 
 namespace Mapo
 {

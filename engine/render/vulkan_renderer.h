@@ -6,11 +6,11 @@
 
 #include "core/core.h"
 
-#include "engine/vulkan_window.h"
+#include "vulkan_window.h"
 #include "engine/model.h"
 
-#include "engine/vulkan_device.h"
-#include "engine/vulkan_swapchain.h"
+#include "vulkan_device.h"
+#include "vulkan_swapchain.h"
 
 #include <vector>
 #include <memory>

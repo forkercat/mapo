@@ -1,19 +1,18 @@
-add_executable(main)
+add_executable(main-editor-app)
 
-target_sources(main
+target_sources(main-editor-app
 PUBLIC
-	hello_app.h
+
 PRIVATE
-	hello_app.cpp
-	main.cpp
+	editor_app.cpp
 )
 
-target_link_libraries(main
+target_link_libraries(main-editor-app
 PRIVATE
 	engine
 )
 
-target_include_directories(main
+target_include_directories(main-editor-app
 PRIVATE
 	${PROJECT_SOURCE_DIR}
 )

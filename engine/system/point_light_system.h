@@ -7,9 +7,9 @@
 #include "core/core.h"
 
 #include "engine/camera.h"
-#include "engine/vulkan_device.h"
-#include "engine/vulkan_pipeline.h"
-#include "engine/vulkan_frame_info.h"
+#include "engine/render/vulkan_device.h"
+#include "engine/render/vulkan_pipeline.h"
+#include "engine/render/vulkan_frame_info.h"
 #include "engine/game_object.h"
 
 #include <vector>

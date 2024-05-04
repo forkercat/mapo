@@ -4,7 +4,7 @@
 
 #include "vulkan_pipeline.h"
 
-#include "model.h"
+#include "engine/model.h"
 
 #include <fstream>
 
