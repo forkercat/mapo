@@ -36,7 +36,7 @@ namespace Mapo
 
 	VkResult VulkanBuffer::Map(VkDeviceSize size, VkDeviceSize offset)
 	{
-		ASSERT(m_buffer && m_memory, "Failed to map buffer since buffer resources are not created!");
+		MP_ASSERT(m_buffer && m_memory, "Failed to map buffer since buffer resources are not created!");
 
 		// Map the host memory on CPU to the device memory on GPU.
 		// memcpy will copy the vertices data memory to the memory on CPU.
@@ -55,7 +55,7 @@ namespace Mapo
 
 	void VulkanBuffer::WriteToBuffer(void* data, VkDeviceSize size, VkDeviceSize offset)
 	{
-		ASSERT(m_mappedData, "Could not copy to unmapped buffer!");
+		MP_ASSERT(m_mappedData, "Could not copy to unmapped buffer!");
 		if (size == VK_WHOLE_SIZE)
 		{
 			memcpy(m_mappedData, data, m_bufferSize);

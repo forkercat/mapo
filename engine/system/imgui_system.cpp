@@ -4,6 +4,8 @@
 
 #include "imgui_system.h"
 
+#include "engine/window.h"
+
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_vulkan.h>
@@ -18,7 +20,7 @@ namespace Mapo
 		}
 	}
 
-	ImGuiSystem::ImGuiSystem(VulkanWindow& window, VulkanDevice& device, VkRenderPass renderPass, U32 imageCount)
+	ImGuiSystem::ImGuiSystem(Window& window, VulkanDevice& device, VkRenderPass renderPass, U32 imageCount)
 		: m_device(device)
 	{
 		// Set up descriptor.
@@ -44,7 +46,7 @@ namespace Mapo
 		poolInfo.pPoolSizes = poolSizes;
 
 		VkResult result = vkCreateDescriptorPool(m_device.GetDevice(), &poolInfo, nullptr, &m_descriptorPool);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor pool!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor pool!");
 
 		// Set up ImGui context.
 		IMGUI_CHECKVERSION();
@@ -70,14 +72,14 @@ namespace Mapo
 		ImGui::StyleColorsDark();
 
 		// Set up GLFW & Vulkan backends.
-		ImGui_ImplGlfw_InitForVulkan(window.GetNativeWindow(), true);
+		ImGui_ImplGlfw_InitForVulkan(static_cast<GLFWwindow*>(window.GetNativeWindow()), true);
 
 		ImGui_ImplVulkan_InitInfo initInfo{};
 		initInfo.Instance = m_device.GetInstance();
 		initInfo.PhysicalDevice = m_device.GetPhysicalDevice();
 		initInfo.Device = m_device.GetDevice();
 		QueueFamilyIndices familyIndices = m_device.FindPhysicalQueueFamilies();
-		ASSERT(familyIndices.IsComplete(), "Failed to initialize ImGui. Queue family indices is not complete!");
+		MP_ASSERT(familyIndices.IsComplete(), "Failed to initialize ImGui. Queue family indices is not complete!");
 		initInfo.QueueFamily = familyIndices.graphicsFamily.value();
 		initInfo.Queue = m_device.GetGraphicsQueue();
 		initInfo.RenderPass = renderPass;

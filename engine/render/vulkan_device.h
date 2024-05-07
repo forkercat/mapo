@@ -4,13 +4,17 @@
 
 #pragma once
 
-#include "vulkan_window.h"
+#include "core/core.h"
+
+#include <vulkan/vulkan.h>
 
 #include <vector>
 #include <optional>
 
 namespace Mapo
 {
+	class Window;
+
 	struct SwapchainSupportDetails
 	{
 		VkSurfaceCapabilitiesKHR capabilities;
@@ -31,7 +35,7 @@ namespace Mapo
 	class VulkanDevice
 	{
 	public:
-		VulkanDevice(VulkanWindow& window);
+		VulkanDevice(Window& window);
 		~VulkanDevice();
 
 		// Make the device not copiable or movable.
@@ -92,10 +96,11 @@ namespace Mapo
 		VkPhysicalDeviceProperties properties;
 
 	private:
+		Window& m_window;
+
 		VkInstance m_instance;
 		VkDebugUtilsMessengerEXT m_debugMessenger;
 		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
-		VulkanWindow& m_window;
 		VkCommandPool m_commandPool;
 
 		VkDevice m_device;

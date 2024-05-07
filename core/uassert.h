@@ -9,7 +9,7 @@
 
 #include "core/logging.h"
 
-#define ASSERT(exp, ...)           \
+#define MP_ASSERT(exp, ...)        \
 	do                             \
 	{                              \
 		if (!(exp))                \
@@ -20,5 +20,5 @@
 	}                              \
 	while (0)
 
-#define ASSERT_EQ(x, y, ...) ASSERT(x == y, __VA_ARGS__)
-#define ASSERT_NEQ(x, y, ...) ASSERT(x != y, __VA_ARGS__)
+#define MP_ASSERT_EQ(x, y, ...) MP_ASSERT(x == y, __VA_ARGS__)
+#define MP_ASSERT_NEQ(x, y, ...) MP_ASSERT(x != y, __VA_ARGS__)

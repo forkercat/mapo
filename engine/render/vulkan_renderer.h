@@ -6,42 +6,39 @@
 
 #include "core/core.h"
 
-#include "vulkan_window.h"
 #include "engine/model.h"
-
-#include "vulkan_device.h"
-#include "vulkan_swapchain.h"
-
-#include <vector>
-#include <memory>
 
 namespace Mapo
 {
+	class Window;
+	class VulkanDevice;
+	class VulkanSwapchain;
+
 	// Renderer class that manages swapchain and command buffers.
 	class VulkanRenderer
 	{
 	public:
-		VulkanRenderer(VulkanWindow& window, VulkanDevice& device);
+		VulkanRenderer(Window& window, VulkanDevice& device);
 		~VulkanRenderer();
 
 		VulkanRenderer(const VulkanRenderer&) = delete;
 		VulkanRenderer& operator=(const VulkanRenderer&) = delete;
 
 		// Public getter.
-		VkRenderPass GetSwapchainRenderPass() const { return m_swapchain->GetRenderPass(); }
-		F32 GetAspectRatio() const { return m_swapchain->GetExtentAspectRatio(); }
-		U32 GetSwapchainImageCount() const { return m_swapchain->GetImageCount(); }
+		VkRenderPass GetSwapchainRenderPass() const;
+		F32 GetAspectRatio() const;
+		U32 GetSwapchainImageCount() const;
 		bool IsFrameInProgress() const { return m_isFrameStarted; }
 
 		VkCommandBuffer GetCurrentCommandBuffer() const
 		{
-			ASSERT(IsFrameInProgress(), "Could not get command buffer when frame is not in progress!");
+			MP_ASSERT(IsFrameInProgress(), "Could not get command buffer when frame is not in progress!");
 			return m_commandBuffers[m_currentFrameIndex];
 		}
 
 		U32 GetCurrentFrameIndex() const
 		{
-			ASSERT(IsFrameInProgress(), "Could not get current frame index when frame is not in progress!");
+			MP_ASSERT(IsFrameInProgress(), "Could not get current frame index when frame is not in progress!");
 			return m_currentFrameIndex;
 		}
 
@@ -58,7 +55,7 @@ namespace Mapo
 		void RecreateSwapchain();
 
 	private:
-		VulkanWindow& m_window;
+		Window& m_window;
 		VulkanDevice& m_device;
 
 		UniqueRef<VulkanSwapchain> m_swapchain;

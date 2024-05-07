@@ -4,14 +4,19 @@
 
 #include "application.h"
 
+#include "engine/keyboard_controller.h"
+#include "engine/component.h"
+
+#include "engine/render/vulkan_device.h"
+#include "engine/render/vulkan_renderer.h"
+#include "engine/render/vulkan_buffer.h"
+#include "engine/render/vulkan_descriptors.h"
+#include "engine/render/vulkan_swapchain.h"
+
 #include "engine/system/simple_render_system.h"
 #include "engine/system/point_light_system.h"
 #include "engine/system/rainbow_system.h"
 #include "engine/system/imgui_system.h"
-
-#include "engine/keyboard_controller.h"
-
-#include "engine/component.h"
 
 #include <chrono>
 
@@ -29,10 +34,18 @@ namespace Mapo
 	};
 
 	Application::Application(const String& name, ApplicationCommandLineArgs args)
-		: m_window(WIDTH, HEIGHT, name), m_commandLineArgs(args)
+		: m_commandLineArgs(args)
 	{
+		// Window
+		m_window = Window::Create(WindowProps(name, WIDTH, HEIGHT));
+
+		// TODO: Move Vulkan resources to render context!
+		m_device = MakeUnique<VulkanDevice>(*m_window);
+		m_renderer = MakeUnique<VulkanRenderer>(*m_window, *m_device);
+
+		// Renderer
 		m_globalDescriptorPool =
-			VulkanDescriptorPool::Builder(m_device)
+			VulkanDescriptorPool::Builder(*m_device)
 				// How many descriptor sets can be created from the pool.
 				.SetMaxSets(VulkanSwapchain::MAX_FRAMES_IN_FLIGHT)
 				// How many descriptors of this type are available in the pool.
@@ -53,11 +66,11 @@ namespace Mapo
 		// Ref<Model> model = Model::CreateCubeModel(m_device, { 0.f, 0.f, 0.f });
 
 		// Model
-		Ref<Model> smoothModel = Model::CreateModelFromFile(m_device, "assets/models/smooth_vase.obj");
-		Ref<Model> flatModel = Model::CreateModelFromFile(m_device, "assets/models/flat_vase.obj");
-		Ref<Model> quadModel = Model::CreateModelFromFile(m_device, "assets/models/quad.obj");
+		Ref<Model> smoothModel = Model::CreateModelFromFile(*m_device, "assets/models/smooth_vase.obj");
+		Ref<Model> flatModel = Model::CreateModelFromFile(*m_device, "assets/models/flat_vase.obj");
+		Ref<Model> quadModel = Model::CreateModelFromFile(*m_device, "assets/models/quad.obj");
 
-		m_scene = MakeUniqueRef<Scene>();
+		m_scene = MakeUnique<Scene>();
 
 		// 1
 		GameObject gameObject1 = m_scene->CreateGameObject("SmoothVase");
@@ -90,7 +103,7 @@ namespace Mapo
 	{
 		// Create ImGui system.
 		ImGuiSystem imguiSystem{
-			m_window, m_device, m_renderer.GetSwapchainRenderPass(), m_renderer.GetSwapchainImageCount()
+			*m_window, *m_device, m_renderer->GetSwapchainRenderPass(), m_renderer->GetSwapchainImageCount()
 		};
 
 		// Uniform buffers
@@ -98,8 +111,8 @@ namespace Mapo
 
 		for (int i = 0; i < uboBuffers.size(); ++i)
 		{
-			uboBuffers[i] = MakeUniqueRef<VulkanBuffer>(
-				m_device,
+			uboBuffers[i] = MakeUnique<VulkanBuffer>(
+				*m_device,
 				sizeof(GlobalUbo),
 				1,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
@@ -110,7 +123,7 @@ namespace Mapo
 
 		// Descriptors
 		UniqueRef<VulkanDescriptorSetLayout> globalSetLayout =
-			VulkanDescriptorSetLayout::Builder(m_device)
+			VulkanDescriptorSetLayout::Builder(*m_device)
 				.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
 				.Build();
 
@@ -126,9 +139,9 @@ namespace Mapo
 
 		// Render system, camera, and controller
 		SimpleRenderSystem simpleRenderSystem(
-			m_device, m_renderer.GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			*m_device, m_renderer->GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		PointLightSystem pointLightSystem(
-			m_device, m_renderer.GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			*m_device, m_renderer->GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		RainbowSystem rainbowSystem(0.4f);
 
 		// Camera
@@ -145,30 +158,30 @@ namespace Mapo
 
 		std::chrono::time_point currentTime = std::chrono::high_resolution_clock::now();
 
-		while (!m_window.ShouldClose())
+		while (!m_window->ShouldClose())
 		{
-			glfwPollEvents();
+			m_window->OnUpdate();
 
 			// Update time after polling because polling might block.
 			std::chrono::time_point newTime = std::chrono::high_resolution_clock::now();
 			F32 frameTime = std::chrono::duration<F32, std::chrono::seconds::period>(newTime - currentTime).count();
 			currentTime = newTime;
 
-			cameraController.MoveInPlaneXZ(m_window.GetNativeWindow(), frameTime, viewerObject);
+			cameraController.MoveInPlaneXZ((GLFWwindow*)m_window->GetNativeWindow(), frameTime, viewerObject);
 			auto& viewerTransform = viewerObject.GetComponent<TransformComponent>();
 			camera.SetViewYXZ(viewerTransform.translation, viewerTransform.rotation);
 
-			F32 aspect = m_renderer.GetAspectRatio();
+			F32 aspect = m_renderer->GetAspectRatio();
 			camera.SetPerspectiveProjection(MathOp::Radians(50.f), aspect, 0.1f, 100.f);
 
 			// Could be nullptr if, for example, the swapchain needs to be recreated.
-			if (VkCommandBuffer commandBuffer = m_renderer.BeginFrame())
+			if (VkCommandBuffer commandBuffer = m_renderer->BeginFrame())
 			{
 				// ImGui
 				imguiSystem.NewFrame();
 
 				// Prepare frame info
-				U32 frameIndex = m_renderer.GetCurrentFrameIndex();
+				U32 frameIndex = m_renderer->GetCurrentFrameIndex();
 				VulkanFrameInfo frameInfo{
 					.frameIndex = frameIndex,
 					.frameTime = frameTime,
@@ -196,7 +209,7 @@ namespace Mapo
 				// -   Render objects
 				// - End shading pass
 				// - Post processing...
-				m_renderer.BeginSwapchainRenderPass(commandBuffer);
+				m_renderer->BeginSwapchainRenderPass(commandBuffer);
 
 				simpleRenderSystem.RenderGameObjects(frameInfo);
 				pointLightSystem.Render(frameInfo);
@@ -205,12 +218,12 @@ namespace Mapo
 				imguiSystem.RunExample();
 				imguiSystem.Render(commandBuffer);
 
-				m_renderer.EndSwapchainRenderPass(commandBuffer);
-				m_renderer.EndFrame();
+				m_renderer->EndSwapchainRenderPass(commandBuffer);
+				m_renderer->EndFrame();
 			}
 		}
 
-		vkDeviceWaitIdle(m_device.GetDevice());
+		vkDeviceWaitIdle(m_device->GetDevice());
 	}
 
 } // namespace Mapo

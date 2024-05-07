@@ -41,7 +41,7 @@ namespace Mapo
 
 		U32 Compute(const char* data, size_t length)
 		{
-			ASSERT(data);
+			MP_ASSERT(data);
 			U32 crc = 0xFFFFFFFF;
 			for (size_t i = 0; i < length; i++)
 			{
@@ -93,7 +93,7 @@ namespace Mapo
 	{
 		HashMap<U32, const char*>::iterator it = s_stringNameTable.find(m_hashValue);
 
-		ASSERT(it != s_stringNameTable.end(), "Something terrible has happened :(");
+		MP_ASSERT(it != s_stringNameTable.end(), "Something terrible has happened :(");
 
 		return it->second;
 	}

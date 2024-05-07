@@ -4,9 +4,14 @@
 
 #include "vulkan_renderer.h"
 
+#include "engine/window.h"
+
+#include "engine/render/vulkan_device.h"
+#include "engine/render/vulkan_swapchain.h"
+
 namespace Mapo
 {
-	VulkanRenderer::VulkanRenderer(VulkanWindow& window, VulkanDevice& device)
+	VulkanRenderer::VulkanRenderer(Window& window, VulkanDevice& device)
 		: m_window(window), m_device(device)
 	{
 		RecreateSwapchain();
@@ -21,12 +26,31 @@ namespace Mapo
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
+	// Public Getters.
+	/////////////////////////////////////////////////////////////////////////////////
+
+	VkRenderPass VulkanRenderer::GetSwapchainRenderPass() const
+	{
+		return m_swapchain->GetRenderPass();
+	}
+
+	F32 VulkanRenderer::GetAspectRatio() const
+	{
+		return m_swapchain->GetExtentAspectRatio();
+	}
+
+	U32 VulkanRenderer::GetSwapchainImageCount() const
+	{
+		return m_swapchain->GetImageCount();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////
 	// Functions to render.
 	/////////////////////////////////////////////////////////////////////////////////
 
 	VkCommandBuffer VulkanRenderer::BeginFrame()
 	{
-		ASSERT(!m_isFrameStarted, "Could not call BeginFrame while already in frame progress!");
+		MP_ASSERT(!m_isFrameStarted, "Could not call BeginFrame while already in frame progress!");
 
 		// Needs to synchronize the below calls because on GPU they are executed asynchronously.
 		// 1. Acquire an image from the swapchain.
@@ -44,7 +68,7 @@ namespace Mapo
 
 		if (acquireResult != VK_SUCCESS && acquireResult != VK_SUBOPTIMAL_KHR)
 		{
-			ASSERT(false, "Failed to acquire next image!");
+			MP_ASSERT(false, "Failed to acquire next image!");
 		}
 
 		m_isFrameStarted = true;
@@ -56,19 +80,19 @@ namespace Mapo
 		bufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
 		VkResult beginResult = vkBeginCommandBuffer(commandBuffer, &bufferBeginInfo);
-		ASSERT_EQ(beginResult, VK_SUCCESS, "Failed to begin recording command buffer!");
+		MP_ASSERT_EQ(beginResult, VK_SUCCESS, "Failed to begin recording command buffer!");
 
 		return commandBuffer;
 	}
 
 	void VulkanRenderer::EndFrame()
 	{
-		ASSERT(m_isFrameStarted, "Could not call EndFrame while frame is not in progress!");
+		MP_ASSERT(m_isFrameStarted, "Could not call EndFrame while frame is not in progress!");
 
 		VkCommandBuffer commandBuffer = GetCurrentCommandBuffer();
 
 		VkResult endResult = vkEndCommandBuffer(commandBuffer);
-		ASSERT_EQ(endResult, VK_SUCCESS, "Failed to end command buffer!");
+		MP_ASSERT_EQ(endResult, VK_SUCCESS, "Failed to end command buffer!");
 
 		// Submit command buffer.
 		VkResult submitResult = m_swapchain->SubmitCommandBuffers(&commandBuffer, &m_currentImageIndex);
@@ -80,7 +104,7 @@ namespace Mapo
 		}
 		else if (submitResult != VK_SUCCESS)
 		{
-			ASSERT(false, "Failed to submit command buffer!");
+			MP_ASSERT(false, "Failed to submit command buffer!");
 		}
 
 		// Currently renderer and swapchain manages separate frame indices, but they are always identical.
@@ -90,8 +114,8 @@ namespace Mapo
 
 	void VulkanRenderer::BeginSwapchainRenderPass(VkCommandBuffer commandBuffer)
 	{
-		ASSERT(m_isFrameStarted, "Could not begin render pass while frame is not in progress!");
-		ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not begin render pass on command buffer from a different frame!");
+		MP_ASSERT(m_isFrameStarted, "Could not begin render pass while frame is not in progress!");
+		MP_ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not begin render pass on command buffer from a different frame!");
 
 		// Begin render pass.
 		VkRenderPassBeginInfo renderPassBeginInfo{};
@@ -129,8 +153,8 @@ namespace Mapo
 
 	void VulkanRenderer::EndSwapchainRenderPass(VkCommandBuffer commandBuffer)
 	{
-		ASSERT(m_isFrameStarted, "Could not end render pass while frame is not in progress!");
-		ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not end render pass on command buffer from a different frame!");
+		MP_ASSERT(m_isFrameStarted, "Could not end render pass while frame is not in progress!");
+		MP_ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not end render pass on command buffer from a different frame!");
 
 		vkCmdEndRenderPass(commandBuffer);
 	}
@@ -150,7 +174,7 @@ namespace Mapo
 		bufferInfo.commandBufferCount = static_cast<U32>(m_commandBuffers.size());
 
 		VkResult result = vkAllocateCommandBuffers(m_device.GetDevice(), &bufferInfo, m_commandBuffers.data());
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create command buffers!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create command buffers!");
 	}
 
 	void VulkanRenderer::FreeCommandBuffers()
@@ -162,13 +186,13 @@ namespace Mapo
 
 	void VulkanRenderer::RecreateSwapchain()
 	{
-		VkExtent2D extent = m_window.GetExtent();
+		VkExtent2D extent{ m_window.GetWidth(), m_window.GetHeight() };
 
 		// Handles window minimization.
 		while (extent.width == 0 || extent.height == 0)
 		{
-			extent = m_window.GetExtent();
-			glfwWaitEvents();
+			extent = { m_window.GetWidth(), m_window.GetHeight() };
+			m_window.GlfwWaitEvents();
 		}
 
 		// Need to wait for the current swapchain not being used.
@@ -177,19 +201,19 @@ namespace Mapo
 		if (m_swapchain == nullptr)
 		{
 			// Happens in initialization.
-			m_swapchain = MakeUniqueRef<VulkanSwapchain>(m_device, extent);
+			m_swapchain = MakeUnique<VulkanSwapchain>(m_device, extent);
 		}
 		else
 		{
 			// Happens in swapchain recreation.
 			Ref<VulkanSwapchain> oldSwapchain = std::move(m_swapchain);
-			m_swapchain = MakeUniqueRef<VulkanSwapchain>(m_device, extent, oldSwapchain);
+			m_swapchain = MakeUnique<VulkanSwapchain>(m_device, extent, oldSwapchain);
 
 			// Since we are not recreating the pipeline, we need to check if the swapchain render pass
 			// is still compatible with the color or depth format defined in the pipeline render pass.
 			if (!oldSwapchain->CompareSwapchainFormats(*m_swapchain.get()))
 			{
-				ASSERT(false, "Failed to recreate swapchain. The swapchain image or depth format has changed!");
+				MP_ASSERT(false, "Failed to recreate swapchain. The swapchain image or depth format has changed!");
 			}
 		}
 	}

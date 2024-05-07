@@ -1,9 +1,12 @@
+set(PLATFORM_SRC_DIR ${PROJECT_SOURCE_DIR}/platform)
+
 add_library(engine)
 
 target_sources(engine
 PUBLIC
 	entry_point.h
 	application.h
+	window.h
 	model.h
 	game_object.h
 	component.h
@@ -11,7 +14,6 @@ PUBLIC
 	keyboard_controller.h
 	utils.h
 	# Render
-	render/vulkan_window.h
 	render/vulkan_device.h
 	render/vulkan_pipeline.h
 	render/vulkan_swapchain.h
@@ -25,15 +27,17 @@ PUBLIC
 	system/imgui_system.h
 	system/rainbow_system.h
 	scene.h
+	# Platform
+	${PLATFORM_SRC_DIR}/macos/macos_window.h
 PRIVATE
 	application.cpp
+	window.cpp
 	model.cpp
 	game_object.cpp
 	component.cpp
 	camera.cpp
 	keyboard_controller.cpp
 	# Render
-	render/vulkan_window.cpp
 	render/vulkan_device.cpp
 	render/vulkan_pipeline.cpp
 	render/vulkan_swapchain.cpp
@@ -45,19 +49,18 @@ PRIVATE
 	system/point_light_system.cpp
 	system/imgui_system.cpp
 	scene.cpp
+	# Platform
+	${PLATFORM_SRC_DIR}/macos/macos_input.cpp
+	${PLATFORM_SRC_DIR}/macos/macos_window.cpp
 )
 
 target_link_libraries(engine
 PUBLIC
-	glfw
-	Vulkan::Vulkan
 	core
 	ImGui
-)
-
-target_include_directories(engine
 PRIVATE
-	${PROJECT_SOURCE_DIR}
+	Vulkan::Vulkan
+	common
 )
 
 add_custom_target(

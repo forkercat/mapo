@@ -5,16 +5,19 @@
 #pragma once
 
 #include "core/core.h"
+
+#include "engine/window.h"
 #include "engine/scene.h"
-#include "engine/render/vulkan_device.h"
-#include "engine/render/vulkan_renderer.h"
-#include "engine/render/vulkan_buffer.h"
-#include "engine/render/vulkan_descriptors.h"
 
 int MapoMain(int argc, char** argv);
 
 namespace Mapo
 {
+	// Forward declarations
+	class VulkanDevice;
+	class VulkanRenderer;
+	class VulkanDescriptorPool;
+
 	struct ApplicationCommandLineArgs
 	{
 		int count = 0;
@@ -36,12 +39,9 @@ namespace Mapo
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;
 
-		ApplicationCommandLineArgs GetCommandLineArgs() const
-		{
-			return m_commandLineArgs;
-		}
-
-		// TODO: Hold window!
+		MP_FORCE_INLINE static Application& Get() { return *s_appInstance; }
+		MP_FORCE_INLINE Window& GetWindow() { return *m_window; }
+		MP_FORCE_INLINE ApplicationCommandLineArgs GetCommandLineArgs() const { return m_commandLineArgs; }
 
 		virtual bool Start();
 		void Close() {}
@@ -57,9 +57,9 @@ namespace Mapo
 	private:
 		ApplicationCommandLineArgs m_commandLineArgs;
 
-		VulkanWindow m_window;
-		VulkanDevice m_device{ m_window };
-		VulkanRenderer m_renderer{ m_window, m_device };
+		UniqueRef<Window> m_window;
+		UniqueRef<VulkanDevice> m_device;
+		UniqueRef<VulkanRenderer> m_renderer;
 
 		// Note: Order of declarations matters.
 		UniqueRef<VulkanDescriptorPool> m_globalDescriptorPool{};

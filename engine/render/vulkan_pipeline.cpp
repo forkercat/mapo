@@ -36,8 +36,8 @@ namespace Mapo
 	void VulkanPipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath,
 		const VulkanPipelineConfigInfo& configInfo)
 	{
-		ASSERT(configInfo.pipelineLayout, "Could not create graphics pipeline: No pipeline layout provided!");
-		ASSERT(configInfo.renderPass, "Could not create graphics pipeline: No render pass provided!");
+		MP_ASSERT(configInfo.pipelineLayout, "Could not create graphics pipeline: No pipeline layout provided!");
+		MP_ASSERT(configInfo.renderPass, "Could not create graphics pipeline: No render pass provided!");
 
 		// We can clean up the shader modules after the bytecode is complied to machine code or linked,
 		// which happens when the graphics pipeline is created.
@@ -97,7 +97,7 @@ namespace Mapo
 		pipelineInfo.basePipelineIndex = -1;			  // Optional
 
 		VkResult result = vkCreateGraphicsPipelines(m_device.GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create graphics pipeline!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create graphics pipeline!");
 
 		// Cleanup shader modules after pipeline creation.
 		vkDestroyShaderModule(m_device.GetDevice(), m_fragShaderModule, nullptr);
@@ -195,7 +195,7 @@ namespace Mapo
 
 	void VulkanPipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule* pShaderModule)
 	{
-		ASSERT(!code.empty(), "Failed to create a shader module for empty code.");
+		MP_ASSERT(!code.empty(), "Failed to create a shader module for empty code.");
 
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -205,14 +205,14 @@ namespace Mapo
 		createInfo.pCode = reinterpret_cast<const U32*>(code.data());
 
 		VkResult result = vkCreateShaderModule(m_device.GetDevice(), &createInfo, nullptr, pShaderModule);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create shader module!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create shader module!");
 	}
 
 	std::vector<char> VulkanPipeline::ReadFile(const std::string& filepath)
 	{
 		std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
-		ASSERT(file.is_open(), "Failed to open shader file: %s", filepath.c_str());
+		MP_ASSERT(file.is_open(), "Failed to open shader file: %s", filepath.c_str());
 
 		size_t fileSize = static_cast<size_t>(file.tellg());
 		std::vector<char> buffer(fileSize);

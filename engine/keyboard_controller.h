@@ -7,7 +7,9 @@
 #include "core/core.h"
 
 #include "engine/game_object.h"
-#include "engine/render/vulkan_window.h"
+
+// TODO: Should remove this after we start using KeyCodes!
+#include <GLFW/glfw3.h>
 
 namespace Mapo
 {

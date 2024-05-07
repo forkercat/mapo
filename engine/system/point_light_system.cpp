@@ -38,12 +38,12 @@ namespace Mapo
 		pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
 		VkResult result = vkCreatePipelineLayout(m_device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create pipeline layout!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create pipeline layout!");
 	}
 
 	void PointLightSystem::CreatePipeline(VkRenderPass renderPass)
 	{
-		ASSERT(m_pipelineLayout, "Could not create pipeline before pipeline layout!");
+		MP_ASSERT(m_pipelineLayout, "Could not create pipeline before pipeline layout!");
 
 		VulkanPipelineConfigInfo pipelineConfig{};
 		VulkanPipeline::DefaultPipelineConfigInfo(pipelineConfig);
@@ -54,7 +54,7 @@ namespace Mapo
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = m_pipelineLayout;
 		m_pipeline =
-			MakeUniqueRef<VulkanPipeline>(m_device, "assets/shaders/point_light.vert.spv", "assets/shaders/point_light.frag.spv", pipelineConfig);
+			MakeUnique<VulkanPipeline>(m_device, "assets/shaders/point_light.vert.spv", "assets/shaders/point_light.frag.spv", pipelineConfig);
 	}
 
 	void PointLightSystem::Render(VulkanFrameInfo& frameInfo)

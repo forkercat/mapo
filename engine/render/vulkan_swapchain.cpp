@@ -84,7 +84,7 @@ namespace Mapo
 
 	VkResult VulkanSwapchain::SubmitCommandBuffers(const VkCommandBuffer* buffers, U32* imageIndex)
 	{
-		ASSERT(imageIndex, "Image index pointer is nullptr.");
+		MP_ASSERT(imageIndex, "Image index pointer is nullptr.");
 
 		if (m_imagesInFlight[*imageIndex] != VK_NULL_HANDLE)
 		{
@@ -117,7 +117,7 @@ namespace Mapo
 
 		// When the command buffer execution is done, it signals that the command buffer can be reused.
 		VkResult submitResult = vkQueueSubmit(m_device.GetGraphicsQueue(), 1, &submitInfo, m_inFlightFences[m_currentFrame]);
-		ASSERT_EQ(submitResult, VK_SUCCESS, "Failed to submit command buffer to graphics queue!");
+		MP_ASSERT_EQ(submitResult, VK_SUCCESS, "Failed to submit command buffer to graphics queue!");
 
 		// Presentation (submitting the result back to swapchain)
 		VkPresentInfoKHR presentInfo{};
@@ -208,7 +208,7 @@ namespace Mapo
 		swapchainInfo.oldSwapchain = m_oldSwapchain == nullptr ? VK_NULL_HANDLE : m_oldSwapchain->m_swapchain;
 
 		VkResult result = vkCreateSwapchainKHR(m_device.GetDevice(), &swapchainInfo, nullptr, &m_swapchain);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create swapchain!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create swapchain!");
 
 		// Retrieve images.
 		vkGetSwapchainImagesKHR(m_device.GetDevice(), m_swapchain, &imageCount, nullptr);
@@ -296,7 +296,7 @@ namespace Mapo
 		renderPassCreateInfo.pDependencies = &dependency;
 
 		VkResult result = vkCreateRenderPass(m_device.GetDevice(), &renderPassCreateInfo, nullptr, &m_renderPass);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create render pass!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create render pass!");
 	}
 
 	void VulkanSwapchain::CreateDepthResources()
@@ -356,7 +356,7 @@ namespace Mapo
 			framebufferCreateInfo.layers = 1;
 
 			VkResult result = vkCreateFramebuffer(m_device.GetDevice(), &framebufferCreateInfo, nullptr, &m_swapchainFramebuffers[i]);
-			ASSERT_EQ(result, VK_SUCCESS, "Failed to create framebuffers!");
+			MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create framebuffers!");
 		}
 	}
 
@@ -380,7 +380,7 @@ namespace Mapo
 			VkResult result2 = vkCreateSemaphore(m_device.GetDevice(), &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]);
 			VkResult result3 = vkCreateFence(m_device.GetDevice(), &fenceInfo, nullptr, &m_inFlightFences[i]);
 
-			ASSERT(result1 == VK_SUCCESS && result2 == VK_SUCCESS && result3 == VK_SUCCESS,
+			MP_ASSERT(result1 == VK_SUCCESS && result2 == VK_SUCCESS && result3 == VK_SUCCESS,
 				"Failed to create synchronization objects for a frame!");
 		}
 	}
@@ -400,7 +400,7 @@ namespace Mapo
 			return *it;
 		}
 
-		ASSERT(!availableFormats.empty(), "Failed to pick available format!");
+		MP_ASSERT(!availableFormats.empty(), "Failed to pick available format!");
 		return availableFormats[0];
 	}
 
@@ -475,7 +475,7 @@ namespace Mapo
 
 		VkImageView imageView;
 		VkResult result = vkCreateImageView(m_device.GetDevice(), &viewInfo, nullptr, &imageView);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create image view!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create image view!");
 
 		return imageView;
 	}

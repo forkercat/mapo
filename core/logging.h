@@ -18,7 +18,7 @@
 #define MP_ERROR(fmt, ...) printf("[ERROR] (%s:%d) - " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define MP_DEBUG(fmt, ...) printf("[DEBUG] (%s:%d) - " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
-#define WARN_IF(exp, fmt, ...)           \
+#define MP_WARN_IF(exp, fmt, ...)        \
 	do                                   \
 	{                                    \
 		if (exp)                         \
@@ -26,7 +26,7 @@
 	}                                    \
 	while (0)
 
-#define ERROR_IF(exp, fmt, ...)           \
+#define MP_ERROR_IF(exp, fmt, ...)        \
 	do                                    \
 	{                                     \
 		if (exp)                          \
@@ -34,7 +34,7 @@
 	}                                     \
 	while (0)
 
-#define DEBUG_IF(exp, fmt, ...)           \
+#define MP_DEBUG_IF(exp, fmt, ...)        \
 	do                                    \
 	{                                     \
 		if (exp)                          \
@@ -42,4 +42,4 @@
 	}                                     \
 	while (0)
 
-#define NEWLINE(x) printf(x "\n")
+#define MP_NEWLINE(x) printf(x "\n")

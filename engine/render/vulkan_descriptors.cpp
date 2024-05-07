@@ -12,7 +12,7 @@ namespace Mapo
 	VulkanDescriptorSetLayout::Builder& VulkanDescriptorSetLayout::Builder::AddBinding(
 		U32 binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, U32 count)
 	{
-		ASSERT(m_bindings.count(binding) == 0, "Failed to add binding to builder. The binding already exists!");
+		MP_ASSERT(m_bindings.count(binding) == 0, "Failed to add binding to builder. The binding already exists!");
 
 		VkDescriptorSetLayoutBinding layoutBinding{};
 		layoutBinding.binding = binding;
@@ -26,7 +26,7 @@ namespace Mapo
 
 	UniqueRef<VulkanDescriptorSetLayout> VulkanDescriptorSetLayout::Builder::Build() const
 	{
-		return MakeUniqueRef<VulkanDescriptorSetLayout>(m_device, m_bindings);
+		return MakeUnique<VulkanDescriptorSetLayout>(m_device, m_bindings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ namespace Mapo
 
 		VkResult result = vkCreateDescriptorSetLayout(
 			m_device.GetDevice(), &layoutInfo, nullptr, &m_descriptorSetLayout);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor set layout!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor set layout!");
 	}
 
 	VulkanDescriptorSetLayout::~VulkanDescriptorSetLayout()
@@ -83,7 +83,7 @@ namespace Mapo
 
 	UniqueRef<VulkanDescriptorPool> VulkanDescriptorPool::Builder::Build() const
 	{
-		return MakeUniqueRef<VulkanDescriptorPool>(m_device, m_maxSets, m_poolFlags, m_poolSizes);
+		return MakeUnique<VulkanDescriptorPool>(m_device, m_maxSets, m_poolFlags, m_poolSizes);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ namespace Mapo
 		descriptorPoolInfo.flags = poolFlags;
 
 		VkResult result = vkCreateDescriptorPool(m_device.GetDevice(), &descriptorPoolInfo, nullptr, &m_descriptorPool);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor pool!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor pool!");
 	}
 
 	VulkanDescriptorPool::~VulkanDescriptorPool()
@@ -144,10 +144,10 @@ namespace Mapo
 
 	VulkanDescriptorWriter& VulkanDescriptorWriter::WriteBuffer(U32 binding, VkDescriptorBufferInfo* bufferInfo)
 	{
-		ASSERT(m_descriptorSetLayout.m_bindings.count(binding) == 1, "Layout does not contain specified binding!");
+		MP_ASSERT(m_descriptorSetLayout.m_bindings.count(binding) == 1, "Layout does not contain specified binding!");
 
 		VkDescriptorSetLayoutBinding& bindingDescription = m_descriptorSetLayout.m_bindings[binding];
-		ASSERT(bindingDescription.descriptorCount == 1, "Binding single descriptor info, but binding expects multiple!");
+		MP_ASSERT(bindingDescription.descriptorCount == 1, "Binding single descriptor info, but binding expects multiple!");
 
 		VkWriteDescriptorSet write{};
 		write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -162,10 +162,10 @@ namespace Mapo
 
 	VulkanDescriptorWriter& VulkanDescriptorWriter::WriteImage(U32 binding, VkDescriptorImageInfo* imageInfo)
 	{
-		ASSERT(m_descriptorSetLayout.m_bindings.count(binding) == 1, "Layout does not contain specified binding!");
+		MP_ASSERT(m_descriptorSetLayout.m_bindings.count(binding) == 1, "Layout does not contain specified binding!");
 
 		VkDescriptorSetLayoutBinding& bindingDescription = m_descriptorSetLayout.m_bindings[binding];
-		ASSERT(bindingDescription.descriptorCount == 1, "Binding single descriptor info, but binding expects multiple!");
+		MP_ASSERT(bindingDescription.descriptorCount == 1, "Binding single descriptor info, but binding expects multiple!");
 
 		VkWriteDescriptorSet write{};
 		write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

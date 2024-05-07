@@ -8,6 +8,9 @@
 #include "core/typedefs.h"
 #include "core/uassert.h"
 #include "core/math.h"
+#include "core/timestep.h"
+
+// string
 #include "core/string/string.h"
 #include "core/string/string_name.h"
 

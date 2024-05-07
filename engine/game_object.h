@@ -38,21 +38,21 @@ namespace Mapo
 		template <typename T>
 		T& GetComponent()
 		{
-			ASSERT(HasComponent<T>(), "The entity does not have this type of components!");
+			MP_ASSERT(HasComponent<T>(), "The entity does not have this type of components!");
 			return m_scene->m_registry.get<T>(m_entityHandle);
 		}
 
 		template <typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
-			ASSERT(!HasComponent<T>(), "The entity already has this type of components!");
+			MP_ASSERT(!HasComponent<T>(), "The entity already has this type of components!");
 			return m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
 		}
 
 		template <typename T>
 		void RemoveComponent()
 		{
-			ASSERT(HasComponent<T>(), "The entity does not have this type of components!");
+			MP_ASSERT(HasComponent<T>(), "The entity does not have this type of components!");
 			m_scene->m_registry.remove<T>(m_entityHandle);
 		}
 

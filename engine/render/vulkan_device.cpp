@@ -4,6 +4,8 @@
 
 #include "vulkan_device.h"
 
+#include "engine/window.h"
+
 #include <unordered_set>
 #include <set>
 
@@ -49,7 +51,7 @@ namespace Mapo
 		auto func =
 			(PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
 
-		ASSERT(func, "Function to destroy debug messenger could not be found!");
+		MP_ASSERT(func, "Function to destroy debug messenger could not be found!");
 
 		if (func)
 		{
@@ -61,7 +63,7 @@ namespace Mapo
 	// Class member functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VulkanDevice::VulkanDevice(VulkanWindow& window)
+	VulkanDevice::VulkanDevice(Window& window)
 		: m_window(window)
 	{
 		CreateInstance();
@@ -116,7 +118,7 @@ namespace Mapo
 			}
 		}
 
-		ASSERT(false, "Failed to find suitable memory type!");
+		MP_ASSERT(false, "Failed to find suitable memory type!");
 		return -1;
 	}
 
@@ -138,7 +140,7 @@ namespace Mapo
 			}
 		}
 
-		ASSERT(false, "Failed to find supported format!");
+		MP_ASSERT(false, "Failed to find supported format!");
 		return {};
 	}
 
@@ -157,7 +159,7 @@ namespace Mapo
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; // only used by the graphics queue
 
 		VkResult bufferResult = vkCreateBuffer(m_device, &bufferInfo, nullptr, &buffer);
-		ASSERT_EQ(bufferResult, VK_SUCCESS, "Failed to create vertex buffer!");
+		MP_ASSERT_EQ(bufferResult, VK_SUCCESS, "Failed to create vertex buffer!");
 
 		// Memory allocation
 		VkMemoryRequirements memoryRequirements;
@@ -170,7 +172,7 @@ namespace Mapo
 		allocateInfo.memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, propertyFlags);
 
 		VkResult allocateResult = vkAllocateMemory(m_device, &allocateInfo, nullptr, &bufferMemory);
-		ASSERT_EQ(allocateResult, VK_SUCCESS, "Failed to allocate vertex buffer memory!");
+		MP_ASSERT_EQ(allocateResult, VK_SUCCESS, "Failed to allocate vertex buffer memory!");
 
 		// Bind buffer and allocation.
 		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
@@ -254,7 +256,7 @@ namespace Mapo
 		VkImage& image, VkDeviceMemory& imageMemory)
 	{
 		VkResult result = vkCreateImage(m_device, &imageInfo, nullptr, &image);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create image!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create image!");
 
 		// Allocate memory.
 		VkMemoryRequirements memoryRequirements;
@@ -266,10 +268,10 @@ namespace Mapo
 		allocateInfo.memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, propertyFlags);
 
 		VkResult allocateResult = vkAllocateMemory(m_device, &allocateInfo, nullptr, &imageMemory);
-		ASSERT_EQ(allocateResult, VK_SUCCESS, "Failed to allocate image memory!");
+		MP_ASSERT_EQ(allocateResult, VK_SUCCESS, "Failed to allocate image memory!");
 
 		VkResult bindMemoryResult = vkBindImageMemory(m_device, image, imageMemory, 0);
-		ASSERT_EQ(bindMemoryResult, VK_SUCCESS, "Failed to bind image memory!");
+		MP_ASSERT_EQ(bindMemoryResult, VK_SUCCESS, "Failed to bind image memory!");
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +282,7 @@ namespace Mapo
 	{
 		if (m_enableValidationLayers && !CheckValidationLayerSupport())
 		{
-			ASSERT(false, "Validation layers requested, but not available!");
+			MP_ASSERT(false, "Validation layers requested, but not available!");
 		}
 
 		VkApplicationInfo appInfo{};
@@ -322,7 +324,7 @@ namespace Mapo
 		}
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &m_instance);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create Vulkan instance!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create Vulkan instance!");
 
 		HasGlfwRequiredInstanceExtensions();
 	}
@@ -335,13 +337,15 @@ namespace Mapo
 			PopulateDebugMessengerCreateInfo(createInfo);
 
 			VkResult result = CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger);
-			ASSERT_EQ(result, VK_SUCCESS, "Failed to set up debug messenger!");
+			MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to set up debug messenger!");
 		}
 	}
 
 	void VulkanDevice::CreateSurface()
 	{
-		m_window.CreateWindowSurface(m_instance, &m_surface);
+		void* pInstance = (void*)&m_instance;
+		void* pSurface = (void*)&m_surface;
+		m_window.CreateWindowSurface(pInstance, pSurface);
 	}
 
 	void VulkanDevice::PickPhysicalDevice()
@@ -349,7 +353,7 @@ namespace Mapo
 		U32 deviceCount{};
 		vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
 
-		ASSERT_NEQ(deviceCount, 0, "Failed to find GPUs with Vulkan support!");
+		MP_ASSERT_NEQ(deviceCount, 0, "Failed to find GPUs with Vulkan support!");
 
 		MP_PRINT("Device count: %u", deviceCount);
 		std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -364,7 +368,7 @@ namespace Mapo
 			}
 		}
 
-		ASSERT_NEQ(m_physicalDevice, VK_NULL_HANDLE, "Failed to find a suitable GPU device!");
+		MP_ASSERT_NEQ(m_physicalDevice, VK_NULL_HANDLE, "Failed to find a suitable GPU device!");
 
 		vkGetPhysicalDeviceProperties(m_physicalDevice, &properties);
 		MP_PRINT("Physical device: %s", properties.deviceName);
@@ -418,7 +422,7 @@ namespace Mapo
 		}
 
 		VkResult result = vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create logical device!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create logical device!");
 
 		// Fetch queue handle.
 		vkGetDeviceQueue(m_device, queueFamilyData.graphicsFamily.value(), 0, &m_graphicsQueue);
@@ -438,7 +442,7 @@ namespace Mapo
 
 		// Command buffers are executed by submitting them on one of the device queues, e.g. graphics queue.
 		VkResult result = vkCreateCommandPool(m_device, &poolCreateInfo, nullptr, &m_commandPool);
-		ASSERT_EQ(result, VK_SUCCESS, "Failed to create command pool!");
+		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create command pool!");
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -467,7 +471,7 @@ namespace Mapo
 	std::vector<const char*> VulkanDevice::GetRequiredExtensions()
 	{
 		U32 glfwExtensionCount = 0;
-		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+		const char** glfwExtensions = m_window.GlfwGetRequiredExtensions(&glfwExtensionCount);
 
 		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
@@ -577,7 +581,7 @@ namespace Mapo
 			availableExtensionSet.insert(extension.extensionName);
 		}
 
-		NEWLINE();
+		MP_NEWLINE();
 
 		printf("Required extensions:\n");
 		const std::vector<const char*> requiredExtensions = GetRequiredExtensions();
@@ -592,7 +596,7 @@ namespace Mapo
 			}
 		}
 
-		NEWLINE();
+		MP_NEWLINE();
 	}
 
 	bool VulkanDevice::CheckDeviceExtensionSupport(VkPhysicalDevice physicalDevice)

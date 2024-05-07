@@ -9,6 +9,7 @@ PRIVATE
 target_link_libraries(main-cpp
 PRIVATE
 	core
+	engine
 )
 
 target_include_directories(main-cpp

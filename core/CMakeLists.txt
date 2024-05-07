@@ -7,6 +7,8 @@ PUBLIC
 	typedefs.h
 	uassert.h
 	timer.h
+	timestep.h
+	# string
 	string/string.h
 	string/string_name.h
 	# memory
@@ -21,18 +23,16 @@ PUBLIC
 	input/mouse_codes.h
 PRIVATE
 	core.cpp
+	# string
 	string/string.cpp
 	string/string_name.cpp
 	# memory
 	memory/allocator.cpp
 )
 
-target_include_directories(core
-PRIVATE # Do not populate the root dir to main or other modules.
-	${PROJECT_SOURCE_DIR}
-)
-
 target_link_libraries(core
 PUBLIC
 	glm::glm
+PRIVATE
+	common
 )

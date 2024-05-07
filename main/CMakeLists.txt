@@ -9,10 +9,6 @@ PRIVATE
 
 target_link_libraries(main-editor-app
 PRIVATE
+	common
 	engine
-)
-
-target_include_directories(main-editor-app
-PRIVATE
-	${PROJECT_SOURCE_DIR}
 )

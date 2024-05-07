@@ -12,12 +12,19 @@ find_package(Stb REQUIRED)
 find_package(tinyobjloader REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
 
+# Common interface target
+add_library(common INTERFACE)
+target_include_directories(common INTERFACE ${PROJECT_SOURCE_DIR})
+
+if(APPLE AND CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+	target_compile_definitions(common INTERFACE MP_MACOS_BUILD)
+endif()
+
 # Subdirectories
 add_subdirectory(core)
 add_subdirectory(engine)
-add_subdirectory(platform)
-add_subdirectory(main)
 add_subdirectory(editor)
 add_subdirectory(3rdparty)
+add_subdirectory(main)
 
 add_subdirectory(main-cpp)

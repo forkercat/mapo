@@ -4,6 +4,6 @@
 
 #pragma once
 
-namespace mapo {
+namespace Mapo {
 
 }

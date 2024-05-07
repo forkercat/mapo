@@ -84,7 +84,7 @@ namespace Mapo
 	void Model::CreateVertexBuffers(const std::vector<Vertex>& vertices)
 	{
 		m_vertexCount = static_cast<U32>(vertices.size());
-		ASSERT(m_vertexCount >= 3, "Failed to create vertex buffer. Vertex count must be at least 3!");
+		MP_ASSERT(m_vertexCount >= 3, "Failed to create vertex buffer. Vertex count must be at least 3!");
 
 		U32 vertexSize = sizeof(vertices[0]);
 		VkDeviceSize bufferSize = vertexSize * m_vertexCount;
@@ -102,7 +102,7 @@ namespace Mapo
 		stagingBuffer.WriteToBuffer((void*)vertices.data());
 
 		// Create vertex buffer.
-		m_vertexBuffer = MakeUniqueRef<VulkanBuffer>(
+		m_vertexBuffer = MakeUnique<VulkanBuffer>(
 			m_device,
 			vertexSize,
 			m_vertexCount,
@@ -139,7 +139,7 @@ namespace Mapo
 		stagingBuffer.WriteToBuffer((void*)indices.data());
 
 		// Create index buffer.
-		m_indexBuffer = MakeUniqueRef<VulkanBuffer>(
+		m_indexBuffer = MakeUnique<VulkanBuffer>(
 			m_device,
 			indexSize,
 			m_indexCount,
@@ -203,7 +203,7 @@ namespace Mapo
 			14, 12, 15, 13, 16, 17, 18, 16, 19, 17, 20, 21, 22, 20, 23, 21
 		};
 
-		return MakeUniqueRef<Model>(device, modelBuilder);
+		return MakeUnique<Model>(device, modelBuilder);
 	}
 
 	UniqueRef<Model> Model::CreateModelFromFile(VulkanDevice& device, const std::string& filepath)
@@ -211,7 +211,7 @@ namespace Mapo
 		Builder builder{};
 		builder.LoadModel(filepath);
 		MP_PRINT("Vertex count: %zu", builder.vertices.size());
-		return MakeUniqueRef<Model>(device, builder);
+		return MakeUnique<Model>(device, builder);
 	}
 
 	void Model::Builder::LoadModel(const std::string& filepath)
@@ -228,7 +228,7 @@ namespace Mapo
 
 		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &error, filepath.c_str()))
 		{
-			ASSERT(false, "Failed to load model: %s", filepath.c_str());
+			MP_ASSERT(false, "Failed to load model: %s", filepath.c_str());
 		}
 
 		vertices.clear();
