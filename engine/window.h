@@ -27,7 +27,7 @@ namespace Mapo
 	{
 	public:
 		Window() = default;
-		virtual ~Window() { };
+		virtual ~Window() = default;
 
 		Window(const Window&) = delete;
 		Window& operator=(const Window&) = delete;

@@ -17,10 +17,6 @@ PUBLIC
 	# templates
 	templates/hash_map.h
 	templates/hash_set.h
-	# input
-	input/input.h
-	input/key_codes.h
-	input/mouse_codes.h
 PRIVATE
 	core.cpp
 	# string

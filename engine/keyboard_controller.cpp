@@ -7,19 +7,21 @@
 #include "engine/game_object.h"
 #include "engine/component.h"
 
+#include "engine/input/input.h"
+
 namespace Mapo
 {
 	void KeyboardController::MoveInPlaneXZ(GLFWwindow* window, F32 dt, GameObject& gameObject)
 	{
 		Vector3 rotate{ 0.0f };
 
-		if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::Right))
 			rotate.y += 1.0f;
-		if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::Left))
 			rotate.y -= 1.0f;
-		if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::Up))
 			rotate.x += 1.0f;
-		if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::Down))
 			rotate.x -= 1.0f;
 
 		auto& transform = gameObject.GetComponent<TransformComponent>();
@@ -39,19 +41,19 @@ namespace Mapo
 		const Vector3 upDir{ 0.0f, -1.0f, 0.0f };
 
 		Vector3 moveDir{ 0.0f };
-		if (glfwGetKey(window, keys.moveForward) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::W))
 			moveDir += forwardDir;
-		if (glfwGetKey(window, keys.moveBackward) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::S))
 			moveDir -= forwardDir;
 
-		if (glfwGetKey(window, keys.moveRight) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::D))
 			moveDir += rightDir;
-		if (glfwGetKey(window, keys.moveLeft) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::A))
 			moveDir -= rightDir;
 
-		if (glfwGetKey(window, keys.moveUp) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::E))
 			moveDir += upDir;
-		if (glfwGetKey(window, keys.moveDown) == GLFW_PRESS)
+		if (Input::IsKeyPressed(Key::Q))
 			moveDir -= upDir;
 
 		if (MathOp::Dot(moveDir, moveDir) > std::numeric_limits<F32>::epsilon())

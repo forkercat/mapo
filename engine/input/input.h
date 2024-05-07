@@ -5,10 +5,10 @@
 #pragma once
 
 #include "core/typedefs.h"
-#include "core/input/key_codes.h"
-#include "core/input/mouse_codes.h"
-
 #include "core/math.h"
+
+#include "engine/input/key_codes.h"
+#include "engine/input/mouse_codes.h"
 
 namespace Mapo
 {

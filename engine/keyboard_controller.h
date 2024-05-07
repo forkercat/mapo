@@ -8,33 +8,16 @@
 
 #include "engine/game_object.h"
 
-// TODO: Should remove this after we start using KeyCodes!
-#include <GLFW/glfw3.h>
+class GLFWwindow;
 
 namespace Mapo
 {
 	class KeyboardController
 	{
 	public:
-		struct KeyMappings
-		{
-			int moveLeft = GLFW_KEY_A;
-			int moveRight = GLFW_KEY_D;
-			int moveForward = GLFW_KEY_W;
-			int moveBackward = GLFW_KEY_S;
-
-			int moveUp = GLFW_KEY_E;
-			int moveDown = GLFW_KEY_Q;
-			int lookLeft = GLFW_KEY_LEFT;
-			int lookRight = GLFW_KEY_RIGHT;
-			int lookUp = GLFW_KEY_UP;
-			int lookDown = GLFW_KEY_DOWN;
-		};
-
 		void MoveInPlaneXZ(GLFWwindow* window, F32 dt, GameObject& gameObject);
 
 	public:
-		KeyMappings keys{};
 		F32 moveSpeed = 3.0f;
 		F32 lookSpeed = 1.5f;
 	};

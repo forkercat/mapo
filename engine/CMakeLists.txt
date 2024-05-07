@@ -13,6 +13,10 @@ PUBLIC
 	camera.h
 	keyboard_controller.h
 	utils.h
+	# Input
+	input/input.h
+	input/key_codes.h
+	input/mouse_codes.h
 	# Render
 	render/vulkan_device.h
 	render/vulkan_pipeline.h
