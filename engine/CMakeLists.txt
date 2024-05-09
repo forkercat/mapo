@@ -18,6 +18,10 @@ PUBLIC
 	input/key_codes.h
 	input/mouse_codes.h
 	# Render
+	render/render_context.h
+	render/render_command.h
+	render/renderer.h
+	render/renderer_api.h
 	render/vulkan_device.h
 	render/vulkan_pipeline.h
 	render/vulkan_swapchain.h
@@ -33,6 +37,8 @@ PUBLIC
 	scene.h
 	# Platform
 	${PLATFORM_SRC_DIR}/macos/macos_window.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_render_context.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer_api.h
 PRIVATE
 	application.cpp
 	window.cpp
@@ -42,6 +48,10 @@ PRIVATE
 	camera.cpp
 	keyboard_controller.cpp
 	# Render
+	render/render_context.cpp
+	render/render_command.cpp
+	render/renderer.cpp
+	render/renderer_api.cpp
 	render/vulkan_device.cpp
 	render/vulkan_pipeline.cpp
 	render/vulkan_swapchain.cpp
@@ -56,6 +66,8 @@ PRIVATE
 	# Platform
 	${PLATFORM_SRC_DIR}/macos/macos_input.cpp
 	${PLATFORM_SRC_DIR}/macos/macos_window.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_render_context.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer_api.cpp
 )
 
 target_link_libraries(engine

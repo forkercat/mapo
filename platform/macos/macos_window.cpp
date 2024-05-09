@@ -6,14 +6,16 @@
 
 #include "core/logging.h"
 #include "core/uassert.h"
+#include "engine/render/render_context.h"
 
+// TODO: REMOVED!
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace Mapo
 {
 	MacosWindow::MacosWindow(const WindowProps& props)
-		: Window()
+		: Window(), m_renderContext(nullptr)
 	{
 		Init(props);
 	}
@@ -39,9 +41,8 @@ namespace Mapo
 		m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
 		MP_ASSERT(m_window, "GLFW window creation failed. m_window is nullptr!");
 
-		// TODO: Create graphics context?
-		// m_context = GraphicsContext::Create(m_window);
-		// m_context = Init();
+		m_renderContext = RenderContext::Create(m_window);
+		m_renderContext->Init();
 
 		// Set up callbacks.
 		glfwSetErrorCallback(ErrorCallback);

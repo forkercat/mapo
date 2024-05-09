@@ -10,6 +10,8 @@ class GLFWwindow;
 
 namespace Mapo
 {
+	class RenderContext;
+
 	class MacosWindow : public Window
 	{
 	public:
@@ -49,6 +51,8 @@ namespace Mapo
 		};
 
 		WindowData m_data{};
+
+		UniqueRef<RenderContext> m_renderContext{};
 	};
 
 } // namespace Mapo
