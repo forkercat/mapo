@@ -9,6 +9,7 @@
 #include "core/uassert.h"
 #include "core/math.h"
 #include "core/timestep.h"
+#include "core/optional.h"
 
 // string
 #include "core/string/string.h"

@@ -8,6 +8,7 @@ PUBLIC
 	uassert.h
 	timer.h
 	timestep.h
+	optional.h
 	# string
 	string/string.h
 	string/string_name.h

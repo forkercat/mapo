@@ -24,10 +24,10 @@ namespace Mapo
 
 	struct QueueFamilyIndices
 	{
-		std::optional<U32> graphicsFamily;
-		std::optional<U32> presentFamily;
+		Optional<U32> graphicsFamily;
+		Optional<U32> presentFamily;
 
-		bool IsComplete() { return graphicsFamily.has_value() && presentFamily.has_value(); }
+		bool IsComplete() { return graphicsFamily.HasValue() && presentFamily.HasValue(); }
 	};
 
 	// Device class that manages Vulkan resources such as Vulkan instance, physical device, logical device,
