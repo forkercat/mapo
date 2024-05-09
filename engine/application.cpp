@@ -7,16 +7,18 @@
 #include "engine/keyboard_controller.h"
 #include "engine/component.h"
 
-#include "engine/render/vulkan_device.h"
-#include "engine/render/vulkan_renderer.h"
-#include "engine/render/vulkan_buffer.h"
-#include "engine/render/vulkan_descriptors.h"
-#include "engine/render/vulkan_swapchain.h"
+#include "engine/render/render_context.h"
+#include "engine/render/renderer.h"
 
 #include "engine/system/simple_render_system.h"
 #include "engine/system/point_light_system.h"
 #include "engine/system/rainbow_system.h"
 #include "engine/system/imgui_system.h"
+
+#include "platform/vulkan/vulkan_device.h"
+#include "platform/vulkan/vulkan_renderer.h"
+#include "platform/vulkan/vulkan_descriptors.h"
+#include "platform/vulkan/vulkan_swapchain.h"
 
 #include <chrono>
 
@@ -36,24 +38,14 @@ namespace Mapo
 	Application::Application(const String& name, ApplicationCommandLineArgs args)
 		: m_commandLineArgs(args)
 	{
-		// Window
-		m_window = Window::Create(WindowProps(name, WIDTH, HEIGHT));
-
-		// TODO: Move Vulkan resources to render context!
-		m_device = MakeUnique<VulkanDevice>(*m_window);
-		m_renderer = MakeUnique<VulkanRenderer>(*m_window, *m_device);
-
-		// Renderer
-		m_globalDescriptorPool =
-			VulkanDescriptorPool::Builder(*m_device)
-				// How many descriptor sets can be created from the pool.
-				.SetMaxSets(VulkanSwapchain::MAX_FRAMES_IN_FLIGHT)
-				// How many descriptors of this type are available in the pool.
-				.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VulkanSwapchain::MAX_FRAMES_IN_FLIGHT)
-				.Build();
-
 		// Self assign.
 		s_appInstance = this;
+
+		// Create a window and the render context.
+		m_window = Window::Create(WindowProps(name, WIDTH, HEIGHT));
+
+		// Initialize renderer.
+		Renderer::Init();
 	}
 
 	Application::~Application()
@@ -62,13 +54,18 @@ namespace Mapo
 
 	bool Application::Start()
 	{
+		// TODO: Remove!
+		VulkanDevice& device = *static_cast<VulkanDevice*>(m_window->Device());
+		// VulkanRenderer& renderer = *static_cast<VulkanRenderer*>(m_window->Renderer());
+		// VulkanDescriptorPool& descriptorPool = *static_cast<VulkanDescriptorPool*>(m_window->DescriptorPool());
+
 		// Cube
 		// Ref<Model> model = Model::CreateCubeModel(m_device, { 0.f, 0.f, 0.f });
 
 		// Model
-		Ref<Model> smoothModel = Model::CreateModelFromFile(*m_device, "assets/models/smooth_vase.obj");
-		Ref<Model> flatModel = Model::CreateModelFromFile(*m_device, "assets/models/flat_vase.obj");
-		Ref<Model> quadModel = Model::CreateModelFromFile(*m_device, "assets/models/quad.obj");
+		Ref<Model> smoothModel = Model::CreateModelFromFile(device, "assets/models/smooth_vase.obj");
+		Ref<Model> flatModel = Model::CreateModelFromFile(device, "assets/models/flat_vase.obj");
+		Ref<Model> quadModel = Model::CreateModelFromFile(device, "assets/models/quad.obj");
 
 		m_scene = MakeUnique<Scene>();
 
@@ -101,9 +98,14 @@ namespace Mapo
 
 	void Application::Run()
 	{
+		// TODO: Remove!
+		VulkanDevice& device = *static_cast<VulkanDevice*>(m_window->Device());
+		VulkanRenderer& renderer = *static_cast<VulkanRenderer*>(m_window->Renderer());
+		VulkanDescriptorPool& globalDescriptorPool = *static_cast<VulkanDescriptorPool*>(m_window->DescriptorPool());
+
 		// Create ImGui system.
 		ImGuiSystem imguiSystem{
-			*m_window, *m_device, m_renderer->GetSwapchainRenderPass(), m_renderer->GetSwapchainImageCount()
+			*m_window, device, renderer.GetSwapchainRenderPass(), renderer.GetSwapchainImageCount()
 		};
 
 		// Uniform buffers
@@ -112,7 +114,7 @@ namespace Mapo
 		for (int i = 0; i < uboBuffers.size(); ++i)
 		{
 			uboBuffers[i] = MakeUnique<VulkanBuffer>(
-				*m_device,
+				device,
 				sizeof(GlobalUbo),
 				1,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
@@ -123,7 +125,7 @@ namespace Mapo
 
 		// Descriptors
 		UniqueRef<VulkanDescriptorSetLayout> globalSetLayout =
-			VulkanDescriptorSetLayout::Builder(*m_device)
+			VulkanDescriptorSetLayout::Builder(device)
 				.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
 				.Build();
 
@@ -132,16 +134,16 @@ namespace Mapo
 		{
 			VkDescriptorBufferInfo bufferInfo = uboBuffers[i]->DescriptorInfo();
 
-			VulkanDescriptorWriter(*globalSetLayout, *m_globalDescriptorPool)
+			VulkanDescriptorWriter(*globalSetLayout, globalDescriptorPool)
 				.WriteBuffer(0, &bufferInfo)
 				.Build(globalDescriptorSets[i]);
 		}
 
 		// Render system, camera, and controller
 		SimpleRenderSystem simpleRenderSystem(
-			*m_device, m_renderer->GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			device, renderer.GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		PointLightSystem pointLightSystem(
-			*m_device, m_renderer->GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			device, renderer.GetSwapchainRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		RainbowSystem rainbowSystem(0.4f);
 
 		// Camera
@@ -171,17 +173,17 @@ namespace Mapo
 			auto& viewerTransform = viewerObject.GetComponent<TransformComponent>();
 			camera.SetViewYXZ(viewerTransform.translation, viewerTransform.rotation);
 
-			F32 aspect = m_renderer->GetAspectRatio();
+			F32 aspect = renderer.GetAspectRatio();
 			camera.SetPerspectiveProjection(MathOp::Radians(50.f), aspect, 0.1f, 100.f);
 
 			// Could be nullptr if, for example, the swapchain needs to be recreated.
-			if (VkCommandBuffer commandBuffer = m_renderer->BeginFrame())
+			if (VkCommandBuffer commandBuffer = renderer.BeginFrame())
 			{
 				// ImGui
 				imguiSystem.NewFrame();
 
 				// Prepare frame info
-				U32 frameIndex = m_renderer->GetCurrentFrameIndex();
+				U32 frameIndex = renderer.GetCurrentFrameIndex();
 				VulkanFrameInfo frameInfo{
 					.frameIndex = frameIndex,
 					.frameTime = frameTime,
@@ -209,7 +211,7 @@ namespace Mapo
 				// -   Render objects
 				// - End shading pass
 				// - Post processing...
-				m_renderer->BeginSwapchainRenderPass(commandBuffer);
+				renderer.BeginSwapchainRenderPass(commandBuffer);
 
 				simpleRenderSystem.RenderGameObjects(frameInfo);
 				pointLightSystem.Render(frameInfo);
@@ -218,12 +220,12 @@ namespace Mapo
 				imguiSystem.RunExample();
 				imguiSystem.Render(commandBuffer);
 
-				m_renderer->EndSwapchainRenderPass(commandBuffer);
-				m_renderer->EndFrame();
+				renderer.EndSwapchainRenderPass(commandBuffer);
+				renderer.EndFrame();
 			}
 		}
 
-		vkDeviceWaitIdle(m_device->GetDevice());
+		vkDeviceWaitIdle(device.GetDevice());
 	}
 
 } // namespace Mapo

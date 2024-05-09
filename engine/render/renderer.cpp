@@ -8,6 +8,7 @@ namespace Mapo
 {
 	void Renderer::Init()
 	{
+		RenderCommand::Init();
 	}
 
 	void Renderer::OnWindowResize(U32 width, U32 height)

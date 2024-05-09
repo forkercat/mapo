@@ -4,10 +4,45 @@
 
 #pragma once
 
-#include "vulkan_device.h"
+#include "platform/vulkan/vulkan_device.h"
 
 namespace Mapo
 {
+	class Buffer
+	{
+	public:
+		constexpr static U64 WHOLE_SIZE = (~0ULL);
+
+		enum class Usage
+		{
+			NONE = 0,
+			UNIFORM_BIT = BIT(0),
+		};
+
+		enum class Property
+		{
+			NONE = 0,
+			HOST_VISIBLE = BIT(0),
+		};
+
+		Buffer(U64 instanceSize, U32 instanceCount, Usage usage, Property property, U64 minOffsetAlignment = 1)
+		{
+		}
+
+		virtual ~Buffer() = default;
+
+		Buffer(const Buffer&) = delete;
+		Buffer& operator=(const Buffer&) = delete;
+
+		// Map a memory range of this buffer. If successful, mapped points to the specified buffer range.
+		virtual bool Map(U64 size = WHOLE_SIZE, U64 offset = 0) = 0;
+
+		// Unmap a mapped memory range.
+		virtual void Unmap() = 0;
+
+
+	};
+
 	// Encapsulates a vulkan buffer. Initially based off VulkanBuffer by Sascha Willems.
 	// https://github.com/SaschaWillems/Vulkan/blob/master/base/VulkanBuffer.h
 	class VulkanBuffer

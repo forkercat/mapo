@@ -99,7 +99,7 @@ namespace Mapo
 		// The different types of memory exist within these heaps.
 
 		VkPhysicalDeviceMemoryProperties memoryProperties;
-		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memoryProperties);
+		vkGetPhysicalDeviceMemoryProperties(m_gpu, &memoryProperties);
 
 		// MP_PRINT("Memory type count: %u | heap count: %u", memoryProperties.memoryTypeCount,
 		// memoryProperties.memoryHeapCount);
@@ -128,7 +128,7 @@ namespace Mapo
 		for (const VkFormat& format : formatCandidates)
 		{
 			VkFormatProperties properties;
-			vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &properties);
+			vkGetPhysicalDeviceFormatProperties(m_gpu, format, &properties);
 
 			if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features)
 			{
@@ -363,21 +363,21 @@ namespace Mapo
 		{
 			if (IsDeviceSuitable(device))
 			{
-				m_physicalDevice = device;
+				m_gpu = device;
 				break;
 			}
 		}
 
-		MP_ASSERT_NEQ(m_physicalDevice, VK_NULL_HANDLE, "Failed to find a suitable GPU device!");
+		MP_ASSERT_NEQ(m_gpu, VK_NULL_HANDLE, "Failed to find a suitable GPU device!");
 
-		vkGetPhysicalDeviceProperties(m_physicalDevice, &properties);
+		vkGetPhysicalDeviceProperties(m_gpu, &properties);
 		MP_PRINT("Physical device: %s", properties.deviceName);
 	}
 
 	void VulkanDevice::CreateLogicalDevice()
 	{
 		// Queue families
-		QueueFamilyIndices queueFamilyData = FindQueueFamilies(m_physicalDevice);
+		QueueFamilyIndices queueFamilyData = FindQueueFamilies(m_gpu);
 
 		// If the queue families are the same, then we only need to pass its index once.
 		std::set<U32> uniqueQueueFamilies = { queueFamilyData.graphicsFamily.value(),
@@ -421,7 +421,7 @@ namespace Mapo
 			createInfo.enabledLayerCount = 0;
 		}
 
-		VkResult result = vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device);
+		VkResult result = vkCreateDevice(m_gpu, &createInfo, nullptr, &m_device);
 		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create logical device!");
 
 		// Fetch queue handle.
@@ -431,7 +431,7 @@ namespace Mapo
 
 	void VulkanDevice::CreateCommandPool()
 	{
-		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_physicalDevice);
+		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_gpu);
 
 		// We will be recording a command buffer every frame, so we want to be able to reset and
 		// record over it again.

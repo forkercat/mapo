@@ -32,7 +32,7 @@ namespace Mapo
 
 	// Device class that manages Vulkan resources such as Vulkan instance, physical device, logical device,
 	// pool, surface, and queues. It also provides useful helper functions for buffer and image creation.
-	class VulkanDevice
+	class VulkanDevice final
 	{
 	public:
 		VulkanDevice(Window& window);
@@ -47,15 +47,15 @@ namespace Mapo
 		// Getter for Vulkan resources
 		VkCommandPool GetCommandPool() { return m_commandPool; }
 		VkDevice GetDevice() { return m_device; }
-		VkPhysicalDevice GetPhysicalDevice() { return m_physicalDevice; }
+		VkPhysicalDevice GetPhysicalDevice() { return m_gpu; }
 		VkInstance GetInstance() { return m_instance; }
 		VkSurfaceKHR GetSurface() { return m_surface; }
 		VkQueue GetGraphicsQueue() { return m_graphicsQueue; }
 		VkQueue GetPresentQueue() { return m_presentQueue; }
 
 		// Public helper functions
-		SwapchainSupportDetails GetSwapchainSupport() { return QuerySwapchainSupport(m_physicalDevice); };
-		QueueFamilyIndices FindPhysicalQueueFamilies() { return FindQueueFamilies(m_physicalDevice); }
+		SwapchainSupportDetails GetSwapchainSupport() { return QuerySwapchainSupport(m_gpu); };
+		QueueFamilyIndices FindPhysicalQueueFamilies() { return FindQueueFamilies(m_gpu); }
 
 		U32 FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags propertyFlags);
 		VkFormat FindSupportedFormat(const std::vector<VkFormat>& formatCandidates, VkImageTiling tiling, VkFormatFeatureFlags features);
@@ -100,7 +100,7 @@ namespace Mapo
 
 		VkInstance m_instance;
 		VkDebugUtilsMessengerEXT m_debugMessenger;
-		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
+		VkPhysicalDevice m_gpu = VK_NULL_HANDLE;
 		VkCommandPool m_commandPool;
 
 		VkDevice m_device;

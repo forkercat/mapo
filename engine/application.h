@@ -13,11 +13,6 @@ int MapoMain(int argc, char** argv);
 
 namespace Mapo
 {
-	// Forward declarations
-	class VulkanDevice;
-	class VulkanRenderer;
-	class VulkanDescriptorPool;
-
 	struct ApplicationCommandLineArgs
 	{
 		int count = 0;
@@ -58,12 +53,6 @@ namespace Mapo
 		ApplicationCommandLineArgs m_commandLineArgs;
 
 		UniqueRef<Window> m_window;
-		UniqueRef<VulkanDevice> m_device;
-		UniqueRef<VulkanRenderer> m_renderer;
-
-		// Note: Order of declarations matters.
-		UniqueRef<VulkanDescriptorPool> m_globalDescriptorPool{};
-
 		UniqueRef<Scene> m_scene;
 
 		// Holds one application instance.

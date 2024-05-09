@@ -9,9 +9,9 @@
 #include "engine/game_object.h"
 #include "engine/camera.h"
 
-#include "engine/render/vulkan_device.h"
-#include "engine/render/vulkan_pipeline.h"
-#include "engine/render/vulkan_frame_info.h"
+#include "platform/vulkan/vulkan_device.h"
+#include "platform/vulkan/vulkan_pipeline.h"
+#include "platform/vulkan/vulkan_frame_info.h"
 
 #include <vector>
 #include <memory>

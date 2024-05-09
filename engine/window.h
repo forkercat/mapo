@@ -48,6 +48,10 @@ namespace Mapo
 		virtual void GlfwWaitEvents() = 0;
 		virtual const char** GlfwGetRequiredExtensions(U32* count) = 0;
 
+		virtual void* Device() = 0;
+		virtual void* Renderer() = 0;
+		virtual void* DescriptorPool() = 0;
+
 		static UniqueRef<Window> Create(const WindowProps& props = {});
 	};
 

@@ -5,12 +5,15 @@
 #include "render_context.h"
 
 #include "core/uassert.h"
+
+#include "engine/window.h"
 #include "engine/render/renderer.h"
+
 #include "platform/vulkan/vulkan_render_context.h"
 
 namespace Mapo
 {
-	UniqueRef<RenderContext> RenderContext::Create(void* window)
+	UniqueRef<RenderContext> RenderContext::Create(Window& window)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -18,7 +21,7 @@ namespace Mapo
 				MP_ASSERT(false, "Graphics API is none!");
 				return nullptr;
 			case RendererAPI::GraphicsAPI::Vulkan:
-				return MakeUnique<VulkanRenderContext>(static_cast<GLFWwindow*>(window));
+				return MakeUnique<VulkanRenderContext>(window);
 		}
 
 		MP_ASSERT(false, "Unknown RendererAPI");

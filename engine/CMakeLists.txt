@@ -22,13 +22,6 @@ PUBLIC
 	render/render_command.h
 	render/renderer.h
 	render/renderer_api.h
-	render/vulkan_device.h
-	render/vulkan_pipeline.h
-	render/vulkan_swapchain.h
-	render/vulkan_buffer.h
-	render/vulkan_renderer.h
-	render/vulkan_descriptors.h
-	render/vulkan_frame_info.h
 	# System
 	system/simple_render_system.h
 	system/point_light_system.h
@@ -39,6 +32,13 @@ PUBLIC
 	${PLATFORM_SRC_DIR}/macos/macos_window.h
 	${PLATFORM_SRC_DIR}/vulkan/vulkan_render_context.h
 	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer_api.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_device.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_pipeline.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_swapchain.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_buffer.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_descriptors.h
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_frame_info.h
 PRIVATE
 	application.cpp
 	window.cpp
@@ -52,12 +52,6 @@ PRIVATE
 	render/render_command.cpp
 	render/renderer.cpp
 	render/renderer_api.cpp
-	render/vulkan_device.cpp
-	render/vulkan_pipeline.cpp
-	render/vulkan_swapchain.cpp
-	render/vulkan_buffer.cpp
-	render/vulkan_renderer.cpp
-	render/vulkan_descriptors.cpp
 	# System
 	system/simple_render_system.cpp
 	system/point_light_system.cpp
@@ -68,6 +62,12 @@ PRIVATE
 	${PLATFORM_SRC_DIR}/macos/macos_window.cpp
 	${PLATFORM_SRC_DIR}/vulkan/vulkan_render_context.cpp
 	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer_api.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_device.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_pipeline.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_swapchain.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_buffer.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer.cpp
+	${PLATFORM_SRC_DIR}/vulkan/vulkan_descriptors.cpp
 )
 
 target_link_libraries(engine

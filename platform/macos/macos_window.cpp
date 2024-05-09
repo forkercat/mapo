@@ -41,7 +41,7 @@ namespace Mapo
 		m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
 		MP_ASSERT(m_window, "GLFW window creation failed. m_window is nullptr!");
 
-		m_renderContext = RenderContext::Create(m_window);
+		m_renderContext = RenderContext::Create(*this);
 		m_renderContext->Init();
 
 		// Set up callbacks.
@@ -98,6 +98,21 @@ namespace Mapo
 	const char** MacosWindow::GlfwGetRequiredExtensions(U32* count)
 	{
 		return glfwGetRequiredInstanceExtensions(count);
+	}
+
+	void* MacosWindow::Device()
+	{
+		return m_renderContext->Device();
+	}
+
+	void* MacosWindow::Renderer()
+	{
+		return m_renderContext->Renderer();
+	}
+
+	void* MacosWindow::DescriptorPool()
+	{
+		return m_renderContext->DescriptorPool();
 	}
 
 } // namespace Mapo

@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-#include "vulkan_device.h"
+#include "platform/vulkan/vulkan_device.h"
 
 namespace Mapo
 {

@@ -94,6 +94,31 @@ namespace Mapo
 			return *this;
 		}
 
+		bool operator==(const Optional& other) const
+		{
+			if (!m_hasValue && !other.m_hasValue)
+				return true;
+
+			return m_hasValue && other.m_hasValue && m_value == other.m_value;
+		}
+
+		bool operator!=(const Optional& other) const
+		{
+			return !(*this == other);
+		}
+
+		template <typename U = Type>
+		bool operator==(const U& value) const
+		{
+			return m_hasValue && m_value == value;
+		}
+
+		template <typename U = Type>
+		bool operator!=(const U& value) const
+		{
+			return !(*this == value);
+		}
+
 	private:
 		bool m_hasValue = false;
 		Type m_value;
