@@ -20,7 +20,7 @@ namespace Mapo
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData)
 	{
-		MP_DEBUG("Validation Output: %s", pCallbackData->pMessage);
+		MP_DEBUG("Validation Output: {}", pCallbackData->pMessage);
 		return VK_FALSE; // Original Vulkan call is not aborted
 	}
 
@@ -355,7 +355,7 @@ namespace Mapo
 
 		MP_ASSERT_NEQ(deviceCount, 0, "Failed to find GPUs with Vulkan support!");
 
-		MP_PRINT("Device count: %u", deviceCount);
+		MP_INFO("Device count: {}", deviceCount);
 		std::vector<VkPhysicalDevice> devices(deviceCount);
 		vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
 
@@ -371,7 +371,7 @@ namespace Mapo
 		MP_ASSERT_NEQ(m_gpu, VK_NULL_HANDLE, "Failed to find a suitable GPU device!");
 
 		vkGetPhysicalDeviceProperties(m_gpu, &properties);
-		MP_PRINT("Physical device: %s", properties.deviceName);
+		MP_INFO("Physical device: {}", properties.deviceName);
 	}
 
 	void VulkanDevice::CreateLogicalDevice()

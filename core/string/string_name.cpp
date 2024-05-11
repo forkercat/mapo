@@ -41,7 +41,7 @@ namespace Mapo
 
 		U32 Compute(const char* data, size_t length)
 		{
-			MP_ASSERT(data);
+			MP_ASSERT(data, "Data is empty!");
 			U32 crc = 0xFFFFFFFF;
 			for (size_t i = 0; i < length; i++)
 			{

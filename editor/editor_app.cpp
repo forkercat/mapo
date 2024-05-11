@@ -6,6 +6,8 @@
 
 #include "engine/entry_point.h"
 
+#include "main/editor_layer.h"
+
 /////////////////////////////////////////////////////////////////////////////////
 // Application
 /////////////////////////////////////////////////////////////////////////////////
@@ -18,6 +20,7 @@ namespace Mapo
 		EditorApp(ApplicationCommandLineArgs args)
 			: Application("Editor App (Vulkan)", args)
 		{
+			PushLayer(MP_NEW())
 		}
 
 		bool Start() override;
@@ -26,7 +29,7 @@ namespace Mapo
 	// Defines the creation function.
 	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return new EditorApp(args);
+		return MP_NEW(EditorApp, StdAllocator::Get())(args);
 	}
 
 	bool EditorApp::Start()
@@ -46,6 +49,8 @@ int MapoMain(int argc, char** argv)
 
 	app->Start();
 	app->Run();
+
+	MP_DELETE(app, Mapo::StdAllocator::Get());
 
 	return 0;
 }

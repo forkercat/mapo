@@ -31,7 +31,7 @@ namespace Mapo
 		//   alignment = 4 (0000 0100) | mask = 3 (0000 0011)
 		//   alignment = 8 (0000 1000) | mask = 7 (0000 0111)
 		const size_t mask = alignment - 1;
-		MP_ASSERT((alignment & mask) == 0); // ensure power of two
+		MP_ASSERT((alignment & mask) == 0, "Alignment is not power of two!");
 
 		// Example:
 		//   address   = 14  (0000 1110)   aligned = 16 (0001 0000)
@@ -100,7 +100,7 @@ namespace Mapo
 		}
 		// Determine the shift and store it.
 		ptrdiff_t shift = pAligned - pOriginal;
-		MP_ASSERT(shift > 0 && shift <= 256);
+		MP_ASSERT(shift > 0 && shift <= 256, "Shift is too large!");
 		pAligned[-1] = static_cast<U8>(shift);
 		return pAligned;
 	}
@@ -132,7 +132,7 @@ namespace Mapo
 		// Calculate the shift.
 		uintptr_t original = reinterpret_cast<uintptr_t>(pOriginal);
 		size_t shift = alignment - original % alignment;
-		MP_ASSERT(shift > 0 && shift <= 256);
+		MP_ASSERT(shift > 0 && shift <= 256, "Shift is too large!");
 		// Align and store the shift.
 		uintptr_t aligned = original + shift;
 		U8* pAligned = reinterpret_cast<U8*>(aligned);

@@ -16,7 +16,7 @@ namespace Mapo
 	{
 		if (result != VK_SUCCESS)
 		{
-			MP_ERROR("[ImGui Vulkan] Error: VkResult = %d\n", result);
+			MP_ERROR("[ImGui Vulkan] Error: VkResult = {}\n", (int)result);
 		}
 	}
 

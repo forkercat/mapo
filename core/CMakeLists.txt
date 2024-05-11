@@ -20,6 +20,8 @@ PUBLIC
 	templates/hash_set.h
 PRIVATE
 	core.cpp
+	timer.cpp
+	logging.cpp
 	# string
 	string/string.cpp
 	string/string_name.cpp
@@ -30,6 +32,7 @@ PRIVATE
 target_link_libraries(core
 PUBLIC
 	glm::glm
+	spdlog::spdlog
 PRIVATE
 	common
 )

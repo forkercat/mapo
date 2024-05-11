@@ -1,10 +1,15 @@
-set(SRCROOT ${PROJECT_SOURCE_DIR}/editor)
+add_executable(editor-app)
 
-add_executable(editor "")
-
-target_sources(editor
+target_sources(editor-app
 PUBLIC
-	${SRCROOT}/editor.h
+	editor_layer.h
 PRIVATE
-	${SRCROOT}/editor.cpp
+	editor_layer.cpp
+	editor_app.cpp
+)
+
+target_link_libraries(editor-app
+PRIVATE
+	common
+	engine
 )

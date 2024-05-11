@@ -23,7 +23,7 @@ namespace Mapo
 		m_bufferSize = m_alignmentSize * instanceCount;
 		m_device.CreateBuffer(m_bufferSize, m_usageFlags, m_memoryPropertyFlags, m_buffer, m_memory);
 
-		MP_PRINT("New buffer of (%llu x %u) bytes (actual: %llu bytes), with min offset alignment: %llu",
+		MP_DEBUG("New buffer of ({} x {}) bytes (actual: {} bytes), with min offset alignment: {}",
 			instanceSize, instanceCount, m_bufferSize, minOffsetAlignment);
 	}
 

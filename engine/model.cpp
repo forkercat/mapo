@@ -210,7 +210,7 @@ namespace Mapo
 	{
 		Builder builder{};
 		builder.LoadModel(filepath);
-		MP_PRINT("Vertex count: %zu", builder.vertices.size());
+		MP_INFO("Vertex count: {}", builder.vertices.size());
 		return MakeUnique<Model>(device, builder);
 	}
 

@@ -23,7 +23,7 @@ namespace Mapo
 			va_start(args, fmt);
 
 			int result = snprintf(buffer, MAX_FORMAT_STRING_LENGTH, fmt, args);
-			MP_ASSERT(result >= 0 && result < MAX_FORMAT_STRING_LENGTH);
+			MP_ASSERT(result >= 0 && result < MAX_FORMAT_STRING_LENGTH, "String length!");
 
 			va_end(args);
 

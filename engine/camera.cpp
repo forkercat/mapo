@@ -20,7 +20,7 @@ namespace Mapo
 
 	void Camera::SetPerspectiveProjection(F32 fovy, F32 aspect, F32 near, F32 far)
 	{
-		MP_ASSERT(MathOp::Abs(aspect - std::numeric_limits<F32>::epsilon()) > 0.0f);
+		MP_ASSERT(MathOp::Abs(aspect - std::numeric_limits<F32>::epsilon()) > 0.0f, "");
 
 		const F32 tanHalfFovy = tan(fovy / 2.0f);
 		m_projectionMatrix = Matrix4{ 0.0f };
@@ -56,9 +56,9 @@ namespace Mapo
 	void Camera::SetViewTarget(Vector3 position, Vector3 target, Vector3 up)
 	{
 		Vector3 direction = target - position;
-		MP_ASSERT(MathOp::Abs(direction.x - std::numeric_limits<F32>::epsilon()) > 0.0f);
-		MP_ASSERT(MathOp::Abs(direction.y - std::numeric_limits<F32>::epsilon()) > 0.0f);
-		MP_ASSERT(MathOp::Abs(direction.z - std::numeric_limits<F32>::epsilon()) > 0.0f);
+		MP_ASSERT(MathOp::Abs(direction.x - std::numeric_limits<F32>::epsilon()) > 0.0f, "");
+		MP_ASSERT(MathOp::Abs(direction.y - std::numeric_limits<F32>::epsilon()) > 0.0f, "");
+		MP_ASSERT(MathOp::Abs(direction.z - std::numeric_limits<F32>::epsilon()) > 0.0f, "");
 
 		SetViewDirection(position, direction, up);
 	}

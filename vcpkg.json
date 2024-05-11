@@ -20,5 +20,8 @@
   }, {
     "name" : "entt",
     "version>=" : "3.13.1"
+  }, {
+    "name" : "spdlog",
+    "version>=" : "1.13.0"
   } ]
 }
