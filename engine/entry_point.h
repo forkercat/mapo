@@ -15,8 +15,5 @@ int main(int argc, char** argv)
 {
 	Mapo::Log::Init();
 
-	MP_DEBUG("123123");
-
-
 	MapoMain(argc, argv);
 }

@@ -3,3 +3,12 @@
 //
 
 #include "layer.h"
+
+namespace Mapo
+{
+	Layer::Layer(const Mapo::String& debugName)
+		: m_debugName(debugName)
+	{
+	}
+
+} // namespace Mapo

@@ -18,8 +18,8 @@ namespace Mapo
 		virtual void OnDetach() override;
 		virtual void OnEvent() override;
 
-		void Begin();
-		void End();
+		virtual void Begin();
+		virtual void End();
 
 		void BlockEvents(bool block) { m_blockEvents = block; }
 

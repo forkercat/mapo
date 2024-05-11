@@ -1,6 +1,6 @@
-add_executable(editor-app)
+add_executable(editor)
 
-target_sources(editor-app
+target_sources(editor
 PUBLIC
 	editor_layer.h
 PRIVATE
@@ -8,7 +8,7 @@ PRIVATE
 	editor_app.cpp
 )
 
-target_link_libraries(editor-app
+target_link_libraries(editor
 PRIVATE
 	common
 	engine

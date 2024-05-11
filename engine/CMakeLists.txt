@@ -7,6 +7,8 @@ PUBLIC
 	entry_point.h
 	application.h
 	window.h
+	layer.h
+	layer_stack.h
 	model.h
 	game_object.h
 	component.h
@@ -22,6 +24,8 @@ PUBLIC
 	render/render_command.h
 	render/renderer.h
 	render/renderer_api.h
+	# UI
+	ui/imgui_layer.h
 	# System
 	system/simple_render_system.h
 	system/point_light_system.h
@@ -42,6 +46,8 @@ PUBLIC
 PRIVATE
 	application.cpp
 	window.cpp
+	layer.cpp
+	layer_stack.cpp
 	model.cpp
 	game_object.cpp
 	component.cpp
@@ -52,6 +58,8 @@ PRIVATE
 	render/render_command.cpp
 	render/renderer.cpp
 	render/renderer_api.cpp
+	# UI
+	ui/imgui_layer.cpp
 	# System
 	system/simple_render_system.cpp
 	system/point_light_system.cpp

@@ -8,6 +8,7 @@
 
 #include "engine/window.h"
 #include "engine/scene.h"
+#include "engine/layer_stack.h"
 
 int MapoMain(int argc, char** argv);
 
@@ -39,11 +40,20 @@ namespace Mapo
 		MP_FORCE_INLINE ApplicationCommandLineArgs GetCommandLineArgs() const { return m_commandLineArgs; }
 
 		virtual bool Start();
-		void Close() {}
+		void Close() { m_running = false; }
+
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
 
 	private:
 		// Subclass cannot override.
 		void Run();
+
+		// Event callbacks.
+		void OnEvent() { }
+		void OnWindowClose() { }
+		bool OnEscPressed() { return false; }
+		bool OnWindowResize() { return false; }
 
 	public:
 		static constexpr U32 WIDTH = 960;
@@ -54,6 +64,13 @@ namespace Mapo
 
 		UniqueRef<Window> m_window;
 		UniqueRef<Scene> m_scene;
+
+		LayerStack m_layerStack;
+		// ImGuiLayer* m_imguiLayer;
+
+		bool m_running = true;
+		bool m_minimalized = false;
+		Timestep m_lastFrameTime = 0.0f;
 
 		// Holds one application instance.
 		static Application* s_appInstance;

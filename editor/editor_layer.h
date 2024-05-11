@@ -4,9 +4,11 @@
 
 #pragma once
 
+#include "engine/layer.h"
+
 namespace Mapo
 {
-	class EditorLayer
+	class EditorLayer : public Layer
 	{
 
 	};

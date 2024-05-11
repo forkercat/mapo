@@ -6,7 +6,7 @@
 
 #include "engine/entry_point.h"
 
-#include "main/editor_layer.h"
+#include "editor/editor_layer.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 // Application
@@ -20,7 +20,7 @@ namespace Mapo
 		EditorApp(ApplicationCommandLineArgs args)
 			: Application("Editor App (Vulkan)", args)
 		{
-			PushLayer(MP_NEW())
+			PushLayer(MP_NEW(EditorLayer, StdAllocator::Get()));
 		}
 
 		bool Start() override;

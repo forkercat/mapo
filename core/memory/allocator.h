@@ -169,6 +169,12 @@ namespace Mapo
 		{
 			std::free(ptr);
 		}
+
+		static IAllocator& Get()
+		{
+			static StdAllocator allocator;
+			return allocator;
+		}
 	};
 
 	class LinearAllocator : public IAllocator
