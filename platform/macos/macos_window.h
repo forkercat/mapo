@@ -10,8 +10,6 @@ class GLFWwindow;
 
 namespace Mapo
 {
-	class RenderContext;
-
 	class MacosWindow : public Window
 	{
 	public:
@@ -28,15 +26,9 @@ namespace Mapo
 		MP_FORCE_INLINE U32 GetWidth() const override { return m_data.width; }
 		MP_FORCE_INLINE U32 GetHeight() const override { return m_data.height; }
 
-		// TODO: Remove!
 		virtual void CreateWindowSurface(void* instance, void* surface) override;
 		virtual void GlfwWaitEvents() override;
 		virtual const char** GlfwGetRequiredExtensions(U32* count) override;
-
-		// TODO: Remove!
-		virtual void* Device() override;
-		virtual void* Renderer() override;
-		virtual void* DescriptorPool() override;
 
 	private:
 		void Init(const WindowProps& props);
@@ -47,7 +39,6 @@ namespace Mapo
 
 	private:
 		GLFWwindow* m_window = nullptr;
-		UniqueRef<RenderContext> m_renderContext{};
 
 		struct WindowData
 		{

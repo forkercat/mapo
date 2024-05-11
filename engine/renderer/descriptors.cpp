@@ -2,14 +2,14 @@
 // Created by Junhao Wang (@forkercat) on 4/22/24.
 //
 
-#include "vulkan_descriptors.h"
+#include "descriptors.h"
 
 namespace Mapo
 {
 	/////////////////////////////////////////////////////////////////////////////////
 	// Descriptor set layout builder
 	/////////////////////////////////////////////////////////////////////////////////
-	VulkanDescriptorSetLayout::Builder& VulkanDescriptorSetLayout::Builder::AddBinding(
+	DescriptorSetLayout::Builder& DescriptorSetLayout::Builder::AddBinding(
 		U32 binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, U32 count)
 	{
 		MP_ASSERT(m_bindings.count(binding) == 0, "Failed to add binding to builder. The binding already exists!");
@@ -24,17 +24,17 @@ namespace Mapo
 		return *this;
 	}
 
-	UniqueRef<VulkanDescriptorSetLayout> VulkanDescriptorSetLayout::Builder::Build() const
+	UniqueRef<DescriptorSetLayout> DescriptorSetLayout::Builder::Build() const
 	{
-		return MakeUnique<VulkanDescriptorSetLayout>(m_device, m_bindings);
+		return MakeUnique<DescriptorSetLayout>(m_device, m_bindings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// Descriptor set layout
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VulkanDescriptorSetLayout::VulkanDescriptorSetLayout(
-		VulkanDevice& device, std::unordered_map<U32, VkDescriptorSetLayoutBinding> bindings)
+	DescriptorSetLayout::DescriptorSetLayout(
+		Device& device, std::unordered_map<U32, VkDescriptorSetLayoutBinding> bindings)
 		: m_device(device), m_bindings(bindings)
 	{
 		std::vector<VkDescriptorSetLayoutBinding> layoutBindings{};
@@ -54,7 +54,7 @@ namespace Mapo
 		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor set layout!");
 	}
 
-	VulkanDescriptorSetLayout::~VulkanDescriptorSetLayout()
+	DescriptorSetLayout::~DescriptorSetLayout()
 	{
 		vkDestroyDescriptorSetLayout(m_device.GetDevice(), m_descriptorSetLayout, nullptr);
 	}
@@ -63,35 +63,35 @@ namespace Mapo
 	// Descriptor pool builder
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VulkanDescriptorPool::Builder& VulkanDescriptorPool::Builder::AddPoolSize(VkDescriptorType descriptorType, U32 descriptorCount)
+	DescriptorPool::Builder& DescriptorPool::Builder::AddPoolSize(VkDescriptorType descriptorType, U32 descriptorCount)
 	{
 		m_poolSizes.push_back({ descriptorType, descriptorCount });
 		return *this;
 	}
 
-	VulkanDescriptorPool::Builder& VulkanDescriptorPool::Builder::SetPoolFlags(VkDescriptorPoolCreateFlags flags)
+	DescriptorPool::Builder& DescriptorPool::Builder::SetPoolFlags(VkDescriptorPoolCreateFlags flags)
 	{
 		m_poolFlags = flags;
 		return *this;
 	}
 
-	VulkanDescriptorPool::Builder& VulkanDescriptorPool::Builder::SetMaxSets(U32 count)
+	DescriptorPool::Builder& DescriptorPool::Builder::SetMaxSets(U32 count)
 	{
 		m_maxSets = count;
 		return *this;
 	}
 
-	UniqueRef<VulkanDescriptorPool> VulkanDescriptorPool::Builder::Build() const
+	UniqueRef<DescriptorPool> DescriptorPool::Builder::Build() const
 	{
-		return MakeUnique<VulkanDescriptorPool>(m_device, m_maxSets, m_poolFlags, m_poolSizes);
+		return MakeUnique<DescriptorPool>(m_device, m_maxSets, m_poolFlags, m_poolSizes);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// Descriptor pool
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VulkanDescriptorPool::VulkanDescriptorPool(
-		VulkanDevice& device, U32 maxSets, VkDescriptorPoolCreateFlags poolFlags, const std::vector<VkDescriptorPoolSize>& poolSizes)
+	DescriptorPool::DescriptorPool(
+		Device& device, U32 maxSets, VkDescriptorPoolCreateFlags poolFlags, const std::vector<VkDescriptorPoolSize>& poolSizes)
 		: m_device(device)
 	{
 		VkDescriptorPoolCreateInfo descriptorPoolInfo{};
@@ -105,12 +105,12 @@ namespace Mapo
 		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor pool!");
 	}
 
-	VulkanDescriptorPool::~VulkanDescriptorPool()
+	DescriptorPool::~DescriptorPool()
 	{
 		vkDestroyDescriptorPool(m_device.GetDevice(), m_descriptorPool, nullptr);
 	}
 
-	bool VulkanDescriptorPool::AllocateDescriptorSet(const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet& descriptorSet) const
+	bool DescriptorPool::AllocateDescriptorSet(const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet& descriptorSet) const
 	{
 		VkDescriptorSetAllocateInfo allocateInfo{};
 		allocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -123,12 +123,12 @@ namespace Mapo
 		return result == VK_SUCCESS;
 	}
 
-	void VulkanDescriptorPool::FreeDescriptorSets(std::vector<VkDescriptorSet>& descriptorSets) const
+	void DescriptorPool::FreeDescriptorSets(std::vector<VkDescriptorSet>& descriptorSets) const
 	{
 		vkFreeDescriptorSets(m_device.GetDevice(), m_descriptorPool, static_cast<U32>(descriptorSets.size()), descriptorSets.data());
 	}
 
-	void VulkanDescriptorPool::ResetPool()
+	void DescriptorPool::ResetPool()
 	{
 		vkResetDescriptorPool(m_device.GetDevice(), m_descriptorPool, 0);
 	}
@@ -137,12 +137,12 @@ namespace Mapo
 	// Descriptor writer
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VulkanDescriptorWriter::VulkanDescriptorWriter(VulkanDescriptorSetLayout& descriptorSetLayout, VulkanDescriptorPool& descriptorPool)
+	DescriptorWriter::DescriptorWriter(DescriptorSetLayout& descriptorSetLayout, DescriptorPool& descriptorPool)
 		: m_descriptorSetLayout(descriptorSetLayout), m_descriptorPool(descriptorPool)
 	{
 	}
 
-	VulkanDescriptorWriter& VulkanDescriptorWriter::WriteBuffer(U32 binding, VkDescriptorBufferInfo* bufferInfo)
+	DescriptorWriter& DescriptorWriter::WriteBuffer(U32 binding, VkDescriptorBufferInfo* bufferInfo)
 	{
 		MP_ASSERT(m_descriptorSetLayout.m_bindings.count(binding) == 1, "Layout does not contain specified binding!");
 
@@ -160,7 +160,7 @@ namespace Mapo
 		return *this;
 	}
 
-	VulkanDescriptorWriter& VulkanDescriptorWriter::WriteImage(U32 binding, VkDescriptorImageInfo* imageInfo)
+	DescriptorWriter& DescriptorWriter::WriteImage(U32 binding, VkDescriptorImageInfo* imageInfo)
 	{
 		MP_ASSERT(m_descriptorSetLayout.m_bindings.count(binding) == 1, "Layout does not contain specified binding!");
 
@@ -178,7 +178,7 @@ namespace Mapo
 		return *this;
 	}
 
-	bool VulkanDescriptorWriter::Build(VkDescriptorSet& descriptorSet)
+	bool DescriptorWriter::Build(VkDescriptorSet& descriptorSet)
 	{
 		bool success = m_descriptorPool.AllocateDescriptorSet(m_descriptorSetLayout.GetDescriptorSetLayout(), descriptorSet);
 		if (!success)
@@ -190,7 +190,7 @@ namespace Mapo
 		return true;
 	}
 
-	void VulkanDescriptorWriter::Overwrite(VkDescriptorSet& descriptorSet)
+	void DescriptorWriter::Overwrite(VkDescriptorSet& descriptorSet)
 	{
 		for (VkWriteDescriptorSet& write : m_writes)
 		{

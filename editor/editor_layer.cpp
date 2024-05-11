@@ -3,3 +3,34 @@
 //
 
 #include "editor_layer.h"
+
+#include <imgui/imgui.h>
+
+namespace Mapo
+{
+	EditorLayer::EditorLayer()
+		: Layer("EditorLayer")
+	{
+	}
+
+	void EditorLayer::OnAttach()
+	{
+	}
+
+	void EditorLayer::OnDetach()
+	{
+	}
+
+	void EditorLayer::OnUpdate(Timestep dt)
+	{
+	}
+
+	void EditorLayer::OnImGuiRender()
+	{
+	}
+
+	void EditorLayer::OnEvent()
+	{
+	}
+
+} // namespace Mapo

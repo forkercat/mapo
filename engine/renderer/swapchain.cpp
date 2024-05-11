@@ -2,17 +2,17 @@
 // Created by Junhao Wang (@forkercat) on 4/3/24.
 //
 
-#include "vulkan_swapchain.h"
+#include "swapchain.h"
 
 namespace Mapo
 {
-	VulkanSwapchain::VulkanSwapchain(VulkanDevice& device, VkExtent2D windowExtent)
+	Swapchain::Swapchain(Device& device, VkExtent2D windowExtent)
 		: m_device(device), m_windowExtent(windowExtent)
 	{
 		Init();
 	}
 
-	VulkanSwapchain::VulkanSwapchain(VulkanDevice& device, VkExtent2D windowExtent, std::shared_ptr<VulkanSwapchain> previous)
+	Swapchain::Swapchain(Device& device, VkExtent2D windowExtent, std::shared_ptr<Swapchain> previous)
 		: m_device(device), m_windowExtent(windowExtent), m_oldSwapchain(previous)
 	{
 		Init();
@@ -21,7 +21,7 @@ namespace Mapo
 		m_oldSwapchain = nullptr;
 	}
 
-	void VulkanSwapchain::Init()
+	void Swapchain::Init()
 	{
 		CreateSwapchain();
 		CreateImageViews();
@@ -31,7 +31,7 @@ namespace Mapo
 		CreateSyncObjects();
 	}
 
-	VulkanSwapchain::~VulkanSwapchain()
+	Swapchain::~Swapchain()
 	{
 		for (VkImageView& imageView : m_swapchainImageViews)
 		{
@@ -71,7 +71,7 @@ namespace Mapo
 	// Public functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VkResult VulkanSwapchain::AcquireNextImage(U32* imageIndex)
+	VkResult Swapchain::AcquireNextImage(U32* imageIndex)
 	{
 		// Wait on host for the frame to finish.
 		vkWaitForFences(m_device.GetDevice(), 1, &m_inFlightFences[m_currentFrame], VK_TRUE,
@@ -82,7 +82,7 @@ namespace Mapo
 			m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, imageIndex);
 	}
 
-	VkResult VulkanSwapchain::SubmitCommandBuffers(const VkCommandBuffer* buffers, U32* imageIndex)
+	VkResult Swapchain::SubmitCommandBuffers(const VkCommandBuffer* buffers, U32* imageIndex)
 	{
 		MP_ASSERT(imageIndex, "Image index pointer is nullptr.");
 
@@ -139,7 +139,7 @@ namespace Mapo
 		return presentResult;
 	}
 
-	VkFormat VulkanSwapchain::FindDepthFormat()
+	VkFormat Swapchain::FindDepthFormat()
 	{
 		return m_device.FindSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
 			VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
@@ -149,7 +149,7 @@ namespace Mapo
 	// Functions to create Vulkan resources
 	/////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanSwapchain::CreateSwapchain()
+	void Swapchain::CreateSwapchain()
 	{
 		MP_INFO("Creating swapchain...");
 		SwapchainSupportDetails swapchainSupport = m_device.GetSwapchainSupport();
@@ -219,7 +219,7 @@ namespace Mapo
 		m_swapchainExtent = extent2D;
 	}
 
-	void VulkanSwapchain::CreateImageViews()
+	void Swapchain::CreateImageViews()
 	{
 		m_swapchainImageViews.resize(m_swapchainImages.size());
 
@@ -229,7 +229,7 @@ namespace Mapo
 		}
 	}
 
-	void VulkanSwapchain::CreateRenderPass()
+	void Swapchain::CreateRenderPass()
 	{
 		MP_INFO("Creating render pass...");
 
@@ -299,7 +299,7 @@ namespace Mapo
 		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create render pass!");
 	}
 
-	void VulkanSwapchain::CreateDepthResources()
+	void Swapchain::CreateDepthResources()
 	{
 		MP_INFO("Creating depth resources...");
 
@@ -337,7 +337,7 @@ namespace Mapo
 		// VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 	}
 
-	void VulkanSwapchain::CreateFramebuffers()
+	void Swapchain::CreateFramebuffers()
 	{
 		m_swapchainFramebuffers.resize(m_swapchainImageViews.size());
 		MP_INFO("Creating {} framebuffers...", m_swapchainFramebuffers.size());
@@ -360,7 +360,7 @@ namespace Mapo
 		}
 	}
 
-	void VulkanSwapchain::CreateSyncObjects()
+	void Swapchain::CreateSyncObjects()
 	{
 		m_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 		m_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -389,7 +389,7 @@ namespace Mapo
 	// Helper functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VkSurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
+	VkSurfaceFormatKHR Swapchain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
 	{
 		auto it = std::find_if(availableFormats.begin(), availableFormats.end(), [](VkSurfaceFormatKHR surfaceFormat) {
 			return surfaceFormat.format == VK_FORMAT_B8G8R8A8_SRGB && surfaceFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -404,7 +404,7 @@ namespace Mapo
 		return availableFormats[0];
 	}
 
-	VkPresentModeKHR VulkanSwapchain::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
+	VkPresentModeKHR Swapchain::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
 	{
 		// 1. FIFO is the default mode. If GPU finishes very fast, it would become idle if no more back-buffer is available.
 		// This will also increase the latency between the frame is being rendered and the frame is actually being shown.
@@ -434,7 +434,7 @@ namespace Mapo
 		}
 	}
 
-	VkExtent2D VulkanSwapchain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
+	VkExtent2D Swapchain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<U32>::max())
 		{
@@ -460,7 +460,7 @@ namespace Mapo
 		return actualExtent;
 	}
 
-	VkImageView VulkanSwapchain::CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+	VkImageView Swapchain::CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
 	{
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;

@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-#include "platform/vulkan/vulkan_device.h"
+#include "engine/renderer/device.h"
 
 namespace Mapo
 {
@@ -15,7 +15,7 @@ namespace Mapo
 	class ImGuiSystem
 	{
 	public:
-		ImGuiSystem(Window& window, VulkanDevice& device, VkRenderPass renderPass, U32 imageCount);
+		ImGuiSystem(Window& window, Device& device, VkRenderPass renderPass, U32 imageCount);
 		~ImGuiSystem();
 
 		ImGuiSystem(const ImGuiSystem&) = delete;
@@ -36,7 +36,7 @@ namespace Mapo
 		bool showAnotherWindow = false;
 
 	private:
-		VulkanDevice& m_device;
+		Device& m_device;
 
 		// We haven't yet covered descriptor pools in the tutorial series,
 		// so I'm just going to create one for just imgui and store it here for now.

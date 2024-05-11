@@ -9,11 +9,14 @@
 #include "engine/window.h"
 #include "engine/scene.h"
 #include "engine/layer_stack.h"
+#include "engine/ui/imgui_layer.h"
 
 int MapoMain(int argc, char** argv);
 
 namespace Mapo
 {
+	class RenderContext;
+
 	struct ApplicationCommandLineArgs
 	{
 		int count = 0;
@@ -39,6 +42,7 @@ namespace Mapo
 		MP_FORCE_INLINE Window& GetWindow() { return *m_window; }
 		MP_FORCE_INLINE ApplicationCommandLineArgs GetCommandLineArgs() const { return m_commandLineArgs; }
 
+		virtual bool Init();
 		virtual bool Start();
 		void Close() { m_running = false; }
 
@@ -66,11 +70,12 @@ namespace Mapo
 		UniqueRef<Scene> m_scene;
 
 		LayerStack m_layerStack;
-		// ImGuiLayer* m_imguiLayer;
+		ImGuiLayer* m_imguiLayer = nullptr;
 
 		bool m_running = true;
 		bool m_minimalized = false;
-		Timestep m_lastFrameTime = 0.0f;
+
+		Timer m_timer;
 
 		// Holds one application instance.
 		static Application* s_appInstance;

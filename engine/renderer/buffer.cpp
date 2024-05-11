@@ -2,12 +2,12 @@
 // Created by Junhao Wang (@forkercat) on 4/21/24.
 //
 
-#include "vulkan_buffer.h"
+#include "buffer.h"
 
 namespace Mapo
 {
-	VulkanBuffer::VulkanBuffer(
-		VulkanDevice& device,
+	Buffer::Buffer(
+		Device& device,
 		VkDeviceSize instanceSize,
 		U32 instanceCount,
 		VkBufferUsageFlags usageFlags,
@@ -27,14 +27,14 @@ namespace Mapo
 			instanceSize, instanceCount, m_bufferSize, minOffsetAlignment);
 	}
 
-	VulkanBuffer::~VulkanBuffer()
+	Buffer::~Buffer()
 	{
 		Unmap();
 		vkDestroyBuffer(m_device.GetDevice(), m_buffer, nullptr);
 		vkFreeMemory(m_device.GetDevice(), m_memory, nullptr);
 	}
 
-	VkResult VulkanBuffer::Map(VkDeviceSize size, VkDeviceSize offset)
+	VkResult Buffer::Map(VkDeviceSize size, VkDeviceSize offset)
 	{
 		MP_ASSERT(m_buffer && m_memory, "Failed to map buffer since buffer resources are not created!");
 
@@ -44,7 +44,7 @@ namespace Mapo
 		return vkMapMemory(m_device.GetDevice(), m_memory, offset, size, 0, &m_mappedData);
 	}
 
-	void VulkanBuffer::Unmap()
+	void Buffer::Unmap()
 	{
 		if (m_mappedData)
 		{
@@ -53,7 +53,7 @@ namespace Mapo
 		}
 	}
 
-	void VulkanBuffer::WriteToBuffer(void* data, VkDeviceSize size, VkDeviceSize offset)
+	void Buffer::WriteToBuffer(void* data, VkDeviceSize size, VkDeviceSize offset)
 	{
 		MP_ASSERT(m_mappedData, "Could not copy to unmapped buffer!");
 		if (size == VK_WHOLE_SIZE)
@@ -68,7 +68,7 @@ namespace Mapo
 		}
 	}
 
-	VkResult VulkanBuffer::Flush(VkDeviceSize size, VkDeviceSize offset)
+	VkResult Buffer::Flush(VkDeviceSize size, VkDeviceSize offset)
 	{
 		VkMappedMemoryRange mappedRange{};
 		mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
@@ -78,12 +78,12 @@ namespace Mapo
 		return vkFlushMappedMemoryRanges(m_device.GetDevice(), 1, &mappedRange);
 	}
 
-	VkDescriptorBufferInfo VulkanBuffer::DescriptorInfo(VkDeviceSize size, VkDeviceSize offset)
+	VkDescriptorBufferInfo Buffer::DescriptorInfo(VkDeviceSize size, VkDeviceSize offset)
 	{
 		return { m_buffer, offset, size };
 	}
 
-	VkResult VulkanBuffer::Invalidate(VkDeviceSize size, VkDeviceSize offset)
+	VkResult Buffer::Invalidate(VkDeviceSize size, VkDeviceSize offset)
 	{
 		VkMappedMemoryRange mappedRange{};
 		mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
@@ -93,27 +93,27 @@ namespace Mapo
 		return vkInvalidateMappedMemoryRanges(m_device.GetDevice(), 1, &mappedRange);
 	}
 
-	void VulkanBuffer::WriteToIndex(void* data, U32 index)
+	void Buffer::WriteToIndex(void* data, U32 index)
 	{
 		WriteToBuffer(data, m_instanceSize, index * m_alignmentSize);
 	}
 
-	VkResult VulkanBuffer::FlushAtIndex(U32 index)
+	VkResult Buffer::FlushAtIndex(U32 index)
 	{
 		return Flush(m_alignmentSize, index * m_alignmentSize);
 	}
 
-	VkResult VulkanBuffer::InvalidateAtIndex(U32 index)
+	VkResult Buffer::InvalidateAtIndex(U32 index)
 	{
 		return Invalidate(m_alignmentSize, index * m_alignmentSize);
 	}
 
-	VkDescriptorBufferInfo VulkanBuffer::DescriptorInfoAtIndex(U32 index)
+	VkDescriptorBufferInfo Buffer::DescriptorInfoAtIndex(U32 index)
 	{
 		return DescriptorInfo(m_alignmentSize, index * m_alignmentSize);
 	}
 
-	VkDeviceSize VulkanBuffer::GetAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment)
+	VkDeviceSize Buffer::GetAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment)
 	{
 		if (minOffsetAlignment > 0)
 		{

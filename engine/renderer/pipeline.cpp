@@ -2,7 +2,7 @@
 // Created by Junhao Wang (@forkercat) on 4/1/24.
 //
 
-#include "vulkan_pipeline.h"
+#include "pipeline.h"
 
 #include "engine/model.h"
 
@@ -10,15 +10,15 @@
 
 namespace Mapo
 {
-	VulkanPipeline::VulkanPipeline(
-		VulkanDevice& device, const std::string& vertFilepath, const std::string& fragFilepath,
-		const VulkanPipelineConfigInfo& configInfo)
+	Pipeline::Pipeline(
+		Device& device, const std::string& vertFilepath, const std::string& fragFilepath,
+		const PipelineConfigInfo& configInfo)
 		: m_device(device)
 	{
 		CreateGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
 	}
 
-	VulkanPipeline::~VulkanPipeline()
+	Pipeline::~Pipeline()
 	{
 		if (m_fragShaderModule != VK_NULL_HANDLE)
 		{
@@ -33,8 +33,8 @@ namespace Mapo
 		vkDestroyPipeline(m_device.GetDevice(), m_graphicsPipeline, nullptr);
 	}
 
-	void VulkanPipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath,
-		const VulkanPipelineConfigInfo& configInfo)
+	void Pipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath,
+		const PipelineConfigInfo& configInfo)
 	{
 		MP_ASSERT(configInfo.pipelineLayout, "Could not create graphics pipeline: No pipeline layout provided!");
 		MP_ASSERT(configInfo.renderPass, "Could not create graphics pipeline: No render pass provided!");
@@ -106,12 +106,12 @@ namespace Mapo
 		m_vertShaderModule = VK_NULL_HANDLE;
 	}
 
-	void VulkanPipeline::Bind(VkCommandBuffer commandBuffer)
+	void Pipeline::Bind(VkCommandBuffer commandBuffer)
 	{
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
 	}
 
-	void VulkanPipeline::DefaultPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo)
+	void Pipeline::DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 	{
 		// Input assembly
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -193,7 +193,7 @@ namespace Mapo
 		configInfo.attributeDescriptions = Model::Vertex::GetAttributeDescriptions();
 	}
 
-	void VulkanPipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule* pShaderModule)
+	void Pipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule* pShaderModule)
 	{
 		MP_ASSERT(!code.empty(), "Failed to create a shader module for empty code.");
 
@@ -208,7 +208,7 @@ namespace Mapo
 		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create shader module!");
 	}
 
-	std::vector<char> VulkanPipeline::ReadFile(const std::string& filepath)
+	std::vector<char> Pipeline::ReadFile(const std::string& filepath)
 	{
 		std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 

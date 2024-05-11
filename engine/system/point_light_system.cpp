@@ -6,7 +6,7 @@
 
 namespace Mapo
 {
-	PointLightSystem::PointLightSystem(VulkanDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
+	PointLightSystem::PointLightSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
 		: m_device(device)
 	{
 		CreatePipelineLayout(globalDescriptorSetLayout);
@@ -45,8 +45,8 @@ namespace Mapo
 	{
 		MP_ASSERT(m_pipelineLayout, "Could not create pipeline before pipeline layout!");
 
-		VulkanPipelineConfigInfo pipelineConfig{};
-		VulkanPipeline::DefaultPipelineConfigInfo(pipelineConfig);
+		PipelineConfigInfo pipelineConfig{};
+		Pipeline::DefaultPipelineConfigInfo(pipelineConfig);
 
 		pipelineConfig.attributeDescriptions.clear();
 		pipelineConfig.bindingDescriptions.clear();
@@ -54,10 +54,10 @@ namespace Mapo
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = m_pipelineLayout;
 		m_pipeline =
-			MakeUnique<VulkanPipeline>(m_device, "assets/shaders/point_light.vert.spv", "assets/shaders/point_light.frag.spv", pipelineConfig);
+			MakeUnique<Pipeline>(m_device, "assets/shaders/point_light.vert.spv", "assets/shaders/point_light.frag.spv", pipelineConfig);
 	}
 
-	void PointLightSystem::Render(VulkanFrameInfo& frameInfo)
+	void PointLightSystem::Render(FrameInfo& frameInfo)
 	{
 		// Bind graphics pipeline.
 		m_pipeline->Bind(frameInfo.commandBuffer);

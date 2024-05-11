@@ -17,9 +17,9 @@ namespace Mapo
 
 	struct SwapchainSupportDetails
 	{
-		VkSurfaceCapabilitiesKHR capabilities;
+		VkSurfaceCapabilitiesKHR		capabilities;
 		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR> presentModes;
+		std::vector<VkPresentModeKHR>	presentModes;
 	};
 
 	struct QueueFamilyIndices
@@ -32,32 +32,35 @@ namespace Mapo
 
 	// Device class that manages Vulkan resources such as Vulkan instance, physical device, logical device,
 	// pool, surface, and queues. It also provides useful helper functions for buffer and image creation.
-	class VulkanDevice final
+	class Device final
 	{
 	public:
-		VulkanDevice(Window& window);
-		~VulkanDevice();
+		Device(Window& window);
+		~Device();
 
 		// Make the device not copiable or movable.
-		VulkanDevice(const VulkanDevice&) = delete;
-		VulkanDevice operator=(const VulkanDevice&) = delete;
-		VulkanDevice(VulkanDevice&&) = delete;
-		VulkanDevice& operator=(VulkanDevice&&) = delete;
+		Device(const Device&) = delete;
+		Device operator=(const Device&) = delete;
+		Device(Device&&) = delete;
+		Device& operator=(Device&&) = delete;
+
+		// Public functions
+		void WaitIdle();
 
 		// Getter for Vulkan resources
-		VkCommandPool GetCommandPool() { return m_commandPool; }
-		VkDevice GetDevice() { return m_device; }
+		VkCommandPool	 GetCommandPool() { return m_commandPool; }
+		VkDevice		 GetDevice() { return m_device; }
 		VkPhysicalDevice GetPhysicalDevice() { return m_gpu; }
-		VkInstance GetInstance() { return m_instance; }
-		VkSurfaceKHR GetSurface() { return m_surface; }
-		VkQueue GetGraphicsQueue() { return m_graphicsQueue; }
-		VkQueue GetPresentQueue() { return m_presentQueue; }
+		VkInstance		 GetInstance() { return m_instance; }
+		VkSurfaceKHR	 GetSurface() { return m_surface; }
+		VkQueue			 GetGraphicsQueue() { return m_graphicsQueue; }
+		VkQueue			 GetPresentQueue() { return m_presentQueue; }
 
 		// Public helper functions
 		SwapchainSupportDetails GetSwapchainSupport() { return QuerySwapchainSupport(m_gpu); };
-		QueueFamilyIndices FindPhysicalQueueFamilies() { return FindQueueFamilies(m_gpu); }
+		QueueFamilyIndices		FindPhysicalQueueFamilies() { return FindQueueFamilies(m_gpu); }
 
-		U32 FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags propertyFlags);
+		U32		 FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags propertyFlags);
 		VkFormat FindSupportedFormat(const std::vector<VkFormat>& formatCandidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 		// Buffer helper functions
@@ -67,7 +70,7 @@ namespace Mapo
 		void CopyBufferToImage(VkBuffer buffer, VkImage image, U32 width, U32 height, U32 layerCount);
 
 		VkCommandBuffer BeginSingleTimeCommands();
-		void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
+		void			EndSingleTimeCommands(VkCommandBuffer commandBuffer);
 
 		// Image helper functions
 		void CreateImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags propertyFlags, VkImage& image,
@@ -83,14 +86,14 @@ namespace Mapo
 		void CreateCommandPool();
 
 		// Private help functions
-		bool IsDeviceSuitable(VkPhysicalDevice physicalDevice);
+		bool					 IsDeviceSuitable(VkPhysicalDevice physicalDevice);
 		std::vector<const char*> GetRequiredExtensions();
-		bool CheckValidationLayerSupport();
-		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice physicalDevice);
-		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-		void HasGlfwRequiredInstanceExtensions();
-		bool CheckDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
-		SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice physicalDevice);
+		bool					 CheckValidationLayerSupport();
+		QueueFamilyIndices		 FindQueueFamilies(VkPhysicalDevice physicalDevice);
+		void					 PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+		void					 HasGlfwRequiredInstanceExtensions();
+		bool					 CheckDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
+		SwapchainSupportDetails	 QuerySwapchainSupport(VkPhysicalDevice physicalDevice);
 
 	public:
 		VkPhysicalDeviceProperties properties;
@@ -98,15 +101,14 @@ namespace Mapo
 	private:
 		Window& m_window;
 
-		VkInstance m_instance;
-		VkDebugUtilsMessengerEXT m_debugMessenger;
-		VkPhysicalDevice m_gpu = VK_NULL_HANDLE;
-		VkCommandPool m_commandPool;
-
-		VkDevice m_device;
-		VkSurfaceKHR m_surface;
-		VkQueue m_graphicsQueue;
-		VkQueue m_presentQueue;
+		VkInstance				 m_instance = VK_NULL_HANDLE;
+		VkDevice				 m_device = VK_NULL_HANDLE;
+		VkPhysicalDevice		 m_gpu = VK_NULL_HANDLE;
+		VkCommandPool			 m_commandPool = VK_NULL_HANDLE;
+		VkSurfaceKHR			 m_surface = VK_NULL_HANDLE;
+		VkQueue					 m_graphicsQueue = VK_NULL_HANDLE;
+		VkQueue					 m_presentQueue = VK_NULL_HANDLE;
+		VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
 
 #ifdef NDBUG
 		const bool m_enableValidationLayers = false;

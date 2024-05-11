@@ -4,7 +4,7 @@ BasedOnStyle: LLVM
 
 AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
-AlignConsecutiveDeclarations: false
+#AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
 AlignOperands: DontAlign
 AlignTrailingComments: true
@@ -52,6 +52,7 @@ UseTab: Always
 # Custom
 MaxEmptyLinesToKeep: 1
 SpaceInEmptyBlock: true
+AlignConsecutiveDeclarations: Consecutive
 #BreakInheritanceList: BeforeColon
 #BreakConstructorInitializers: BeforeColon
 #PackConstructorInitializers: NextLineOnly

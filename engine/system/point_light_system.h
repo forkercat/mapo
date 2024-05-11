@@ -7,9 +7,9 @@
 #include "core/core.h"
 
 #include "engine/camera.h"
-#include "platform/vulkan/vulkan_device.h"
-#include "platform/vulkan/vulkan_pipeline.h"
-#include "platform/vulkan/vulkan_frame_info.h"
+#include "engine/renderer/device.h"
+#include "engine/renderer/pipeline.h"
+#include "engine/renderer/frame_info.h"
 #include "engine/game_object.h"
 
 #include <vector>
@@ -20,22 +20,22 @@ namespace Mapo
 	class PointLightSystem
 	{
 	public:
-		PointLightSystem(VulkanDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout);
+		PointLightSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout);
 		~PointLightSystem();
 
 		PointLightSystem(const PointLightSystem&) = delete;
 		PointLightSystem& operator=(const PointLightSystem&) = delete;
 
-		void Render(VulkanFrameInfo& frameInfo);
+		void Render(FrameInfo& frameInfo);
 
 	private:
 		void CreatePipelineLayout(VkDescriptorSetLayout globalDescriptorSetLayout);
 		void CreatePipeline(VkRenderPass renderPass);
 
 	private:
-		VulkanDevice& m_device;
+		Device& m_device;
 
-		UniqueRef<VulkanPipeline> m_pipeline;
+		UniqueRef<Pipeline> m_pipeline;
 		VkPipelineLayout m_pipelineLayout;
 	};
 

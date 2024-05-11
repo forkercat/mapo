@@ -6,13 +6,14 @@
 
 #include "core/core.h"
 
-#include "platform/vulkan/vulkan_device.h"
-#include "platform/vulkan/vulkan_buffer.h"
-
-#include <vector>
+#include "engine/renderer/device.h"
+#include "engine/renderer/buffer.h"
 
 namespace Mapo
 {
+	class Device;
+	class Buffer;
+
 	class Model
 	{
 	public:
@@ -40,7 +41,7 @@ namespace Mapo
 			void LoadModel(const std::string& filepath);
 		};
 
-		Model(VulkanDevice& device, const Builder& builder);
+		Model(Device& device, const Builder& builder);
 		~Model();
 
 		Model(const Model&) = delete;
@@ -49,21 +50,21 @@ namespace Mapo
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 
-		static UniqueRef<Model> CreateCubeModel(VulkanDevice& device, Vector3 offset);
-		static UniqueRef<Model> CreateModelFromFile(VulkanDevice& device, const std::string& filepath);
+		static UniqueRef<Model> CreateCubeModel(Device& device, Vector3 offset);
+		static UniqueRef<Model> CreateModelFromFile(Device& device, const std::string& filepath);
 
 	private:
 		void CreateVertexBuffers(const std::vector<Vertex>& vertices);
 		void CreateIndexBuffers(const std::vector<U32>& indices);
 
 	private:
-		VulkanDevice& m_device;
+		Device& m_device;
 
-		UniqueRef<VulkanBuffer> m_vertexBuffer;
+		UniqueRef<Buffer> m_vertexBuffer;
 		U32 m_vertexCount;
 
 		bool m_hasIndexBuffer = false;
-		UniqueRef<VulkanBuffer> m_indexBuffer;
+		UniqueRef<Buffer> m_indexBuffer;
 		U32 m_indexCount;
 	};
 

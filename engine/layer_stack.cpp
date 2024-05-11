@@ -22,7 +22,7 @@ namespace Mapo
 	void LayerStack::PushLayer(Layer* layer)
 	{
 		auto iter = std::find(m_layers.begin(), m_layers.end(), layer);
-		MP_ASSERT(iter != m_layers.end(), "Same layer could not be added to stack twice!");
+		MP_ASSERT(iter == m_layers.end(), "Same layer could not be added to stack twice!");
 
 		m_layers.emplace(m_layers.begin() + m_layerInsertIndex, layer);
 		m_layerInsertIndex++;
@@ -46,7 +46,7 @@ namespace Mapo
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
 		auto iter = std::find(m_layers.begin(), m_layers.end(), overlay);
-		MP_ASSERT(iter != m_layers.end(), "Same overlay could not be added to stack twice!");
+		MP_ASSERT(iter == m_layers.end(), "Same overlay could not be added to stack twice!");
 
 		m_layers.emplace_back(overlay);
 	}

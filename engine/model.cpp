@@ -6,6 +6,9 @@
 
 #include "engine/utils.h"
 
+#include "engine/renderer/device.h"
+#include "engine/renderer/buffer.h"
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
@@ -45,7 +48,7 @@ namespace Mapo
 		return attributeDescriptions;
 	}
 
-	Model::Model(VulkanDevice& device, const Builder& builder)
+	Model::Model(Device& device, const Builder& builder)
 		: m_device(device)
 	{
 		CreateVertexBuffers(builder.vertices);
@@ -90,7 +93,7 @@ namespace Mapo
 		VkDeviceSize bufferSize = vertexSize * m_vertexCount;
 
 		// Create staging buffer and it will be auto deleted.
-		VulkanBuffer stagingBuffer{
+		Buffer stagingBuffer{
 			m_device,
 			vertexSize,
 			m_vertexCount,
@@ -102,7 +105,7 @@ namespace Mapo
 		stagingBuffer.WriteToBuffer((void*)vertices.data());
 
 		// Create vertex buffer.
-		m_vertexBuffer = MakeUnique<VulkanBuffer>(
+		m_vertexBuffer = MakeUnique<Buffer>(
 			m_device,
 			vertexSize,
 			m_vertexCount,
@@ -127,7 +130,7 @@ namespace Mapo
 		VkDeviceSize bufferSize = indexSize * m_indexCount;
 
 		// Create staging buffer and it will be auto deleted.
-		VulkanBuffer stagingBuffer{
+		Buffer stagingBuffer{
 			m_device,
 			indexSize,
 			m_indexCount,
@@ -139,7 +142,7 @@ namespace Mapo
 		stagingBuffer.WriteToBuffer((void*)indices.data());
 
 		// Create index buffer.
-		m_indexBuffer = MakeUnique<VulkanBuffer>(
+		m_indexBuffer = MakeUnique<Buffer>(
 			m_device,
 			indexSize,
 			m_indexCount,
@@ -150,7 +153,7 @@ namespace Mapo
 		m_device.CopyBuffer(stagingBuffer.GetBuffer(), m_indexBuffer->GetBuffer(), bufferSize);
 	}
 
-	UniqueRef<Model> Model::CreateCubeModel(VulkanDevice& device, Vector3 offset)
+	UniqueRef<Model> Model::CreateCubeModel(Device& device, Vector3 offset)
 	{
 		// temporary helper function, creates a 1x1x1 cube centered at offset
 		Builder modelBuilder{};
@@ -206,7 +209,7 @@ namespace Mapo
 		return MakeUnique<Model>(device, modelBuilder);
 	}
 
-	UniqueRef<Model> Model::CreateModelFromFile(VulkanDevice& device, const std::string& filepath)
+	UniqueRef<Model> Model::CreateModelFromFile(Device& device, const std::string& filepath)
 	{
 		Builder builder{};
 		builder.LoadModel(filepath);

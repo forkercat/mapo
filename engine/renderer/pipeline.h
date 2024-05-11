@@ -5,16 +5,16 @@
 #pragma once
 
 #include "core/core.h"
-#include "platform/vulkan/vulkan_device.h"
+#include "device.h"
 
 #include <vector>
 
 namespace Mapo
 {
-	struct VulkanPipelineConfigInfo
+	struct PipelineConfigInfo
 	{
-		VulkanPipelineConfigInfo(const VulkanPipelineConfigInfo&) = delete;
-		VulkanPipelineConfigInfo& operator=(const VulkanPipelineConfigInfo&) = delete;
+		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
@@ -34,30 +34,30 @@ namespace Mapo
 		U32 subpass = 0;
 	};
 
-	class VulkanPipeline
+	class Pipeline
 	{
 	public:
-		VulkanPipeline(VulkanDevice& device, const std::string& vertFilepath, const std::string& fragFilepath,
-			const VulkanPipelineConfigInfo& configInfo);
-		~VulkanPipeline();
+		Pipeline(Device& device, const std::string& vertFilepath, const std::string& fragFilepath,
+			const PipelineConfigInfo& configInfo);
+		~Pipeline();
 
-		VulkanPipeline(const VulkanPipeline&) = delete;
-		VulkanPipeline& operator=(const VulkanPipeline&) = delete;
+		Pipeline(const Pipeline&) = delete;
+		Pipeline& operator=(const Pipeline&) = delete;
 
 		void Bind(VkCommandBuffer commandBuffer);
 
-		static void DefaultPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
+		static void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
 
 	private:
 		void CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath,
-			const VulkanPipelineConfigInfo& configInfo);
+			const PipelineConfigInfo& configInfo);
 
 		void CreateShaderModule(const std::vector<char>& code, VkShaderModule* pShaderModule);
 
 		static std::vector<char> ReadFile(const std::string& filepath);
 
 	private:
-		VulkanDevice& m_device;
+		Device& m_device;
 		VkPipeline m_graphicsPipeline;
 		VkShaderModule m_vertShaderModule;
 		VkShaderModule m_fragShaderModule;

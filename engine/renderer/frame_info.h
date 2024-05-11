@@ -9,11 +9,11 @@
 #include "engine/camera.h"
 #include "engine/game_object.h"
 
-#include "../../../../VulkanSDK/1.3.275.0/macOS/include/vulkan/vulkan.h"
+#include <vulkan/vulkan.h>
 
 namespace Mapo
 {
-	struct VulkanFrameInfo
+	struct FrameInfo
 	{
 		U32 frameIndex;
 		F32 frameTime;

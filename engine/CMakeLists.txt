@@ -19,11 +19,16 @@ PUBLIC
 	input/input.h
 	input/key_codes.h
 	input/mouse_codes.h
-	# Render
-	render/render_context.h
-	render/render_command.h
-	render/renderer.h
-	render/renderer_api.h
+	# Renderer
+	renderer/vk_common.h
+	renderer/render_context.h
+	renderer/renderer.h
+	renderer/device.h
+	renderer/pipeline.h
+	renderer/swapchain.h
+	renderer/buffer.h
+	renderer/descriptors.h
+	renderer/frame_info.h
 	# UI
 	ui/imgui_layer.h
 	# System
@@ -34,15 +39,6 @@ PUBLIC
 	scene.h
 	# Platform
 	${PLATFORM_SRC_DIR}/macos/macos_window.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_render_context.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer_api.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_device.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_pipeline.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_swapchain.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_buffer.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_descriptors.h
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_frame_info.h
 PRIVATE
 	application.cpp
 	window.cpp
@@ -53,11 +49,14 @@ PRIVATE
 	component.cpp
 	camera.cpp
 	keyboard_controller.cpp
-	# Render
-	render/render_context.cpp
-	render/render_command.cpp
-	render/renderer.cpp
-	render/renderer_api.cpp
+	# Renderer
+	renderer/render_context.cpp
+	renderer/renderer.cpp
+	renderer/device.cpp
+	renderer/pipeline.cpp
+	renderer/swapchain.cpp
+	renderer/buffer.cpp
+	renderer/descriptors.cpp
 	# UI
 	ui/imgui_layer.cpp
 	# System
@@ -68,14 +67,6 @@ PRIVATE
 	# Platform
 	${PLATFORM_SRC_DIR}/macos/macos_input.cpp
 	${PLATFORM_SRC_DIR}/macos/macos_window.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_render_context.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer_api.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_device.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_pipeline.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_swapchain.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_buffer.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_renderer.cpp
-	${PLATFORM_SRC_DIR}/vulkan/vulkan_descriptors.cpp
 )
 
 target_link_libraries(engine

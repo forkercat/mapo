@@ -4,10 +4,11 @@
 
 #pragma once
 
-#include "platform/vulkan/vulkan_device.h"
+#include "device.h"
 
 namespace Mapo
 {
+	/*
 	class Buffer
 	{
 	public:
@@ -40,25 +41,25 @@ namespace Mapo
 		// Unmap a mapped memory range.
 		virtual void Unmap() = 0;
 
-
 	};
+	*/
 
 	// Encapsulates a vulkan buffer. Initially based off VulkanBuffer by Sascha Willems.
 	// https://github.com/SaschaWillems/Vulkan/blob/master/base/VulkanBuffer.h
-	class VulkanBuffer
+	class Buffer
 	{
 	public:
-		VulkanBuffer(
-			VulkanDevice& device,
+		Buffer(
+			Device& device,
 			VkDeviceSize instanceSize,
 			U32 instanceCount,
 			VkBufferUsageFlags usageFlags,
 			VkMemoryPropertyFlags memoryPropertyFlags,
 			VkDeviceSize minOffsetAlignment = 1);
-		~VulkanBuffer();
+		~Buffer();
 
-		VulkanBuffer(const VulkanBuffer&) = delete;
-		VulkanBuffer& operator=(const VulkanBuffer&) = delete;
+		Buffer(const Buffer&) = delete;
+		Buffer& operator=(const Buffer&) = delete;
 
 		// Map a memory range of this buffer. If successful, mapped points to the specified buffer range.
 		VkResult Map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
@@ -100,7 +101,7 @@ namespace Mapo
 		static VkDeviceSize GetAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment);
 
 	private:
-		VulkanDevice& m_device;
+		Device& m_device;
 		void* m_mappedData = nullptr;
 		VkBuffer m_buffer = VK_NULL_HANDLE;
 		VkDeviceMemory m_memory = VK_NULL_HANDLE;

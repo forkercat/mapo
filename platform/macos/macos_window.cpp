@@ -6,16 +6,16 @@
 
 #include "core/logging.h"
 #include "core/uassert.h"
-#include "engine/render/render_context.h"
 
-// TODO: REMOVED!
+#include "engine/renderer/vk_common.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace Mapo
 {
 	MacosWindow::MacosWindow(const WindowProps& props)
-		: Window(), m_renderContext(nullptr)
+		: Window()
 	{
 		Init(props);
 	}
@@ -40,9 +40,6 @@ namespace Mapo
 
 		m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
 		MP_ASSERT(m_window, "GLFW window creation failed. m_window is nullptr!");
-
-		m_renderContext = RenderContext::Create(*this);
-		m_renderContext->Init();
 
 		// Set up callbacks.
 		glfwSetErrorCallback(ErrorCallback);
@@ -83,11 +80,10 @@ namespace Mapo
 
 	void MacosWindow::CreateWindowSurface(void* instance, void* surface)
 	{
-		VkInstance* pInstance = (VkInstance*)instance;
+		VkInstance*	  pInstance = (VkInstance*)instance;
 		VkSurfaceKHR* pSurface = (VkSurfaceKHR*)surface;
 
-		VkResult result = glfwCreateWindowSurface(*pInstance, m_window, nullptr, pSurface);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create a window surface for Vulkan!");
+		VK_CHECK(glfwCreateWindowSurface(*pInstance, m_window, nullptr, pSurface));
 	}
 
 	void MacosWindow::GlfwWaitEvents()
@@ -98,21 +94,6 @@ namespace Mapo
 	const char** MacosWindow::GlfwGetRequiredExtensions(U32* count)
 	{
 		return glfwGetRequiredInstanceExtensions(count);
-	}
-
-	void* MacosWindow::Device()
-	{
-		return m_renderContext->Device();
-	}
-
-	void* MacosWindow::Renderer()
-	{
-		return m_renderContext->Renderer();
-	}
-
-	void* MacosWindow::DescriptorPool()
-	{
-		return m_renderContext->DescriptorPool();
 	}
 
 } // namespace Mapo

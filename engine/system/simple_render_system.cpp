@@ -14,7 +14,7 @@ namespace Mapo
 		Matrix4 normalMatrix{ 1.0f };
 	};
 
-	SimpleRenderSystem::SimpleRenderSystem(VulkanDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
+	SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
 		: m_device(device)
 	{
 		CreatePipelineLayout(globalDescriptorSetLayout);
@@ -53,16 +53,16 @@ namespace Mapo
 	{
 		MP_ASSERT(m_pipelineLayout, "Could not create pipeline before pipeline layout!");
 
-		VulkanPipelineConfigInfo pipelineConfig{};
-		VulkanPipeline::DefaultPipelineConfigInfo(pipelineConfig);
+		PipelineConfigInfo pipelineConfig{};
+		Pipeline::DefaultPipelineConfigInfo(pipelineConfig);
 
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = m_pipelineLayout;
 		m_pipeline =
-			MakeUnique<VulkanPipeline>(m_device, "assets/shaders/simple_shader.vert.spv", "assets/shaders/simple_shader.frag.spv", pipelineConfig);
+			MakeUnique<Pipeline>(m_device, "assets/shaders/simple_shader.vert.spv", "assets/shaders/simple_shader.frag.spv", pipelineConfig);
 	}
 
-	void SimpleRenderSystem::RenderGameObjects(VulkanFrameInfo& frameInfo)
+	void SimpleRenderSystem::RenderGameObjects(FrameInfo& frameInfo)
 	{
 		// Bind graphics pipeline.
 		m_pipeline->Bind(frameInfo.commandBuffer);

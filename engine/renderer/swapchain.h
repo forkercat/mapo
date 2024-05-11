@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-#include "platform/vulkan/vulkan_device.h"
+#include "device.h"
 
 #include <memory>
 #include <vector>
@@ -15,17 +15,17 @@ namespace Mapo
 {
 	// Swapchain class that manages Vulkan swapchain and images, framebuffers, render passes
 	// synchronization primitives, etc.
-	class VulkanSwapchain
+	class Swapchain
 	{
 	public:
 		static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-		VulkanSwapchain(VulkanDevice& device, VkExtent2D windowExtent);
-		VulkanSwapchain(VulkanDevice& device, VkExtent2D windowExtent, Ref<VulkanSwapchain> previous);
-		~VulkanSwapchain();
+		Swapchain(Device& device, VkExtent2D windowExtent);
+		Swapchain(Device& device, VkExtent2D windowExtent, Ref<Swapchain> previous);
+		~Swapchain();
 
-		VulkanSwapchain(const VulkanSwapchain&) = delete;
-		void operator=(const VulkanSwapchain&) = delete;
+		Swapchain(const Swapchain&) = delete;
+		void operator=(const Swapchain&) = delete;
 
 		// Functions to get Vulkan resources
 		VkRenderPass GetRenderPass() { return m_renderPass; }
@@ -45,7 +45,7 @@ namespace Mapo
 		VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, U32* imageIndex);
 		VkFormat FindDepthFormat();
 
-		bool CompareSwapchainFormats(const VulkanSwapchain& otherSwapchain) const
+		bool CompareSwapchainFormats(const Swapchain& otherSwapchain) const
 		{
 			return m_swapchainImageFormat == otherSwapchain.m_swapchainImageFormat && m_swapchainDepthFormat == otherSwapchain.m_swapchainDepthFormat;
 		}
@@ -68,10 +68,10 @@ namespace Mapo
 		VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
 	private:
-		VulkanDevice& m_device;
+		Device& m_device;
 		VkExtent2D m_windowExtent;
 		VkSwapchainKHR m_swapchain;
-		Ref<VulkanSwapchain> m_oldSwapchain;
+		Ref<Swapchain> m_oldSwapchain;
 
 		VkFormat m_swapchainImageFormat;
 		VkFormat m_swapchainDepthFormat;

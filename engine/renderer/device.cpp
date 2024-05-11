@@ -2,9 +2,10 @@
 // Created by Junhao Wang (@forkercat) on 4/1/24.
 //
 
-#include "vulkan_device.h"
+#include "device.h"
 
 #include "engine/window.h"
+#include "engine/renderer/vk_common.h"
 
 #include <unordered_set>
 #include <set>
@@ -16,9 +17,9 @@ namespace Mapo
 	/////////////////////////////////////////////////////////////////////////////////
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-		VkDebugUtilsMessageTypeFlagsEXT messageType,
-		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-		void* pUserData)
+		VkDebugUtilsMessageTypeFlagsEXT														   messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT*											   pCallbackData,
+		void*																				   pUserData)
 	{
 		MP_DEBUG("Validation Output: {}", pCallbackData->pMessage);
 		return VK_FALSE; // Original Vulkan call is not aborted
@@ -28,9 +29,9 @@ namespace Mapo
 	// Since this function is an extension function, it is not automatically loaded.
 	// We have to look up its address ourselves.
 	static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
-		const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-		const VkAllocationCallbacks* pAllocator,
-		VkDebugUtilsMessengerEXT* pDebugMessenger)
+		const VkDebugUtilsMessengerCreateInfoEXT*			pCreateInfo,
+		const VkAllocationCallbacks*						pAllocator,
+		VkDebugUtilsMessengerEXT*							pDebugMessenger)
 	{
 		auto func =
 			(PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
@@ -63,7 +64,7 @@ namespace Mapo
 	// Class member functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VulkanDevice::VulkanDevice(Window& window)
+	Device::Device(Window& window)
 		: m_window(window)
 	{
 		CreateInstance();
@@ -74,7 +75,7 @@ namespace Mapo
 		CreateCommandPool();
 	}
 
-	VulkanDevice::~VulkanDevice()
+	Device::~Device()
 	{
 		vkDestroyCommandPool(m_device, m_commandPool, nullptr);
 		vkDestroyDevice(m_device, nullptr);
@@ -89,10 +90,19 @@ namespace Mapo
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
+	// Public functions
+	/////////////////////////////////////////////////////////////////////////////////
+
+	void Device::WaitIdle()
+	{
+		VK_CHECK(vkDeviceWaitIdle(m_device));
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////
 	// Public helper functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	U32 VulkanDevice::FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags propertyFlags)
+	U32 Device::FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags propertyFlags)
 	{
 		// If typeFilter is 0000 1100, the function will return an index of 2.
 		// Memory heaps are distinct memory resources like dedicated VRAM and swap space in RAM for when VRAM runs out.
@@ -122,7 +132,7 @@ namespace Mapo
 		return -1;
 	}
 
-	VkFormat VulkanDevice::FindSupportedFormat(const std::vector<VkFormat>& formatCandidates, VkImageTiling tiling,
+	VkFormat Device::FindSupportedFormat(const std::vector<VkFormat>& formatCandidates, VkImageTiling tiling,
 		VkFormatFeatureFlags features)
 	{
 		for (const VkFormat& format : formatCandidates)
@@ -148,7 +158,7 @@ namespace Mapo
 	// Buffer helper functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanDevice::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags propertyFlags,
+	void Device::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags propertyFlags,
 		VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		// Buffer creation
@@ -178,7 +188,7 @@ namespace Mapo
 		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
 	}
 
-	void VulkanDevice::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+	void Device::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 	{
 		VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -191,7 +201,7 @@ namespace Mapo
 		EndSingleTimeCommands(commandBuffer);
 	}
 
-	void VulkanDevice::CopyBufferToImage(VkBuffer buffer, VkImage image, U32 width, U32 height, U32 layerCount)
+	void Device::CopyBufferToImage(VkBuffer buffer, VkImage image, U32 width, U32 height, U32 layerCount)
 	{
 		VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -213,7 +223,7 @@ namespace Mapo
 		EndSingleTimeCommands(commandBuffer);
 	}
 
-	VkCommandBuffer VulkanDevice::BeginSingleTimeCommands()
+	VkCommandBuffer Device::BeginSingleTimeCommands()
 	{
 		VkCommandBufferAllocateInfo allocateInfo{};
 		allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -233,7 +243,7 @@ namespace Mapo
 		return commandBuffer;
 	}
 
-	void VulkanDevice::EndSingleTimeCommands(VkCommandBuffer commandBuffer)
+	void Device::EndSingleTimeCommands(VkCommandBuffer commandBuffer)
 	{
 		vkEndCommandBuffer(commandBuffer);
 
@@ -252,7 +262,7 @@ namespace Mapo
 	// Image helper functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanDevice::CreateImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags propertyFlags,
+	void Device::CreateImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags propertyFlags,
 		VkImage& image, VkDeviceMemory& imageMemory)
 	{
 		VkResult result = vkCreateImage(m_device, &imageInfo, nullptr, &image);
@@ -278,7 +288,7 @@ namespace Mapo
 	// Functions to create Vulkan resources
 	/////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanDevice::CreateInstance()
+	void Device::CreateInstance()
 	{
 		if (m_enableValidationLayers && !CheckValidationLayerSupport())
 		{
@@ -329,7 +339,7 @@ namespace Mapo
 		HasGlfwRequiredInstanceExtensions();
 	}
 
-	void VulkanDevice::SetUpDebugMessenger()
+	void Device::SetUpDebugMessenger()
 	{
 		if (m_enableValidationLayers)
 		{
@@ -341,14 +351,14 @@ namespace Mapo
 		}
 	}
 
-	void VulkanDevice::CreateSurface()
+	void Device::CreateSurface()
 	{
 		void* pInstance = (void*)&m_instance;
 		void* pSurface = (void*)&m_surface;
 		m_window.CreateWindowSurface(pInstance, pSurface);
 	}
 
-	void VulkanDevice::PickPhysicalDevice()
+	void Device::PickPhysicalDevice()
 	{
 		U32 deviceCount{};
 		vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
@@ -374,7 +384,7 @@ namespace Mapo
 		MP_INFO("Physical device: {}", properties.deviceName);
 	}
 
-	void VulkanDevice::CreateLogicalDevice()
+	void Device::CreateLogicalDevice()
 	{
 		// Queue families
 		QueueFamilyIndices queueFamilyData = FindQueueFamilies(m_gpu);
@@ -384,7 +394,7 @@ namespace Mapo
 			queueFamilyData.presentFamily.value() };
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-		F32 queuePriority = 1.0f;
+		F32									 queuePriority = 1.0f;
 
 		for (U32 queueFamilyIndex : uniqueQueueFamilies)
 		{
@@ -429,7 +439,7 @@ namespace Mapo
 		vkGetDeviceQueue(m_device, queueFamilyData.presentFamily.value(), 0, &m_presentQueue);
 	}
 
-	void VulkanDevice::CreateCommandPool()
+	void Device::CreateCommandPool()
 	{
 		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_gpu);
 
@@ -449,10 +459,10 @@ namespace Mapo
 	// Private helper functions
 	/////////////////////////////////////////////////////////////////////////////////
 
-	bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice physicalDevice)
+	bool Device::IsDeviceSuitable(VkPhysicalDevice physicalDevice)
 	{
 		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(physicalDevice);
-		bool extensionsSupported = CheckDeviceExtensionSupport(physicalDevice);
+		bool			   extensionsSupported = CheckDeviceExtensionSupport(physicalDevice);
 
 		// It is important that we only query for swap chain support after verifying that the extensions are available.
 		bool swapChainAdequate = false;
@@ -468,9 +478,9 @@ namespace Mapo
 		return queueFamilyIndices.IsComplete() && extensionsSupported && swapChainAdequate && supportedDeviceFeatures.samplerAnisotropy;
 	}
 
-	std::vector<const char*> VulkanDevice::GetRequiredExtensions()
+	std::vector<const char*> Device::GetRequiredExtensions()
 	{
-		U32 glfwExtensionCount = 0;
+		U32			 glfwExtensionCount = 0;
 		const char** glfwExtensions = m_window.GlfwGetRequiredExtensions(&glfwExtensionCount);
 
 		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
@@ -489,7 +499,7 @@ namespace Mapo
 		return extensions;
 	}
 
-	bool VulkanDevice::CheckValidationLayerSupport()
+	bool Device::CheckValidationLayerSupport()
 	{
 		U32 layerCount{};
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -514,7 +524,7 @@ namespace Mapo
 		return true;
 	}
 
-	QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice physicalDevice)
+	QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice physicalDevice)
 	{
 		U32 queueFamilyCount{};
 		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
@@ -524,7 +534,7 @@ namespace Mapo
 
 		// Find at least one queue family that supports VK_QUEUE_GRAPHICS_BIT.
 		QueueFamilyIndices queueFamilyData;
-		U32 queueFamilyIndex = 0;
+		U32				   queueFamilyIndex = 0;
 
 		for (const auto& queueFamily : queueFamilies)
 		{
@@ -554,7 +564,7 @@ namespace Mapo
 		return queueFamilyData;
 	}
 
-	void VulkanDevice::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
+	void Device::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 	{
 		createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -565,7 +575,7 @@ namespace Mapo
 		createInfo.pUserData = nullptr;
 	}
 
-	void VulkanDevice::HasGlfwRequiredInstanceExtensions()
+	void Device::HasGlfwRequiredInstanceExtensions()
 	{
 		U32 extensionCount{};
 		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
@@ -599,7 +609,7 @@ namespace Mapo
 		MP_NEWLINE();
 	}
 
-	bool VulkanDevice::CheckDeviceExtensionSupport(VkPhysicalDevice physicalDevice)
+	bool Device::CheckDeviceExtensionSupport(VkPhysicalDevice physicalDevice)
 	{
 		U32 extensionCount = 0;
 		vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
@@ -617,7 +627,7 @@ namespace Mapo
 		return requiredExtensions.empty();
 	}
 
-	SwapchainSupportDetails VulkanDevice::QuerySwapchainSupport(VkPhysicalDevice physicalDevice)
+	SwapchainSupportDetails Device::QuerySwapchainSupport(VkPhysicalDevice physicalDevice)
 	{
 		SwapchainSupportDetails details{};
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, m_surface, &details.capabilities);

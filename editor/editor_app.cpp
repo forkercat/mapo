@@ -22,19 +22,12 @@ namespace Mapo
 		{
 			PushLayer(MP_NEW(EditorLayer, StdAllocator::Get()));
 		}
-
-		bool Start() override;
 	};
 
 	// Defines the creation function.
 	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
 		return MP_NEW(EditorApp, StdAllocator::Get())(args);
-	}
-
-	bool EditorApp::Start()
-	{
-		return Application::Start();
 	}
 
 } // namespace Mapo
@@ -47,6 +40,7 @@ int MapoMain(int argc, char** argv)
 {
 	Mapo::Application* app = Mapo::CreateApplication({ argc, argv });
 
+	app->Init();
 	app->Start();
 	app->Run();
 
