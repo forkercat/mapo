@@ -22,7 +22,10 @@ namespace Mapo
 		static bool IsInitialized() { return s_context != nullptr; }
 		static void SwapBuffers();
 
-		static Device& GetDevice() { return *s_context->m_device; }
+		static U32 GetMaxFramesInFlight();
+
+		static Device&		   GetDevice() { return *s_context->m_device; }
+		static Renderer&	   GetRenderer() { return *s_context->m_renderer; }
 		static DescriptorPool& GetDescriptorPool() { return *s_context->m_descriptorPool; }
 
 	private:
@@ -35,7 +38,8 @@ namespace Mapo
 
 	private:
 		// Vulkan resources.
-		UniqueRef<Device> m_device{};
+		UniqueRef<Device>		  m_device{};
+		UniqueRef<Renderer>		  m_renderer{};
 		UniqueRef<DescriptorPool> m_descriptorPool{};
 
 		static RenderContext* s_context;

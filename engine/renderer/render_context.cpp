@@ -8,6 +8,7 @@
 #include "engine/application.h"
 
 #include "engine/renderer/device.h"
+#include "engine/renderer/renderer.h"
 #include "engine/renderer/swapchain.h"
 #include "engine/renderer/descriptors.h"
 
@@ -21,9 +22,11 @@ namespace Mapo
 
 		Window& window = Application::Get().GetWindow();
 
-		s_context = MP_NEW(RenderContext, StdAllocator::Get())();
+		s_context = MP_NEW(RenderContext);
 
 		s_context->m_device = MakeUnique<Device>(window);
+
+		s_context->m_renderer = MakeUnique<Renderer>();
 
 		s_context->m_descriptorPool =
 			DescriptorPool::Builder(*s_context->m_device)
@@ -39,12 +42,17 @@ namespace Mapo
 	void RenderContext::Release()
 	{
 		MP_ASSERT(s_context, "The context instance is nullptr!");
-		MP_DELETE(s_context, StdAllocator::Get());
+		MP_DELETE(s_context);
 	}
 
 	void RenderContext::SwapBuffers()
 	{
 		//
+	}
+
+	U32 RenderContext::GetMaxFramesInFlight()
+	{
+		return Swapchain::MAX_FRAMES_IN_FLIGHT;
 	}
 
 } // namespace Mapo

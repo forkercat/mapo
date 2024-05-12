@@ -14,8 +14,6 @@
 
 namespace Mapo
 {
-	Renderer* Renderer::s_renderer = nullptr;
-
 	Renderer::Renderer()
 	{
 		RecreateSwapchain();
@@ -29,42 +27,28 @@ namespace Mapo
 		FreeCommandBuffers();
 	}
 
-	void Renderer::Init()
-	{
-		MP_ASSERT(RenderContext::IsInitialized(), "Render context is not initialized!");
-		MP_ASSERT(s_renderer == nullptr, "The renderer has already been initialized. You cannot initialize it twice!");
-
-		s_renderer = MP_NEW(Renderer, StdAllocator::Get())();
-	}
-
-	void Renderer::Release()
-	{
-		MP_ASSERT(s_renderer, "The renderer instance is nullptr!");
-		MP_DELETE(s_renderer, StdAllocator::Get());
-	}
-
 	/////////////////////////////////////////////////////////////////////////////////
 	// Public Getters.
 	/////////////////////////////////////////////////////////////////////////////////
 
 	VkRenderPass Renderer::GetRenderPass()
 	{
-		return s_renderer->m_swapchain->GetRenderPass();
+		return m_swapchain->GetRenderPass();
 	}
 
 	F32 Renderer::GetAspectRatio()
 	{
-		return s_renderer->m_swapchain->GetExtentAspectRatio();
+		return m_swapchain->GetExtentAspectRatio();
 	}
 
 	U32 Renderer::GetImageCount()
 	{
-		return s_renderer->m_swapchain->GetImageCount();
+		return m_swapchain->GetImageCount();
 	}
 
 	bool Renderer::IsFrameInProgress()
 	{
-		return s_renderer->m_isFrameStarted;
+		return m_isFrameStarted;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -81,11 +65,11 @@ namespace Mapo
 		// 3. Present that image to the screen for presentation, returning it to the swapchain.
 		// The function calls will return before the operations are actually finished and the order of execution is also undefined.
 
-		VkResult acquireResult = s_renderer->m_swapchain->AcquireNextImage(&s_renderer->m_currentImageIndex);
+		VkResult acquireResult = m_swapchain->AcquireNextImage(&m_currentImageIndex);
 
 		if (acquireResult == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			s_renderer->RecreateSwapchain();
+			RecreateSwapchain();
 			return nullptr;
 		}
 
@@ -94,7 +78,7 @@ namespace Mapo
 			MP_ASSERT(false, "Failed to acquire next image!");
 		}
 
-		s_renderer->m_isFrameStarted = true;
+		m_isFrameStarted = true;
 
 		VkCommandBuffer commandBuffer = GetCurrentCommandBuffer(); // based on m_currentFrameIndex
 
@@ -116,14 +100,14 @@ namespace Mapo
 		VK_CHECK(vkEndCommandBuffer(commandBuffer));
 
 		// Submit command buffer.
-		VkResult submitResult = s_renderer->m_swapchain->SubmitCommandBuffers(&commandBuffer, &s_renderer->m_currentImageIndex);
+		VkResult submitResult = m_swapchain->SubmitCommandBuffers(&commandBuffer, &m_currentImageIndex);
 
 		Window& window = Application::Get().GetWindow();
 
 		if (submitResult == VK_ERROR_OUT_OF_DATE_KHR || submitResult == VK_SUBOPTIMAL_KHR || window.WasWindowResized())
 		{
 			window.ResetWindowResizedFlag();
-			s_renderer->RecreateSwapchain();
+			RecreateSwapchain();
 		}
 		else if (submitResult != VK_SUCCESS)
 		{
@@ -131,23 +115,23 @@ namespace Mapo
 		}
 
 		// Currently renderer and swapchain manages separate frame indices, but they are always identical.
-		s_renderer->m_isFrameStarted = false;
-		s_renderer->m_currentFrameIndex = (s_renderer->m_currentFrameIndex + 1) % Swapchain::MAX_FRAMES_IN_FLIGHT;
+		m_isFrameStarted = false;
+		m_currentFrameIndex = (m_currentFrameIndex + 1) % Swapchain::MAX_FRAMES_IN_FLIGHT;
 	}
 
 	void Renderer::BeginRenderPass(VkCommandBuffer commandBuffer)
 	{
-		MP_ASSERT(s_renderer->m_isFrameStarted, "Could not begin render pass while frame is not in progress!");
+		MP_ASSERT(m_isFrameStarted, "Could not begin render pass while frame is not in progress!");
 		MP_ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not begin render pass on command buffer from a different frame!");
 
 		// Begin render pass.
 		VkRenderPassBeginInfo renderPassBeginInfo{};
 		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassBeginInfo.renderPass = s_renderer->m_swapchain->GetRenderPass();
-		renderPassBeginInfo.framebuffer = s_renderer->m_swapchain->GetFramebuffer(s_renderer->m_currentImageIndex);
+		renderPassBeginInfo.renderPass = m_swapchain->GetRenderPass();
+		renderPassBeginInfo.framebuffer = m_swapchain->GetFramebuffer(m_currentImageIndex);
 
 		renderPassBeginInfo.renderArea.offset = { 0, 0 };
-		renderPassBeginInfo.renderArea.extent = s_renderer->m_swapchain->GetSwapchainExtent();
+		renderPassBeginInfo.renderArea.extent = m_swapchain->GetSwapchainExtent();
 
 		std::array<VkClearValue, 2> clearValues{};
 		clearValues[0].color = { { 0.01f, 0.01f, 0.01f, 1.0f } };
@@ -162,21 +146,21 @@ namespace Mapo
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = static_cast<F32>(s_renderer->m_swapchain->GetSwapchainExtent().width);
-		viewport.height = static_cast<F32>(s_renderer->m_swapchain->GetSwapchainExtent().height);
+		viewport.width = static_cast<F32>(m_swapchain->GetSwapchainExtent().width);
+		viewport.height = static_cast<F32>(m_swapchain->GetSwapchainExtent().height);
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = s_renderer->m_swapchain->GetSwapchainExtent();
+		scissor.extent = m_swapchain->GetSwapchainExtent();
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
 	void Renderer::EndRenderPass(VkCommandBuffer commandBuffer)
 	{
-		MP_ASSERT(s_renderer->m_isFrameStarted, "Could not end render pass while frame is not in progress!");
+		MP_ASSERT(m_isFrameStarted, "Could not end render pass while frame is not in progress!");
 		MP_ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not end render pass on command buffer from a different frame!");
 
 		vkCmdEndRenderPass(commandBuffer);

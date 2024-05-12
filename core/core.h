@@ -21,5 +21,5 @@
 #include "core/templates/hash_set.h"
 
 // memory
-#include "core/memory/memory.h"
 #include "core/memory/allocator.h"
+#include "core/memory/memory.h"

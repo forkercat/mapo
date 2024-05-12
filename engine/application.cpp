@@ -9,9 +9,8 @@
 
 #include "engine/renderer/render_context.h"
 #include "engine/renderer/renderer.h"
-#include "engine/renderer/device.h"
+#include "engine/renderer/buffer.h"
 #include "engine/renderer/descriptors.h"
-#include "engine/renderer/swapchain.h"
 
 #include "engine/system/simple_render_system.h"
 #include "engine/system/point_light_system.h"
@@ -43,16 +42,18 @@ namespace Mapo
 
 	Application::~Application()
 	{
+		// Need to do this to make sure model objects are deleted.
+		m_scene.release();
+
 		RenderContext::Release();
 	}
 
 	bool Application::Init()
 	{
 		RenderContext::Init();
-		Renderer::Init();
 
 		// ImGui
-		m_imguiLayer = MP_NEW(ImGuiLayer, StdAllocator::Get());
+		m_imguiLayer = MP_NEW(ImGuiLayer);
 		PushOverlay(m_imguiLayer);
 
 		return true;
@@ -61,8 +62,6 @@ namespace Mapo
 	bool Application::Start()
 	{
 		MP_ASSERT(RenderContext::IsInitialized(), "Render context is not initialized!");
-		MP_ASSERT(Renderer::IsInitialized(), "Renderer is not initialized!");
-
 		Device& device = RenderContext::GetDevice();
 
 		// Cube
@@ -104,17 +103,17 @@ namespace Mapo
 
 	void Application::Run()
 	{
-		Device& device = RenderContext::GetDevice();
-		// Renderer& renderer = RenderContext::GetRenderer();
+		Device&			device = RenderContext::GetDevice();
+		Renderer&		renderer = RenderContext::GetRenderer();
 		DescriptorPool& globalDescriptorPool = RenderContext::GetDescriptorPool();
 
 		// Create ImGui system.
 		ImGuiSystem imguiSystem{
-			*m_window, device, Renderer::GetRenderPass(), Renderer::GetImageCount()
+			*m_window, device, renderer.GetRenderPass(), renderer.GetImageCount()
 		};
 
 		// Uniform buffers
-		std::vector<UniqueRef<Buffer>> uboBuffers(Swapchain::MAX_FRAMES_IN_FLIGHT);
+		std::vector<UniqueRef<Buffer>> uboBuffers(RenderContext::GetMaxFramesInFlight());
 
 		for (int i = 0; i < uboBuffers.size(); ++i)
 		{
@@ -134,7 +133,7 @@ namespace Mapo
 				.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
 				.Build();
 
-		std::vector<VkDescriptorSet> globalDescriptorSets(Swapchain::MAX_FRAMES_IN_FLIGHT); // one set per frame
+		std::vector<VkDescriptorSet> globalDescriptorSets(RenderContext::GetMaxFramesInFlight()); // one set per frame
 		for (int i = 0; i < globalDescriptorSets.size(); ++i)
 		{
 			VkDescriptorBufferInfo bufferInfo = uboBuffers[i]->DescriptorInfo();
@@ -146,9 +145,9 @@ namespace Mapo
 
 		// Render system, camera, and controller
 		SimpleRenderSystem simpleRenderSystem(
-			device, Renderer::GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			device, renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		PointLightSystem pointLightSystem(
-			device, Renderer::GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			device, renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		RainbowSystem rainbowSystem(0.4f);
 
 		// Camera
@@ -173,17 +172,17 @@ namespace Mapo
 			auto& viewerTransform = viewerObject.GetComponent<TransformComponent>();
 			camera.SetViewYXZ(viewerTransform.translation, viewerTransform.rotation);
 
-			F32 aspect = Renderer::GetAspectRatio();
+			F32 aspect = renderer.GetAspectRatio();
 			camera.SetPerspectiveProjection(MathOp::Radians(50.f), aspect, 0.1f, 100.f);
 
 			// Could be nullptr if, for example, the swapchain needs to be recreated.
-			if (VkCommandBuffer commandBuffer = Renderer::BeginFrame())
+			if (VkCommandBuffer commandBuffer = renderer.BeginFrame())
 			{
 				// ImGui
 				imguiSystem.NewFrame();
 
 				// Prepare frame info
-				U32 frameIndex = Renderer::GetCurrentFrameIndex();
+				U32 frameIndex = renderer.GetCurrentFrameIndex();
 
 				FrameInfo frameInfo{
 					.frameIndex = frameIndex,
@@ -212,7 +211,7 @@ namespace Mapo
 				// -   Render objects
 				// - End shading pass
 				// - Post processing...
-				Renderer::BeginRenderPass(commandBuffer);
+				renderer.BeginRenderPass(commandBuffer);
 
 				simpleRenderSystem.RenderGameObjects(frameInfo);
 				pointLightSystem.Render(frameInfo);
@@ -221,8 +220,8 @@ namespace Mapo
 				imguiSystem.RunExample();
 				imguiSystem.Render(commandBuffer);
 
-				Renderer::EndRenderPass(commandBuffer);
-				Renderer::EndFrame();
+				renderer.EndRenderPass(commandBuffer);
+				renderer.EndFrame();
 			}
 
 			m_window->OnUpdate();

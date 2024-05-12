@@ -7,11 +7,9 @@
 #include "core/core.h"
 
 #include "engine/renderer/device.h"
-#include "engine/renderer/buffer.h"
 
 namespace Mapo
 {
-	class Device;
 	class Buffer;
 
 	class Model

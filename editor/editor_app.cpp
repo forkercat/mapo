@@ -20,14 +20,14 @@ namespace Mapo
 		EditorApp(ApplicationCommandLineArgs args)
 			: Application("Editor App (Vulkan)", args)
 		{
-			PushLayer(MP_NEW(EditorLayer, StdAllocator::Get()));
+			PushLayer(MP_NEW(EditorLayer));
 		}
 	};
 
 	// Defines the creation function.
 	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return MP_NEW(EditorApp, StdAllocator::Get())(args);
+		return MP_NEW(EditorApp)(args);
 	}
 
 } // namespace Mapo
@@ -44,7 +44,7 @@ int MapoMain(int argc, char** argv)
 	app->Start();
 	app->Run();
 
-	MP_DELETE(app, Mapo::StdAllocator::Get());
+	MP_DELETE(app);
 
 	return 0;
 }

@@ -6,7 +6,6 @@
 
 #include "engine/utils.h"
 
-#include "engine/renderer/device.h"
 #include "engine/renderer/buffer.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION

@@ -9,7 +9,8 @@
 #include <new>
 
 // [USAGE] Test* test = MP_NEW(Test, allocator)(0, 1, 2);
-#define MP_NEW(Type, Allocator) new (Allocator.Allocate(sizeof(Type))) Type
+#define MP_NEW2(Type, Allocator) new (Allocator.Allocate(sizeof(Type))) Type
+#define MP_NEW(Type) MP_NEW2(Type, Mapo::StdAllocator::Get())
 
 // No placement-form of the delete operator.
 template <typename T, class A>
@@ -21,7 +22,8 @@ void DeleteHelper(T* pObject, A& allocator)
 }
 
 // [USAGE] MP_DELETE(test, allocator);
-#define MP_DELETE(Ptr, Allocator) DeleteHelper(Ptr, Allocator)
+#define MP_DELETE2(Ptr, Allocator) DeleteHelper(Ptr, Allocator)
+#define MP_DELETE(Ptr) MP_DELETE2(Ptr, Mapo::StdAllocator::Get())
 
 /////////////////////////////////////////////////////////////////////////////////
 // Traits-class that decides whether a given type is POD or not.
@@ -114,9 +116,10 @@ struct TypeAndCount<T[N]> // partial template specialization to extract type and
 };
 
 // [USAGE] Test* test = MP_NEW_ARRAY(Test[3], allocator);
-#define MP_NEW_ARRAY(Type, Allocator)                                                          \
+#define MP_NEW_ARRAY2(Type, Allocator)                                                          \
 	NewArray<TypeAndCount<Type>::ExtractedType>(Allocator, TypeAndCount<Type>::ExtractedCount, \
 		IntToType<IsPOD<TypeAndCount<Type>::ExtractedType>::Value>())
+#define MP_NEW_ARRAY(Type) MP_NEW_ARRAY2(Type, Mapo::StdAllocator::Get())
 
 template <typename T, typename A>
 void DeleteArray(T* pObject, A& allocator, NonPODType)
@@ -156,4 +159,5 @@ void DeleteArray(T* pObject, A& allocator)
 }
 
 // [USAGE] MP_DELETE_ARRAY(test, allocator);
-#define MP_DELETE_ARRAY(Ptr, Allocator) DeleteArray(Ptr, Allocator)
+#define MP_DELETE_ARRAY2(Ptr, Allocator) DeleteArray(Ptr, Allocator)
+#define MP_DELETE_ARRAY(Ptr) MP_DELETE_ARRAY2(Ptr, Mapo::StdAllocator::Get())

@@ -15,7 +15,7 @@ namespace Mapo
 		for (Layer* layer : m_layers)
 		{
 			layer->OnDetach();
-			MP_DELETE(layer, StdAllocator::Get());
+			MP_DELETE(layer);
 		}
 	}
 
