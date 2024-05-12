@@ -12,8 +12,9 @@ namespace Mapo
 	class LayerStack final
 	{
 	public:
-		LayerStack();
 		virtual ~LayerStack();
+
+		LayerStack();
 
 		// Push layers into the first half of the list.
 		void PushLayer(Layer* layer);

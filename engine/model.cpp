@@ -6,6 +6,9 @@
 
 #include "engine/utils.h"
 
+#include "engine/renderer/vk_common.h"
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
 #include "engine/renderer/buffer.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -47,8 +50,8 @@ namespace Mapo
 		return attributeDescriptions;
 	}
 
-	Model::Model(Device& device, const Builder& builder)
-		: m_device(device)
+	Model::Model(const Builder& builder)
+		: m_device(RenderContext::GetDevice())
 	{
 		CreateVertexBuffers(builder.vertices);
 		CreateIndexBuffers(builder.indices);
@@ -60,7 +63,7 @@ namespace Mapo
 
 	void Model::Bind(VkCommandBuffer commandBuffer)
 	{
-		VkBuffer buffers[] = { m_vertexBuffer->GetBuffer() };
+		VkBuffer	 buffers[] = { m_vertexBuffer->GetBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		// TODO: Consider adding a Bind() function in the buffer class.
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
@@ -88,12 +91,11 @@ namespace Mapo
 		m_vertexCount = static_cast<U32>(vertices.size());
 		MP_ASSERT(m_vertexCount >= 3, "Failed to create vertex buffer. Vertex count must be at least 3!");
 
-		U32 vertexSize = sizeof(vertices[0]);
+		U32			 vertexSize = sizeof(vertices[0]);
 		VkDeviceSize bufferSize = vertexSize * m_vertexCount;
 
 		// Create staging buffer and it will be auto deleted.
 		Buffer stagingBuffer{
-			m_device,
 			vertexSize,
 			m_vertexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -105,7 +107,6 @@ namespace Mapo
 
 		// Create vertex buffer.
 		m_vertexBuffer = MakeUnique<Buffer>(
-			m_device,
 			vertexSize,
 			m_vertexCount,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -125,12 +126,11 @@ namespace Mapo
 			return;
 		}
 
-		U32 indexSize = sizeof(indices[0]);
+		U32			 indexSize = sizeof(indices[0]);
 		VkDeviceSize bufferSize = indexSize * m_indexCount;
 
 		// Create staging buffer and it will be auto deleted.
 		Buffer stagingBuffer{
-			m_device,
 			indexSize,
 			m_indexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -142,7 +142,6 @@ namespace Mapo
 
 		// Create index buffer.
 		m_indexBuffer = MakeUnique<Buffer>(
-			m_device,
 			indexSize,
 			m_indexCount,
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -152,7 +151,7 @@ namespace Mapo
 		m_device.CopyBuffer(stagingBuffer.GetBuffer(), m_indexBuffer->GetBuffer(), bufferSize);
 	}
 
-	UniqueRef<Model> Model::CreateCubeModel(Device& device, Vector3 offset)
+	UniqueRef<Model> Model::CreateCubeModel(Vector3 offset)
 	{
 		// temporary helper function, creates a 1x1x1 cube centered at offset
 		Builder modelBuilder{};
@@ -205,15 +204,15 @@ namespace Mapo
 			14, 12, 15, 13, 16, 17, 18, 16, 19, 17, 20, 21, 22, 20, 23, 21
 		};
 
-		return MakeUnique<Model>(device, modelBuilder);
+		return MakeUnique<Model>(modelBuilder);
 	}
 
-	UniqueRef<Model> Model::CreateModelFromFile(Device& device, const std::string& filepath)
+	UniqueRef<Model> Model::CreateModelFromFile(const std::string& filepath)
 	{
 		Builder builder{};
 		builder.LoadModel(filepath);
 		MP_INFO("Vertex count: {}", builder.vertices.size());
-		return MakeUnique<Model>(device, builder);
+		return MakeUnique<Model>(builder);
 	}
 
 	void Model::Builder::LoadModel(const std::string& filepath)
@@ -223,10 +222,10 @@ namespace Mapo
 		using tinyobj::material_t;
 		using tinyobj::shape_t;
 
-		attrib_t attrib;
-		std::vector<shape_t> shapes;
+		attrib_t				attrib;
+		std::vector<shape_t>	shapes;
 		std::vector<material_t> materials;
-		std::string warn, error;
+		std::string				warn, error;
 
 		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &error, filepath.c_str()))
 		{

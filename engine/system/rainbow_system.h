@@ -17,6 +17,8 @@ namespace Mapo
 	class RainbowSystem
 	{
 	public:
+		virtual ~RainbowSystem() = default;
+
 		RainbowSystem(F32 flickerRate)
 			: m_flickerRate(flickerRate)
 		{
@@ -55,7 +57,7 @@ namespace Mapo
 
 	private:
 		std::random_device m_rd;
-		std::mt19937 m_rng{ m_rd() };
+		std::mt19937	   m_rng{ m_rd() };
 
 		std::vector<glm::vec3> m_colors;
 

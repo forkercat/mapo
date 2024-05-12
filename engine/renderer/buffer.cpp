@@ -4,16 +4,19 @@
 
 #include "buffer.h"
 
+#include "engine/renderer/vk_common.h"
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
+
 namespace Mapo
 {
 	Buffer::Buffer(
-		Device& device,
-		VkDeviceSize instanceSize,
-		U32 instanceCount,
-		VkBufferUsageFlags usageFlags,
+		VkDeviceSize		  instanceSize,
+		U32					  instanceCount,
+		VkBufferUsageFlags	  usageFlags,
 		VkMemoryPropertyFlags memoryPropertyFlags,
-		VkDeviceSize minOffsetAlignment)
-		: m_device(device),
+		VkDeviceSize		  minOffsetAlignment)
+		: m_device(RenderContext::GetDevice()),
 		  m_instanceSize(instanceSize),
 		  m_instanceCount(instanceCount),
 		  m_usageFlags(usageFlags),
@@ -21,7 +24,7 @@ namespace Mapo
 	{
 		m_alignmentSize = GetAlignment(instanceSize, minOffsetAlignment);
 		m_bufferSize = m_alignmentSize * instanceCount;
-		m_device.CreateBuffer(m_bufferSize, m_usageFlags, m_memoryPropertyFlags, m_buffer, m_memory);
+		RenderContext::GetDevice().CreateBuffer(m_bufferSize, m_usageFlags, m_memoryPropertyFlags, m_buffer, m_memory);
 
 		MP_DEBUG("New buffer of ({} x {}) bytes (actual: {} bytes), with min offset alignment: {}",
 			instanceSize, instanceCount, m_bufferSize, minOffsetAlignment);
@@ -30,8 +33,9 @@ namespace Mapo
 	Buffer::~Buffer()
 	{
 		Unmap();
-		vkDestroyBuffer(m_device.GetDevice(), m_buffer, nullptr);
-		vkFreeMemory(m_device.GetDevice(), m_memory, nullptr);
+		Device& device = RenderContext::GetDevice();
+		vkDestroyBuffer(device.GetDevice(), m_buffer, nullptr);
+		vkFreeMemory(device.GetDevice(), m_memory, nullptr);
 	}
 
 	VkResult Buffer::Map(VkDeviceSize size, VkDeviceSize offset)

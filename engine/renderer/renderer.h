@@ -6,10 +6,11 @@
 
 #include "core/core.h"
 
-#include "engine/renderer/device.h"
+#include <vulkan/vulkan.h>
 
 namespace Mapo
 {
+	class Device;
 	class Swapchain;
 
 	// Renderer class that manages swapchain and command buffers.
@@ -53,6 +54,7 @@ namespace Mapo
 		void RecreateSwapchain();
 
 	private:
+		Device& m_device;
 		UniqueRef<Swapchain>		 m_swapchain;
 		std::vector<VkCommandBuffer> m_commandBuffers;
 

@@ -21,7 +21,7 @@ namespace Mapo
 	{
 	}
 
-	void EditorLayer::OnUpdate(Timestep dt)
+	void EditorLayer::OnUpdate(const Timestep dt)
 	{
 	}
 

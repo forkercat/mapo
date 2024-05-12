@@ -17,6 +17,7 @@ namespace Mapo
 	class Scene
 	{
 	public:
+		virtual ~Scene() = default;
 		Scene();
 
 		void OnUpdate(F32 dt);

@@ -15,6 +15,8 @@ namespace Mapo
 	class KeyboardController
 	{
 	public:
+		virtual ~KeyboardController() = default;
+
 		void MoveInPlaneXZ(GLFWwindow* window, F32 dt, GameObject& gameObject);
 
 	public:

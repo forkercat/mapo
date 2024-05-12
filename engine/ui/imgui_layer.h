@@ -11,8 +11,9 @@ namespace Mapo
 	class ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer();
 		virtual ~ImGuiLayer();
+
+		ImGuiLayer();
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

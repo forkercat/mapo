@@ -5,15 +5,18 @@
 #include "pipeline.h"
 
 #include "engine/model.h"
+#include "engine/renderer/vk_common.h"
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
 
 #include <fstream>
 
 namespace Mapo
 {
 	Pipeline::Pipeline(
-		Device& device, const std::string& vertFilepath, const std::string& fragFilepath,
+		const std::string& vertFilepath, const std::string& fragFilepath,
 		const PipelineConfigInfo& configInfo)
-		: m_device(device)
+		: m_device(RenderContext::GetDevice())
 	{
 		CreateGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
 	}
@@ -96,8 +99,7 @@ namespace Mapo
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 		pipelineInfo.basePipelineIndex = -1;			  // Optional
 
-		VkResult result = vkCreateGraphicsPipelines(m_device.GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create graphics pipeline!");
+		VK_CHECK(vkCreateGraphicsPipelines(m_device.GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline));
 
 		// Cleanup shader modules after pipeline creation.
 		vkDestroyShaderModule(m_device.GetDevice(), m_fragShaderModule, nullptr);
@@ -204,8 +206,7 @@ namespace Mapo
 		// the worst case alignment requirements.
 		createInfo.pCode = reinterpret_cast<const U32*>(code.data());
 
-		VkResult result = vkCreateShaderModule(m_device.GetDevice(), &createInfo, nullptr, pShaderModule);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create shader module!");
+		VK_CHECK(vkCreateShaderModule(m_device.GetDevice(), &createInfo, nullptr, pShaderModule));
 	}
 
 	std::vector<char> Pipeline::ReadFile(const std::string& filepath)
@@ -214,7 +215,7 @@ namespace Mapo
 
 		MP_ASSERT(file.is_open(), "Failed to open shader file: %s", filepath.c_str());
 
-		size_t fileSize = static_cast<size_t>(file.tellg());
+		size_t			  fileSize = static_cast<size_t>(file.tellg());
 		std::vector<char> buffer(fileSize);
 
 		file.seekg(0);

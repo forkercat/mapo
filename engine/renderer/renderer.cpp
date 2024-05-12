@@ -15,6 +15,7 @@
 namespace Mapo
 {
 	Renderer::Renderer()
+		: m_device(RenderContext::GetDevice())
 	{
 		RecreateSwapchain();
 
@@ -174,29 +175,24 @@ namespace Mapo
 	{
 		m_commandBuffers.resize(Swapchain::MAX_FRAMES_IN_FLIGHT); // 2
 
-		Device& device = RenderContext::GetDevice();
-
 		VkCommandBufferAllocateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		bufferInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		bufferInfo.commandPool = device.GetCommandPool();
+		bufferInfo.commandPool = m_device.GetCommandPool();
 		bufferInfo.commandBufferCount = static_cast<U32>(m_commandBuffers.size());
 
-		VK_CHECK(vkAllocateCommandBuffers(device.GetDevice(), &bufferInfo, m_commandBuffers.data()));
+		VK_CHECK(vkAllocateCommandBuffers(m_device.GetDevice(), &bufferInfo, m_commandBuffers.data()));
 	}
 
 	void Renderer::FreeCommandBuffers()
 	{
-		Device& device = RenderContext::GetDevice();
-
-		vkFreeCommandBuffers(device.GetDevice(), device.GetCommandPool(), static_cast<U32>(m_commandBuffers.size()),
+		vkFreeCommandBuffers(m_device.GetDevice(), m_device.GetCommandPool(), static_cast<U32>(m_commandBuffers.size()),
 			m_commandBuffers.data());
 		m_commandBuffers.clear();
 	}
 
 	void Renderer::RecreateSwapchain()
 	{
-		Device& device = RenderContext::GetDevice();
 		Window& window = Application::Get().GetWindow();
 
 		VkExtent2D extent{ window.GetWidth(), window.GetHeight() };
@@ -209,18 +205,18 @@ namespace Mapo
 		}
 
 		// Need to wait for the current swapchain not being used.
-		vkDeviceWaitIdle(device.GetDevice());
+		vkDeviceWaitIdle(m_device.GetDevice());
 
 		if (m_swapchain == nullptr)
 		{
 			// Happens in initialization.
-			m_swapchain = MakeUnique<Swapchain>(device, extent);
+			m_swapchain = MakeUnique<Swapchain>(extent);
 		}
 		else
 		{
 			// Happens in swapchain recreation.
 			Ref<Swapchain> oldSwapchain = std::move(m_swapchain);
-			m_swapchain = MakeUnique<Swapchain>(device, extent, oldSwapchain);
+			m_swapchain = MakeUnique<Swapchain>(extent, oldSwapchain);
 
 			// Since we are not recreating the pipeline, we need to check if the swapchain render pass
 			// is still compatible with the color or depth format defined in the pipeline render pass.

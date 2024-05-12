@@ -11,6 +11,8 @@ namespace Mapo
 	class Camera
 	{
 	public:
+		virtual ~Camera() = default;
+
 		void SetOrthographicProjection(F32 left, F32 right, F32 top, F32 bottom, F32 near, F32 far);
 		void SetPerspectiveProjection(F32 fovy, F32 aspect, F32 near, F32 far);
 

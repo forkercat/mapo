@@ -11,6 +11,8 @@ namespace Mapo
 	class Timestep final
 	{
 	public:
+		virtual ~Timestep() = default;
+
 		Timestep(F32 time = 0.0f)
 			: m_time(time)
 		{

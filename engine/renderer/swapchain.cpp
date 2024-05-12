@@ -4,16 +4,20 @@
 
 #include "swapchain.h"
 
+#include "engine/renderer/vk_common.h"
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
+
 namespace Mapo
 {
-	Swapchain::Swapchain(Device& device, VkExtent2D windowExtent)
-		: m_device(device), m_windowExtent(windowExtent)
+	Swapchain::Swapchain(VkExtent2D windowExtent)
+		: m_device(RenderContext::GetDevice()), m_windowExtent(windowExtent)
 	{
 		Init();
 	}
 
-	Swapchain::Swapchain(Device& device, VkExtent2D windowExtent, std::shared_ptr<Swapchain> previous)
-		: m_device(device), m_windowExtent(windowExtent), m_oldSwapchain(previous)
+	Swapchain::Swapchain(VkExtent2D windowExtent, std::shared_ptr<Swapchain> previous)
+		: m_device(RenderContext::GetDevice()), m_windowExtent(windowExtent), m_oldSwapchain(previous)
 	{
 		Init();
 
@@ -101,7 +105,7 @@ namespace Mapo
 		submitInfo.pCommandBuffers = buffers;
 
 		// Semaphores to wait (on GPU) before command execution.
-		VkSemaphore waitSemaphores[] = { m_imageAvailableSemaphores[m_currentFrame] };
+		VkSemaphore			 waitSemaphores[] = { m_imageAvailableSemaphores[m_currentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
@@ -116,8 +120,7 @@ namespace Mapo
 		vkResetFences(m_device.GetDevice(), 1, &m_inFlightFences[m_currentFrame]);
 
 		// When the command buffer execution is done, it signals that the command buffer can be reused.
-		VkResult submitResult = vkQueueSubmit(m_device.GetGraphicsQueue(), 1, &submitInfo, m_inFlightFences[m_currentFrame]);
-		MP_ASSERT_EQ(submitResult, VK_SUCCESS, "Failed to submit command buffer to graphics queue!");
+		VK_CHECK(vkQueueSubmit(m_device.GetGraphicsQueue(), 1, &submitInfo, m_inFlightFences[m_currentFrame]));
 
 		// Presentation (submitting the result back to swapchain)
 		VkPresentInfoKHR presentInfo{};
@@ -155,8 +158,8 @@ namespace Mapo
 		SwapchainSupportDetails swapchainSupport = m_device.GetSwapchainSupport();
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapchainSupport.formats);
-		VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapchainSupport.presentModes);
-		VkExtent2D extent2D = ChooseSwapExtent(swapchainSupport.capabilities);
+		VkPresentModeKHR   presentMode = ChooseSwapPresentMode(swapchainSupport.presentModes);
+		VkExtent2D		   extent2D = ChooseSwapExtent(swapchainSupport.capabilities);
 
 		// It is recommended to request at least one more image than the minimum.
 		U32 imageCount = swapchainSupport.capabilities.minImageCount + 1;
@@ -183,7 +186,7 @@ namespace Mapo
 		// E.g. Drawing on the images in the swap chain from the graphics queue and then submitting
 		// them on the presentation queue.
 		QueueFamilyIndices familyIndices = m_device.FindPhysicalQueueFamilies();
-		U32 queueFamilyIndices[] = { familyIndices.graphicsFamily.value(), familyIndices.presentFamily.value() };
+		U32				   queueFamilyIndices[] = { familyIndices.graphicsFamily.value(), familyIndices.presentFamily.value() };
 
 		if (familyIndices.graphicsFamily != familyIndices.presentFamily)
 		{
@@ -207,8 +210,7 @@ namespace Mapo
 		swapchainInfo.clipped = VK_TRUE;
 		swapchainInfo.oldSwapchain = m_oldSwapchain == nullptr ? VK_NULL_HANDLE : m_oldSwapchain->m_swapchain;
 
-		VkResult result = vkCreateSwapchainKHR(m_device.GetDevice(), &swapchainInfo, nullptr, &m_swapchain);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create swapchain!");
+		VK_CHECK(vkCreateSwapchainKHR(m_device.GetDevice(), &swapchainInfo, nullptr, &m_swapchain));
 
 		// Retrieve images.
 		vkGetSwapchainImagesKHR(m_device.GetDevice(), m_swapchain, &imageCount, nullptr);
@@ -295,8 +297,7 @@ namespace Mapo
 		renderPassCreateInfo.dependencyCount = 1;
 		renderPassCreateInfo.pDependencies = &dependency;
 
-		VkResult result = vkCreateRenderPass(m_device.GetDevice(), &renderPassCreateInfo, nullptr, &m_renderPass);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create render pass!");
+		VK_CHECK(vkCreateRenderPass(m_device.GetDevice(), &renderPassCreateInfo, nullptr, &m_renderPass));
 	}
 
 	void Swapchain::CreateDepthResources()
@@ -355,8 +356,7 @@ namespace Mapo
 			framebufferCreateInfo.height = m_swapchainExtent.height;
 			framebufferCreateInfo.layers = 1;
 
-			VkResult result = vkCreateFramebuffer(m_device.GetDevice(), &framebufferCreateInfo, nullptr, &m_swapchainFramebuffers[i]);
-			MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create framebuffers!");
+			VK_CHECK(vkCreateFramebuffer(m_device.GetDevice(), &framebufferCreateInfo, nullptr, &m_swapchainFramebuffers[i]));
 		}
 	}
 
@@ -474,8 +474,7 @@ namespace Mapo
 		viewInfo.subresourceRange.layerCount = 1;
 
 		VkImageView imageView;
-		VkResult result = vkCreateImageView(m_device.GetDevice(), &viewInfo, nullptr, &imageView);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create image view!");
+		VK_CHECK(vkCreateImageView(m_device.GetDevice(), &viewInfo, nullptr, &imageView));
 
 		return imageView;
 	}

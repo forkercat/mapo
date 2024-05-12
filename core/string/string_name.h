@@ -12,6 +12,8 @@ namespace Mapo
 	class SName final
 	{
 	public:
+		virtual ~SName() = default;
+
 		explicit SName(const char* str)
 		{
 			m_hashValue = InternString(str);

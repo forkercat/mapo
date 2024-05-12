@@ -13,8 +13,9 @@ namespace Mapo
 	class MacosWindow : public Window
 	{
 	public:
-		MacosWindow(const WindowProps& props);
 		virtual ~MacosWindow();
+
+		MacosWindow(const WindowProps& props);
 
 		void OnUpdate() override;
 		bool ShouldClose() const override;

@@ -32,8 +32,9 @@ namespace Mapo
 	class Application
 	{
 	public:
-		Application(const String& name = "Mapo App", ApplicationCommandLineArgs args = {});
 		virtual ~Application();
+
+		Application(const String& name = "Mapo App", ApplicationCommandLineArgs args = {});
 
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;

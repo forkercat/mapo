@@ -4,6 +4,10 @@
 
 #include "descriptors.h"
 
+#include "engine/renderer/vk_common.h"
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
+
 namespace Mapo
 {
 	/////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +30,7 @@ namespace Mapo
 
 	UniqueRef<DescriptorSetLayout> DescriptorSetLayout::Builder::Build() const
 	{
-		return MakeUnique<DescriptorSetLayout>(m_device, m_bindings);
+		return MakeUnique<DescriptorSetLayout>(m_bindings);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -34,8 +38,8 @@ namespace Mapo
 	/////////////////////////////////////////////////////////////////////////////////
 
 	DescriptorSetLayout::DescriptorSetLayout(
-		Device& device, std::unordered_map<U32, VkDescriptorSetLayoutBinding> bindings)
-		: m_device(device), m_bindings(bindings)
+		std::unordered_map<U32, VkDescriptorSetLayoutBinding> bindings)
+		: m_device(RenderContext::GetDevice()), m_bindings(bindings)
 	{
 		std::vector<VkDescriptorSetLayoutBinding> layoutBindings{};
 
@@ -83,7 +87,7 @@ namespace Mapo
 
 	UniqueRef<DescriptorPool> DescriptorPool::Builder::Build() const
 	{
-		return MakeUnique<DescriptorPool>(m_device, m_maxSets, m_poolFlags, m_poolSizes);
+		return MakeUnique<DescriptorPool>(m_maxSets, m_poolFlags, m_poolSizes);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -91,8 +95,8 @@ namespace Mapo
 	/////////////////////////////////////////////////////////////////////////////////
 
 	DescriptorPool::DescriptorPool(
-		Device& device, U32 maxSets, VkDescriptorPoolCreateFlags poolFlags, const std::vector<VkDescriptorPoolSize>& poolSizes)
-		: m_device(device)
+		U32 maxSets, VkDescriptorPoolCreateFlags poolFlags, const std::vector<VkDescriptorPoolSize>& poolSizes)
+		: m_device(RenderContext::GetDevice())
 	{
 		VkDescriptorPoolCreateInfo descriptorPoolInfo{};
 		descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -101,8 +105,7 @@ namespace Mapo
 		descriptorPoolInfo.maxSets = maxSets;
 		descriptorPoolInfo.flags = poolFlags;
 
-		VkResult result = vkCreateDescriptorPool(m_device.GetDevice(), &descriptorPoolInfo, nullptr, &m_descriptorPool);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create descriptor pool!");
+		VK_CHECK(vkCreateDescriptorPool(m_device.GetDevice(), &descriptorPoolInfo, nullptr, &m_descriptorPool));
 	}
 
 	DescriptorPool::~DescriptorPool()
@@ -120,6 +123,7 @@ namespace Mapo
 
 		// Might want to create a "DescriptorPoolManager" class that handles this case and builds a new pool whenever an old pool fills up.
 		VkResult result = vkAllocateDescriptorSets(m_device.GetDevice(), &allocateInfo, &descriptorSet);
+		VK_CHECK(result);
 		return result == VK_SUCCESS;
 	}
 

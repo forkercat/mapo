@@ -17,6 +17,8 @@ namespace Mapo
 	class Log
 	{
 	public:
+		virtual ~Log() = default;
+
 		static void Init();
 
 		static Ref<spdlog::logger>& GetEngineLogger() { return s_engineLogger; }

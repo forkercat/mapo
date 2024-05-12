@@ -4,10 +4,14 @@
 
 #pragma once
 
-#include "device.h"
+#include "core/core.h"
+
+#include <vulkan/vulkan.h>
 
 namespace Mapo
 {
+	class Device;
+
 	/*
 	class Buffer
 	{
@@ -49,14 +53,14 @@ namespace Mapo
 	class Buffer
 	{
 	public:
+		virtual ~Buffer();
+
 		Buffer(
-			Device& device,
-			VkDeviceSize instanceSize,
-			U32 instanceCount,
-			VkBufferUsageFlags usageFlags,
+			VkDeviceSize		  instanceSize,
+			U32					  instanceCount,
+			VkBufferUsageFlags	  usageFlags,
 			VkMemoryPropertyFlags memoryPropertyFlags,
-			VkDeviceSize minOffsetAlignment = 1);
-		~Buffer();
+			VkDeviceSize		  minOffsetAlignment = 1);
 
 		Buffer(const Buffer&) = delete;
 		Buffer& operator=(const Buffer&) = delete;
@@ -78,19 +82,19 @@ namespace Mapo
 		// Copy "instanceSize" bytes of data to the mapped buffer at an offset of index * alignmentSize.
 		void WriteToIndex(void* data, U32 index);
 		// Flush the memory range at index * alignmentSize of the buffer to make it visible to the GPU device.
-		VkResult FlushAtIndex(U32 index);
-		VkResult InvalidateAtIndex(U32 index);
+		VkResult			   FlushAtIndex(U32 index);
+		VkResult			   InvalidateAtIndex(U32 index);
 		VkDescriptorBufferInfo DescriptorInfoAtIndex(U32 index);
 
 		// Getters
-		VkBuffer GetBuffer() const { return m_buffer; }
-		void* GetMappedMemory() const { return m_mappedData; }
-		U32 GetInstanceCount() const { return m_instanceCount; }
-		VkDeviceSize GetInstanceSize() const { return m_instanceSize; }
-		VkDeviceSize GetAlignmentSize() const { return m_alignmentSize; }
-		VkBufferUsageFlags GetUsageFlags() const { return m_usageFlags; }
+		VkBuffer			  GetBuffer() const { return m_buffer; }
+		void*				  GetMappedMemory() const { return m_mappedData; }
+		U32					  GetInstanceCount() const { return m_instanceCount; }
+		VkDeviceSize		  GetInstanceSize() const { return m_instanceSize; }
+		VkDeviceSize		  GetAlignmentSize() const { return m_alignmentSize; }
+		VkBufferUsageFlags	  GetUsageFlags() const { return m_usageFlags; }
 		VkMemoryPropertyFlags GetMemoryPropertyFlags() const { return m_memoryPropertyFlags; }
-		VkDeviceSize GetBufferSize() const { return m_bufferSize; }
+		VkDeviceSize		  GetBufferSize() const { return m_bufferSize; }
 
 	private:
 		// Returns the minimum instance size required to be compatible with the device's minimum offset alignment.
@@ -101,16 +105,16 @@ namespace Mapo
 		static VkDeviceSize GetAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment);
 
 	private:
-		Device& m_device;
-		void* m_mappedData = nullptr;
-		VkBuffer m_buffer = VK_NULL_HANDLE;
+		Device&		   m_device;
+		void*		   m_mappedData = nullptr;
+		VkBuffer	   m_buffer = VK_NULL_HANDLE;
 		VkDeviceMemory m_memory = VK_NULL_HANDLE;
 
-		VkDeviceSize m_bufferSize;
-		U32 m_instanceCount;
-		VkDeviceSize m_instanceSize;
-		VkDeviceSize m_alignmentSize;
-		VkBufferUsageFlags m_usageFlags;
+		VkDeviceSize		  m_bufferSize;
+		U32					  m_instanceCount;
+		VkDeviceSize		  m_instanceSize;
+		VkDeviceSize		  m_alignmentSize;
+		VkBufferUsageFlags	  m_usageFlags;
 		VkMemoryPropertyFlags m_memoryPropertyFlags;
 	};
 

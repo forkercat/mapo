@@ -6,6 +6,9 @@
 
 #include "engine/window.h"
 
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
+
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_vulkan.h>
@@ -20,8 +23,8 @@ namespace Mapo
 		}
 	}
 
-	ImGuiSystem::ImGuiSystem(Window& window, Device& device, VkRenderPass renderPass, U32 imageCount)
-		: m_device(device)
+	ImGuiSystem::ImGuiSystem(Window& window, VkRenderPass renderPass, U32 imageCount)
+		: m_device(RenderContext::GetDevice())
 	{
 		// Set up descriptor.
 		VkDescriptorPoolSize poolSizes[] = {

@@ -11,12 +11,13 @@ namespace Mapo
 	class Layer
 	{
 	public:
-		Layer(const String& debugName = "Layer");
 		virtual ~Layer() = default;
+
+		Layer(const String& debugName = "Layer");
 
 		virtual void OnAttach() { }
 		virtual void OnDetach() { }
-		virtual void OnUpdate(Timestep dt) { }
+		virtual void OnUpdate(const Timestep dt) { }
 		virtual void OnImGuiRender() { }
 		virtual void OnEvent(/*Event*/) { }
 

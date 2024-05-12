@@ -6,10 +6,11 @@
 
 #include "core/core.h"
 
-#include "engine/renderer/device.h"
+#include <vulkan/vulkan.h>
 
 namespace Mapo
 {
+	class Device;
 	class Buffer;
 
 	class Model
@@ -39,8 +40,9 @@ namespace Mapo
 			void LoadModel(const std::string& filepath);
 		};
 
-		Model(Device& device, const Builder& builder);
-		~Model();
+		virtual ~Model();
+
+		Model(const Builder& builder);
 
 		Model(const Model&) = delete;
 		Model& operator=(const Model&) = delete;
@@ -48,8 +50,8 @@ namespace Mapo
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 
-		static UniqueRef<Model> CreateCubeModel(Device& device, Vector3 offset);
-		static UniqueRef<Model> CreateModelFromFile(Device& device, const std::string& filepath);
+		static UniqueRef<Model> CreateCubeModel(Vector3 offset);
+		static UniqueRef<Model> CreateModelFromFile(const std::string& filepath);
 
 	private:
 		void CreateVertexBuffers(const std::vector<Vertex>& vertices);

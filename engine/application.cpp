@@ -6,11 +6,14 @@
 
 #include "engine/keyboard_controller.h"
 #include "engine/component.h"
+#include "engine/model.h"
 
 #include "engine/renderer/render_context.h"
 #include "engine/renderer/renderer.h"
+#include "engine/renderer/device.h"
 #include "engine/renderer/buffer.h"
 #include "engine/renderer/descriptors.h"
+#include "engine/renderer/frame_info.h"
 
 #include "engine/system/simple_render_system.h"
 #include "engine/system/point_light_system.h"
@@ -62,15 +65,11 @@ namespace Mapo
 	bool Application::Start()
 	{
 		MP_ASSERT(RenderContext::IsInitialized(), "Render context is not initialized!");
-		Device& device = RenderContext::GetDevice();
-
-		// Cube
-		// Ref<Model> model = Model::CreateCubeModel(m_device, { 0.f, 0.f, 0.f });
 
 		// Model
-		Ref<Model> smoothModel = Model::CreateModelFromFile(device, "assets/models/smooth_vase.obj");
-		Ref<Model> flatModel = Model::CreateModelFromFile(device, "assets/models/flat_vase.obj");
-		Ref<Model> quadModel = Model::CreateModelFromFile(device, "assets/models/quad.obj");
+		Ref<Model> smoothModel = Model::CreateModelFromFile("assets/models/smooth_vase.obj");
+		Ref<Model> flatModel = Model::CreateModelFromFile("assets/models/flat_vase.obj");
+		Ref<Model> quadModel = Model::CreateModelFromFile("assets/models/quad.obj");
 
 		m_scene = MakeUnique<Scene>();
 
@@ -103,13 +102,12 @@ namespace Mapo
 
 	void Application::Run()
 	{
-		Device&			device = RenderContext::GetDevice();
 		Renderer&		renderer = RenderContext::GetRenderer();
 		DescriptorPool& globalDescriptorPool = RenderContext::GetDescriptorPool();
 
 		// Create ImGui system.
 		ImGuiSystem imguiSystem{
-			*m_window, device, renderer.GetRenderPass(), renderer.GetImageCount()
+			*m_window, renderer.GetRenderPass(), renderer.GetImageCount()
 		};
 
 		// Uniform buffers
@@ -118,7 +116,6 @@ namespace Mapo
 		for (int i = 0; i < uboBuffers.size(); ++i)
 		{
 			uboBuffers[i] = MakeUnique<Buffer>(
-				device,
 				sizeof(GlobalUbo),
 				1,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
@@ -129,7 +126,7 @@ namespace Mapo
 
 		// Descriptors
 		UniqueRef<DescriptorSetLayout> globalSetLayout =
-			DescriptorSetLayout::Builder(device)
+			DescriptorSetLayout::Builder()
 				.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
 				.Build();
 
@@ -145,9 +142,9 @@ namespace Mapo
 
 		// Render system, camera, and controller
 		SimpleRenderSystem simpleRenderSystem(
-			device, renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		PointLightSystem pointLightSystem(
-			device, renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+			renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		RainbowSystem rainbowSystem(0.4f);
 
 		// Camera
@@ -227,7 +224,7 @@ namespace Mapo
 			m_window->OnUpdate();
 		}
 
-		device.WaitIdle();
+		RenderContext::GetDevice().WaitIdle();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////

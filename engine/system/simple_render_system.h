@@ -9,20 +9,23 @@
 #include "engine/game_object.h"
 #include "engine/camera.h"
 
-#include "engine/renderer/device.h"
-#include "engine/renderer/pipeline.h"
-#include "engine/renderer/frame_info.h"
+#include <vulkan/vulkan.h>
 
 #include <vector>
 #include <memory>
 
 namespace Mapo
 {
+	class Device;
+	class Pipeline;
+	class FrameInfo;
+
 	class SimpleRenderSystem
 	{
 	public:
-		SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout);
-		~SimpleRenderSystem();
+		virtual ~SimpleRenderSystem();
+
+		SimpleRenderSystem(VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout);
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete;
@@ -37,7 +40,7 @@ namespace Mapo
 		Device& m_device;
 
 		UniqueRef<Pipeline> m_pipeline;
-		VkPipelineLayout m_pipelineLayout;
+		VkPipelineLayout	m_pipelineLayout;
 	};
 
 } // namespace Mapo

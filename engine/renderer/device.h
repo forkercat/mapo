@@ -34,8 +34,9 @@ namespace Mapo
 	class Device final
 	{
 	public:
+		virtual ~Device();
+
 		Device(Window& window);
-		~Device();
 
 		// Make the device not copiable or movable.
 		Device(const Device&) = delete;

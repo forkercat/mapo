@@ -21,8 +21,9 @@ namespace Mapo
 		using Clock = std::chrono::steady_clock;
 		using DefaultResolution = Seconds;
 
-		Timer();
 		virtual ~Timer() = default;
+
+		Timer();
 
 		void Start();
 

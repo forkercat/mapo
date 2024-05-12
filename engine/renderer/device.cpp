@@ -168,8 +168,7 @@ namespace Mapo
 		bufferInfo.usage = usageFlags;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; // only used by the graphics queue
 
-		VkResult bufferResult = vkCreateBuffer(m_device, &bufferInfo, nullptr, &buffer);
-		MP_ASSERT_EQ(bufferResult, VK_SUCCESS, "Failed to create vertex buffer!");
+		VK_CHECK(vkCreateBuffer(m_device, &bufferInfo, nullptr, &buffer));
 
 		// Memory allocation
 		VkMemoryRequirements memoryRequirements;
@@ -181,8 +180,7 @@ namespace Mapo
 		// To be able to write to it from CPU.
 		allocateInfo.memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, propertyFlags);
 
-		VkResult allocateResult = vkAllocateMemory(m_device, &allocateInfo, nullptr, &bufferMemory);
-		MP_ASSERT_EQ(allocateResult, VK_SUCCESS, "Failed to allocate vertex buffer memory!");
+		VK_CHECK(vkAllocateMemory(m_device, &allocateInfo, nullptr, &bufferMemory));
 
 		// Bind buffer and allocation.
 		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
@@ -265,8 +263,7 @@ namespace Mapo
 	void Device::CreateImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags propertyFlags,
 		VkImage& image, VkDeviceMemory& imageMemory)
 	{
-		VkResult result = vkCreateImage(m_device, &imageInfo, nullptr, &image);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create image!");
+		VK_CHECK(vkCreateImage(m_device, &imageInfo, nullptr, &image));
 
 		// Allocate memory.
 		VkMemoryRequirements memoryRequirements;
@@ -277,11 +274,8 @@ namespace Mapo
 		allocateInfo.allocationSize = memoryRequirements.size;
 		allocateInfo.memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, propertyFlags);
 
-		VkResult allocateResult = vkAllocateMemory(m_device, &allocateInfo, nullptr, &imageMemory);
-		MP_ASSERT_EQ(allocateResult, VK_SUCCESS, "Failed to allocate image memory!");
-
-		VkResult bindMemoryResult = vkBindImageMemory(m_device, image, imageMemory, 0);
-		MP_ASSERT_EQ(bindMemoryResult, VK_SUCCESS, "Failed to bind image memory!");
+		VK_CHECK(vkAllocateMemory(m_device, &allocateInfo, nullptr, &imageMemory));
+		VK_CHECK(vkBindImageMemory(m_device, image, imageMemory, 0));
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -333,8 +327,7 @@ namespace Mapo
 			createInfo.pNext = nullptr;
 		}
 
-		VkResult result = vkCreateInstance(&createInfo, nullptr, &m_instance);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create Vulkan instance!");
+		VK_CHECK(vkCreateInstance(&createInfo, nullptr, &m_instance));
 
 		HasGlfwRequiredInstanceExtensions();
 	}
@@ -346,8 +339,7 @@ namespace Mapo
 			VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 			PopulateDebugMessengerCreateInfo(createInfo);
 
-			VkResult result = CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger);
-			MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to set up debug messenger!");
+			VK_CHECK(CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger));
 		}
 	}
 
@@ -431,8 +423,7 @@ namespace Mapo
 			createInfo.enabledLayerCount = 0;
 		}
 
-		VkResult result = vkCreateDevice(m_gpu, &createInfo, nullptr, &m_device);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create logical device!");
+		VK_CHECK(vkCreateDevice(m_gpu, &createInfo, nullptr, &m_device));
 
 		// Fetch queue handle.
 		vkGetDeviceQueue(m_device, queueFamilyData.graphicsFamily.value(), 0, &m_graphicsQueue);
@@ -451,8 +442,7 @@ namespace Mapo
 		poolCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
 		// Command buffers are executed by submitting them on one of the device queues, e.g. graphics queue.
-		VkResult result = vkCreateCommandPool(m_device, &poolCreateInfo, nullptr, &m_commandPool);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create command pool!");
+		VK_CHECK(vkCreateCommandPool(m_device, &poolCreateInfo, nullptr, &m_commandPool));
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////

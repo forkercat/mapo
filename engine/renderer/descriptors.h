@@ -6,10 +6,12 @@
 
 #include "core/core.h"
 
-#include "device.h"
+#include <vulkan/vulkan.h>
 
 namespace Mapo
 {
+	class Device;
+
 	// Descriptor set layout
 	class DescriptorSetLayout
 	{
@@ -17,22 +19,19 @@ namespace Mapo
 		class Builder
 		{
 		public:
-			Builder(Device& device)
-				: m_device(device)
-			{
-			}
+			Builder() = default;
 
 			Builder& AddBinding(U32 binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, U32 count = 1);
 			UniqueRef<DescriptorSetLayout> Build() const;
 
 		private:
-			Device& m_device;
 			std::unordered_map<U32, VkDescriptorSetLayoutBinding> m_bindings{};
 		};
 
 	public:
-		DescriptorSetLayout(Device& device, std::unordered_map<U32, VkDescriptorSetLayoutBinding> bindings);
-		~DescriptorSetLayout();
+		virtual ~DescriptorSetLayout();
+
+		DescriptorSetLayout(std::unordered_map<U32, VkDescriptorSetLayoutBinding> bindings);
 
 		DescriptorSetLayout(const DescriptorSetLayout&) = delete;
 		DescriptorSetLayout& operator=(const DescriptorSetLayout&) = delete;
@@ -54,10 +53,7 @@ namespace Mapo
 		class Builder
 		{
 		public:
-			Builder(Device& device)
-				: m_device(device)
-			{
-			}
+			Builder() = default;
 
 			Builder& AddPoolSize(VkDescriptorType descriptorType, U32 descriptorCount);
 			Builder& SetPoolFlags(VkDescriptorPoolCreateFlags flags);
@@ -65,15 +61,15 @@ namespace Mapo
 			UniqueRef<DescriptorPool> Build() const;
 
 		private:
-			Device& m_device;
 			std::vector<VkDescriptorPoolSize> m_poolSizes{};
 			U32 m_maxSets = 1000;
 			VkDescriptorPoolCreateFlags m_poolFlags = 0;
 		};
 
 	public:
-		DescriptorPool(Device& device, U32 maxSets, VkDescriptorPoolCreateFlags poolFlags, const std::vector<VkDescriptorPoolSize>& poolSizes);
-		~DescriptorPool();
+		virtual ~DescriptorPool();
+
+		DescriptorPool(U32 maxSets, VkDescriptorPoolCreateFlags poolFlags, const std::vector<VkDescriptorPoolSize>& poolSizes);
 
 		DescriptorPool(const DescriptorPool&) = delete;
 		DescriptorPool& operator=(const DescriptorPool&) = delete;
@@ -93,8 +89,9 @@ namespace Mapo
 	class DescriptorWriter
 	{
 	public:
+		virtual ~DescriptorWriter() = default;
+
 		DescriptorWriter(DescriptorSetLayout& descriptorSetLayout, DescriptorPool& descriptorPool);
-		~DescriptorWriter() = default;
 
 		DescriptorWriter(const DescriptorWriter&) = delete;
 		DescriptorWriter& operator=(const DescriptorWriter&) = delete;

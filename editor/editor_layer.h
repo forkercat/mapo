@@ -12,13 +12,14 @@ namespace Mapo
 	class EditorLayer : public Layer
 	{
 	public:
-		EditorLayer();
 		virtual ~EditorLayer() = default;
+
+		EditorLayer();
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
-		virtual void OnUpdate(Timestep dt) override;
+		virtual void OnUpdate(const Timestep dt) override;
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent() override;
 

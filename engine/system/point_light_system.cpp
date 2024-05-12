@@ -4,10 +4,16 @@
 
 #include "point_light_system.h"
 
+#include "engine/renderer/vk_common.h"
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
+#include "engine/renderer/pipeline.h"
+#include "engine/renderer/frame_info.h"
+
 namespace Mapo
 {
-	PointLightSystem::PointLightSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
-		: m_device(device)
+	PointLightSystem::PointLightSystem(VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
+		: m_device(RenderContext::GetDevice())
 	{
 		CreatePipelineLayout(globalDescriptorSetLayout);
 		CreatePipeline(renderPass);
@@ -37,8 +43,7 @@ namespace Mapo
 		pipelineLayoutInfo.pushConstantRangeCount = 0;
 		pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-		VkResult result = vkCreatePipelineLayout(m_device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create pipeline layout!");
+		VK_CHECK(vkCreatePipelineLayout(m_device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout));
 	}
 
 	void PointLightSystem::CreatePipeline(VkRenderPass renderPass)
@@ -53,8 +58,10 @@ namespace Mapo
 
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = m_pipelineLayout;
-		m_pipeline =
-			MakeUnique<Pipeline>(m_device, "assets/shaders/point_light.vert.spv", "assets/shaders/point_light.frag.spv", pipelineConfig);
+		m_pipeline = MakeUnique<Pipeline>(
+			"assets/shaders/point_light.vert.spv",
+			"assets/shaders/point_light.frag.spv",
+			pipelineConfig);
 	}
 
 	void PointLightSystem::Render(FrameInfo& frameInfo)

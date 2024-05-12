@@ -6,18 +6,17 @@
 
 #include "core/core.h"
 
-#include "engine/model.h"
 #include "engine/scene.h"
 
 #include <entt/entity/registry.hpp>
 
 namespace Mapo
 {
-	class Scene;
-
 	class GameObject final
 	{
 	public:
+		virtual ~GameObject() = default;
+
 		operator bool() const { return m_entityHandle != entt::null; }
 		MP_FORCE_INLINE bool IsValid() const { return m_entityHandle != entt::null; }
 
@@ -63,7 +62,7 @@ namespace Mapo
 	private:
 		// communicate with the EnTT registry.
 		entt::entity m_entityHandle{ entt::null };
-		Scene* m_scene{ nullptr };
+		Scene*		 m_scene{ nullptr };
 
 		friend class Scene;
 	};

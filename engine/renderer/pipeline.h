@@ -5,41 +5,45 @@
 #pragma once
 
 #include "core/core.h"
-#include "device.h"
+
+#include <vulkan/vulkan.h>
 
 #include <vector>
 
 namespace Mapo
 {
+	class Device;
+
 	struct PipelineConfigInfo
 	{
 		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
 		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
-		std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
+		std::vector<VkVertexInputBindingDescription>   bindingDescriptions{};
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
 
-		VkPipelineViewportStateCreateInfo viewportInfo;
+		VkPipelineViewportStateCreateInfo	   viewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-		VkPipelineMultisampleStateCreateInfo multisampleInfo;
-		VkPipelineColorBlendAttachmentState colorBlendAttachment;
-		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
-		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-		std::vector<VkDynamicState> dynamicStateEnables;
-		VkPipelineDynamicStateCreateInfo dynamicStateInfo;
+		VkPipelineMultisampleStateCreateInfo   multisampleInfo;
+		VkPipelineColorBlendAttachmentState	   colorBlendAttachment;
+		VkPipelineColorBlendStateCreateInfo	   colorBlendInfo;
+		VkPipelineDepthStencilStateCreateInfo  depthStencilInfo;
+		std::vector<VkDynamicState>			   dynamicStateEnables;
+		VkPipelineDynamicStateCreateInfo	   dynamicStateInfo;
 
 		VkPipelineLayout pipelineLayout = nullptr;
-		VkRenderPass renderPass = nullptr;
-		U32 subpass = 0;
+		VkRenderPass	 renderPass = nullptr;
+		U32				 subpass = 0;
 	};
 
 	class Pipeline
 	{
 	public:
-		Pipeline(Device& device, const std::string& vertFilepath, const std::string& fragFilepath,
+		virtual ~Pipeline();
+
+		Pipeline(const std::string& vertFilepath, const std::string& fragFilepath,
 			const PipelineConfigInfo& configInfo);
-		~Pipeline();
 
 		Pipeline(const Pipeline&) = delete;
 		Pipeline& operator=(const Pipeline&) = delete;
@@ -57,8 +61,8 @@ namespace Mapo
 		static std::vector<char> ReadFile(const std::string& filepath);
 
 	private:
-		Device& m_device;
-		VkPipeline m_graphicsPipeline;
+		Device&		   m_device;
+		VkPipeline	   m_graphicsPipeline;
 		VkShaderModule m_vertShaderModule;
 		VkShaderModule m_fragShaderModule;
 	};

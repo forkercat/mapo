@@ -29,7 +29,7 @@ namespace Mapo
 		s_context->m_renderer = MakeUnique<Renderer>();
 
 		s_context->m_descriptorPool =
-			DescriptorPool::Builder(*s_context->m_device)
+			DescriptorPool::Builder()
 				// How many descriptor sets can be created from the pool.
 				.SetMaxSets(Swapchain::MAX_FRAMES_IN_FLIGHT)
 				// How many descriptors of this type are available in the pool.

@@ -5,6 +5,13 @@
 #include "simple_render_system.h"
 
 #include "engine/component.h"
+#include "engine/model.h"
+
+#include "engine/renderer/vk_common.h"
+#include "engine/renderer/render_context.h"
+#include "engine/renderer/device.h"
+#include "engine/renderer/pipeline.h"
+#include "engine/renderer/frame_info.h"
 
 namespace Mapo
 {
@@ -14,8 +21,8 @@ namespace Mapo
 		Matrix4 normalMatrix{ 1.0f };
 	};
 
-	SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
-		: m_device(device)
+	SimpleRenderSystem::SimpleRenderSystem(VkRenderPass renderPass, VkDescriptorSetLayout globalDescriptorSetLayout)
+		: m_device(RenderContext::GetDevice())
 	{
 		CreatePipelineLayout(globalDescriptorSetLayout);
 		CreatePipeline(renderPass);
@@ -45,8 +52,7 @@ namespace Mapo
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
-		VkResult result = vkCreatePipelineLayout(m_device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout);
-		MP_ASSERT_EQ(result, VK_SUCCESS, "Failed to create pipeline layout!");
+		VK_CHECK(vkCreatePipelineLayout(m_device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout));
 	}
 
 	void SimpleRenderSystem::CreatePipeline(VkRenderPass renderPass)
@@ -58,8 +64,11 @@ namespace Mapo
 
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = m_pipelineLayout;
-		m_pipeline =
-			MakeUnique<Pipeline>(m_device, "assets/shaders/simple_shader.vert.spv", "assets/shaders/simple_shader.frag.spv", pipelineConfig);
+
+		m_pipeline = MakeUnique<Pipeline>(
+			"assets/shaders/simple_shader.vert.spv",
+			"assets/shaders/simple_shader.frag.spv",
+			pipelineConfig);
 	}
 
 	void SimpleRenderSystem::RenderGameObjects(FrameInfo& frameInfo)
