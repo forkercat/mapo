@@ -11,7 +11,7 @@
 
 namespace Mapo
 {
-	void KeyboardController::MoveInPlaneXZ(GLFWwindow* window, F32 dt, GameObject& gameObject)
+	void KeyboardController::MoveInPlaneXZ(F32 dt, GameObject& gameObject)
 	{
 		Vector3 rotate{ 0.0f };
 

@@ -40,7 +40,6 @@ int MapoMain(int argc, char** argv)
 {
 	Mapo::Application* app = Mapo::CreateApplication({ argc, argv });
 
-	app->Init();
 	app->Start();
 	app->Run();
 

@@ -6,9 +6,18 @@
 
 #include "engine/layer.h"
 #include "engine/scene.h"
+#include "engine/camera.h"
+#include "engine/keyboard_controller.h"
 
 namespace Mapo
 {
+	class ImGuiSystem;
+	class SimpleRenderSystem;
+	class PointLightSystem;
+	class RainbowSystem;
+
+	class Buffer;
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -27,12 +36,26 @@ namespace Mapo
 		// bool OnKeyPressed()
 		// bool OnMouseButtonPressed()
 
+		void Init();
+		void CreateScene();
+
 		// void NewScene();
 		// void OpenScene();
 		// void SaveSceneAs();
 
 	private:
 		UniqueRef<Scene> m_scene;
+
+		Camera			   m_camera;
+		KeyboardController m_controller;
+
+		GameObject m_player;
+
+		// Systems
+		UniqueRef<ImGuiSystem> m_imguiSystem{};
+		UniqueRef<SimpleRenderSystem> m_renderSystem{};
+		UniqueRef<PointLightSystem> m_pointLightSystem{};
+		UniqueRef<RainbowSystem> m_rainbowSystem{};
 	};
 
 } // namespace Mapo

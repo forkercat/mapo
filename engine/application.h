@@ -7,7 +7,6 @@
 #include "core/core.h"
 
 #include "engine/window.h"
-#include "engine/scene.h"
 #include "engine/layer_stack.h"
 #include "engine/ui/imgui_layer.h"
 
@@ -43,7 +42,6 @@ namespace Mapo
 		MP_FORCE_INLINE Window& GetWindow() { return *m_window; }
 		MP_FORCE_INLINE ApplicationCommandLineArgs GetCommandLineArgs() const { return m_commandLineArgs; }
 
-		virtual bool Init();
 		virtual bool Start();
 		void Close() { m_running = false; }
 
@@ -68,7 +66,6 @@ namespace Mapo
 		ApplicationCommandLineArgs m_commandLineArgs;
 
 		UniqueRef<Window> m_window;
-		UniqueRef<Scene> m_scene;
 
 		LayerStack m_layerStack;
 		ImGuiLayer* m_imguiLayer = nullptr;

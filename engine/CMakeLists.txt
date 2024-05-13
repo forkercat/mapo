@@ -73,8 +73,8 @@ target_link_libraries(engine
 PUBLIC
 	core
 	ImGui
+	Vulkan::Vulkan # Should be in private. But Editor still directly uses Vulkan resources (macros).
 PRIVATE
-	Vulkan::Vulkan
 	common
 )
 

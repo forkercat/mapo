@@ -17,6 +17,9 @@ namespace Mapo
 	public:
 		virtual ~GameObject() = default;
 
+		// Default constructor needed for temp object.
+		GameObject() = default;
+
 		operator bool() const { return m_entityHandle != entt::null; }
 		MP_FORCE_INLINE bool IsValid() const { return m_entityHandle != entt::null; }
 

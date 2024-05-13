@@ -17,7 +17,7 @@ namespace Mapo
 	public:
 		virtual ~KeyboardController() = default;
 
-		void MoveInPlaneXZ(GLFWwindow* window, F32 dt, GameObject& gameObject);
+		void MoveInPlaneXZ(F32 dt, GameObject& gameObject);
 
 	public:
 		F32 moveSpeed = 3.0f;
