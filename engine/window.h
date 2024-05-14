@@ -7,6 +7,8 @@
 #include "core/typedefs.h"
 #include "core/string/string.h"
 
+#include "engine/event/event.h"
+
 namespace Mapo
 {
 	// Window creation data.
@@ -26,6 +28,8 @@ namespace Mapo
 	class Window
 	{
 	public:
+		using EventCallbackFn = std::function<void(Event&)>;
+
 		virtual ~Window() = default;
 
 		Window() = default;
@@ -34,7 +38,6 @@ namespace Mapo
 		Window& operator=(const Window&) = delete;
 
 		virtual void OnUpdate() = 0;
-		virtual bool ShouldClose() const = 0;
 		virtual bool WasWindowResized() const = 0;
 		virtual void ResetWindowResizedFlag() = 0;
 
@@ -42,6 +45,8 @@ namespace Mapo
 
 		virtual U32 GetWidth() const = 0;
 		virtual U32 GetHeight() const = 0;
+
+		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 
 		// For Vulkan and GLFW.
 		virtual void CreateWindowSurface(void* instance, void* surface) = 0;

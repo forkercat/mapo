@@ -6,6 +6,8 @@
 
 #include "core/core.h"
 
+#include "engine/event/event.h"
+
 namespace Mapo
 {
 	class Layer
@@ -19,7 +21,7 @@ namespace Mapo
 		virtual void OnDetach() { }
 		virtual void OnUpdate(const Timestep dt) { }
 		virtual void OnImGuiRender() { }
-		virtual void OnEvent(/*Event*/) { }
+		virtual void OnEvent(Event& event) { }
 
 		const String& GetDebugName() const { return m_debugName; }
 

@@ -17,23 +17,32 @@ namespace Mapo
 
 		MacosWindow(const WindowProps& props);
 
-		void OnUpdate() override;
-		bool ShouldClose() const override;
+		virtual void OnUpdate() override;
 
-		MP_FORCE_INLINE bool WasWindowResized() const override { return m_data.m_framebufferResized; }
-		MP_FORCE_INLINE void ResetWindowResizedFlag() override { m_data.m_framebufferResized = false; }
+		virtual bool  WasWindowResized() const override { return m_data.framebufferResized; }
+		virtual void  ResetWindowResizedFlag() override { m_data.framebufferResized = false; }
+		virtual void* GetNativeWindow() const override { return m_window; }
+		virtual U32	  GetWidth() const override { return m_data.width; }
+		virtual U32	  GetHeight() const override { return m_data.height; }
 
-		MP_FORCE_INLINE void* GetNativeWindow() const override { return m_window; }
-		MP_FORCE_INLINE U32 GetWidth() const override { return m_data.width; }
-		MP_FORCE_INLINE U32 GetHeight() const override { return m_data.height; }
+		virtual void SetEventCallback(const EventCallbackFn& callback) override;
 
-		virtual void CreateWindowSurface(void* instance, void* surface) override;
-		virtual void GlfwWaitEvents() override;
+		virtual void		 CreateWindowSurface(void* instance, void* surface) override;
+		virtual void		 GlfwWaitEvents() override;
 		virtual const char** GlfwGetRequiredExtensions(U32* count) override;
 
 	private:
 		void Init(const WindowProps& props);
 		void Shutdown();
+
+		// Callbacks
+		static void WindowResizeCallback(GLFWwindow* window, int width, int height);
+		static void WindowCloseCallback(GLFWwindow* window);
+		static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void CharEventCallback(GLFWwindow* window, unsigned int keycode);
+		static void MouseEventCallback(GLFWwindow* window, int button, int action, int mods);
+		static void ScrollEventCallback(GLFWwindow* window, double offsetX, double offsetY);
+		static void CursorEventCallback(GLFWwindow* window, double posX, double posY);
 
 		static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 		static void ErrorCallback(int error, const char* description);
@@ -43,10 +52,11 @@ namespace Mapo
 
 		struct WindowData
 		{
-			String title{};
-			U32 width{};
-			U32 height{};
-			bool m_framebufferResized = false;
+			String			title{};
+			U32				width{};
+			U32				height{};
+			bool			framebufferResized = false;
+			EventCallbackFn eventCallback;
 		};
 
 		WindowData m_data{};

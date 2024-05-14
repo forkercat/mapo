@@ -214,7 +214,7 @@ namespace Mapo
 		}
 	}
 
-	void ImGuiLayer::OnEvent()
+	void ImGuiLayer::OnEvent(Event& event)
 	{
 		if (m_blockEvents)
 		{

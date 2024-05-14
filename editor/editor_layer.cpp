@@ -10,6 +10,8 @@
 #include "engine/game_object.h"
 #include "engine/component.h"
 
+#include "engine/input/input.h"
+
 #include "engine/renderer/render_context.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/device.h"
@@ -192,12 +194,77 @@ namespace Mapo
 		m_player.GetComponent<TransformComponent>().translation.z = -2.5f;
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////
+	// ImGui
+	/////////////////////////////////////////////////////////////////////////////////
+
 	void EditorLayer::OnImGuiRender()
 	{
 	}
 
-	void EditorLayer::OnEvent()
+	/////////////////////////////////////////////////////////////////////////////////
+	// Events
+	/////////////////////////////////////////////////////////////////////////////////
+
+	void EditorLayer::OnEvent(Event& event)
 	{
+		// Handles camera updates.
+		// m_camera
+		// m_controller
+
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>(MP_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(MP_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
+	{
+		// Skip since this function only handles shortcuts.
+		if (event.GetRepeatCount() > 0)
+		{
+			return false;
+		}
+
+#ifdef MP_MACOS_BUILD
+		bool control = Input::IsKeyPressed(Key::LeftSuper) || Input::IsKeyPressed(Key::RightSuper); // for macos
+#else
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+#endif
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+
+		switch (event.GetKeyCode())
+		{
+				// Scenes
+			case Key::N:
+				if (control)
+				{
+					NewScene();
+				}
+				break;
+			case Key::O:
+				if (control)
+				{
+					OpenScene();
+				}
+				break;
+			case Key::S:
+				if (control && shift)
+				{
+					SaveSceneAs();
+				}
+				break;
+
+				// Gizmos
+				// TODO: Add ImGuizmo support.
+		}
+
+		return true;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& event)
+	{
+		// TODO: Handles entity selection.
+		return false;
 	}
 
 } // namespace Mapo

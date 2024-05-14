@@ -20,6 +20,8 @@ namespace Mapo
 
 		// Create a window and the render context.
 		m_window = Window::Create(WindowProps(name, WIDTH, HEIGHT));
+		m_window->SetEventCallback(MP_BIND_EVENT_FN(Application::OnEvent));
+		// Alternatively you can just pass in the application ptr.
 
 		RenderContext::Init();
 
@@ -48,7 +50,7 @@ namespace Mapo
 	{
 		m_timer.Start();
 
-		while (!m_window->ShouldClose())
+		while (m_running)
 		{
 			Timestep deltaTime = static_cast<Timestep>(m_timer.Tick());
 
@@ -96,10 +98,63 @@ namespace Mapo
 				}
 			}
 
-			m_window->OnUpdate();
+			m_window->OnUpdate(); // glfwPollEvents()
 		}
 
 		RenderContext::GetDevice().WaitIdle();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////
+	// Events
+	/////////////////////////////////////////////////////////////////////////////////
+
+	void Application::OnEvent(Event& event)
+	{
+		// Handles events received from window.
+		EventDispatcher dispatcher(event);
+
+		// Dispatcher will check if event is matched.
+		dispatcher.Dispatch<WindowCloseEvent>(MP_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(MP_BIND_EVENT_FN(Application::OnWindowResize));
+		dispatcher.Dispatch<KeyPressedEvent>(MP_BIND_EVENT_FN(Application::OnEscPressed));
+
+		// Handles other events in each layer.
+		for (auto iter = m_layerStack->rbegin(); iter != m_layerStack->rend(); ++iter)
+		{
+			if (event.handled)
+			{
+				break;
+			}
+
+			(*iter)->OnEvent(event);
+		}
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& event)
+	{
+		m_running = false;
+		return true;
+	}
+
+	bool Application::OnEscPressed(KeyPressedEvent& event)
+	{
+		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& event)
+	{
+		if (event.GetWidth() == 0 || event.GetHeight() == 0)
+		{
+			m_minimalized = true;
+			return false;
+		}
+
+		m_minimalized = false;
+
+		// TODO:
+		// Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
+
+		return false;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////

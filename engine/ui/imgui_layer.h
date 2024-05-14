@@ -27,7 +27,7 @@ namespace Mapo
 
 		void RunExample();
 
-		virtual void OnEvent() override;
+		virtual void OnEvent(Event& event) override;
 
 		void BlockEvents(bool block) { m_blockEvents = block; }
 

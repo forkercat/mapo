@@ -10,6 +10,10 @@
 #include "engine/layer_stack.h"
 #include "engine/ui/imgui_layer.h"
 
+#include "engine/event/application_event.h"
+#include "engine/event/key_event.h"
+#include "engine/event/mouse_event.h"
+
 int MapoMain(int argc, char** argv);
 
 namespace Mapo
@@ -18,7 +22,7 @@ namespace Mapo
 
 	struct ApplicationCommandLineArgs
 	{
-		int count = 0;
+		int	   count = 0;
 		char** args = nullptr;
 
 		const char* operator[](int index) const
@@ -38,12 +42,12 @@ namespace Mapo
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;
 
-		MP_FORCE_INLINE static Application& Get() { return *s_appInstance; }
-		MP_FORCE_INLINE Window& GetWindow() { return *m_window; }
+		MP_FORCE_INLINE static Application&		   Get() { return *s_appInstance; }
+		MP_FORCE_INLINE Window&					   GetWindow() { return *m_window; }
 		MP_FORCE_INLINE ApplicationCommandLineArgs GetCommandLineArgs() const { return m_commandLineArgs; }
 
 		virtual bool Start();
-		void Close() { m_running = false; }
+		void		 Close() { m_running = false; }
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
@@ -53,10 +57,10 @@ namespace Mapo
 		void Run();
 
 		// Event callbacks.
-		void OnEvent() { }
-		void OnWindowClose() { }
-		bool OnEscPressed() { return false; }
-		bool OnWindowResize() { return false; }
+		void OnEvent(Event& event);
+		bool OnWindowClose(WindowCloseEvent& event);
+		bool OnEscPressed(KeyPressedEvent& event);
+		bool OnWindowResize(WindowResizeEvent& event);
 
 	public:
 		static constexpr U32 WIDTH = 960;

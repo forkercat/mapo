@@ -31,6 +31,11 @@ PUBLIC
 	renderer/frame_info.h
 	# UI
 	ui/imgui_layer.h
+	# Event
+	event/event.h
+	event/application_event.h
+	event/key_event.h
+	event/mouse_event.h
 	# System
 	system/simple_render_system.h
 	system/point_light_system.h
