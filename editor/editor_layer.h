@@ -52,7 +52,6 @@ namespace Mapo
 		GameObject m_player;
 
 		// Systems
-		UniqueRef<ImGuiSystem> m_imguiSystem{};
 		UniqueRef<SimpleRenderSystem> m_renderSystem{};
 		UniqueRef<PointLightSystem> m_pointLightSystem{};
 		UniqueRef<RainbowSystem> m_rainbowSystem{};

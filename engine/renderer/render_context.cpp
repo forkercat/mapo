@@ -35,8 +35,6 @@ namespace Mapo
 				// How many descriptors of this type are available in the pool.
 				.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
 				.Build();
-
-
 	}
 
 	void RenderContext::Release()

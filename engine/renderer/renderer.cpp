@@ -120,10 +120,10 @@ namespace Mapo
 		m_currentFrameIndex = (m_currentFrameIndex + 1) % Swapchain::MAX_FRAMES_IN_FLIGHT;
 	}
 
-	void Renderer::BeginRenderPass(VkCommandBuffer commandBuffer)
+	void Renderer::BeginRenderPass()
 	{
 		MP_ASSERT(m_isFrameStarted, "Could not begin render pass while frame is not in progress!");
-		MP_ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not begin render pass on command buffer from a different frame!");
+		VkCommandBuffer commandBuffer = GetCurrentCommandBuffer();
 
 		// Begin render pass.
 		VkRenderPassBeginInfo renderPassBeginInfo{};
@@ -159,12 +159,10 @@ namespace Mapo
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
-	void Renderer::EndRenderPass(VkCommandBuffer commandBuffer)
+	void Renderer::EndRenderPass()
 	{
 		MP_ASSERT(m_isFrameStarted, "Could not end render pass while frame is not in progress!");
-		MP_ASSERT(commandBuffer == GetCurrentCommandBuffer(), "Could not end render pass on command buffer from a different frame!");
-
-		vkCmdEndRenderPass(commandBuffer);
+		vkCmdEndRenderPass(GetCurrentCommandBuffer());
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////

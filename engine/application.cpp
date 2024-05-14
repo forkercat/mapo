@@ -6,6 +6,7 @@
 
 #include "engine/renderer/render_context.h"
 #include "engine/renderer/device.h"
+#include "engine/renderer/renderer.h"
 
 namespace Mapo
 {
@@ -22,12 +23,17 @@ namespace Mapo
 
 		RenderContext::Init();
 
+		// Layers
+		m_layerStack = MP_NEW(LayerStack);
+
 		m_imguiLayer = MP_NEW(ImGuiLayer);
 		PushOverlay(m_imguiLayer);
 	}
 
 	Application::~Application()
 	{
+		MP_DELETE(m_layerStack);
+
 		RenderContext::Release();
 	}
 
@@ -48,19 +54,46 @@ namespace Mapo
 
 			if (!m_minimalized)
 			{
-				// Update
-				for (Layer* layer : m_layerStack)
-				{
-					layer->OnUpdate(deltaTime);
-				}
+				Renderer& renderer = RenderContext::GetRenderer();
 
-				// ImGui
-				m_imguiLayer->Begin();
-				for (Layer* layer : m_layerStack)
+				// Could be nullptr if, for example, the swapchain needs to be recreated.
+				if ([[maybe_unused]] VkCommandBuffer commandBuffer = renderer.BeginFrame())
 				{
-					layer->OnImGuiRender();
+					// The reason why BeginFrame and BeginRenderPass are separate functions is
+					// we want the app to control over this to enable us easily integrating multiple render passes.
+					//
+					// - BeginFrame to acquire image and begin command buffer
+					// - Begin offscreen shadow pass
+					// -   Render shadow casting objects
+					// - End offscreen shadow pass
+					// - Begin shading pass
+					// -   Render objects
+					// - End shading pass
+					// - Post processing...
+					renderer.BeginRenderPass();
+
+					// TODO: Render pass should be put inside!
+
+					// Update
+					for (Layer* layer : *m_layerStack)
+					{
+						layer->OnUpdate(deltaTime);
+					}
+
+					// ImGui
+					m_imguiLayer->Begin();
+
+					for (Layer* layer : *m_layerStack)
+					{
+						layer->OnImGuiRender();
+					}
+
+					m_imguiLayer->End();
+
+					renderer.EndRenderPass();
+
+					renderer.EndFrame();
 				}
-				m_imguiLayer->End();
 			}
 
 			m_window->OnUpdate();
@@ -75,13 +108,13 @@ namespace Mapo
 
 	void Application::PushLayer(Layer* layer)
 	{
-		m_layerStack.PushLayer(layer);
+		m_layerStack->PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
-		m_layerStack.PushOverlay(overlay);
+		m_layerStack->PushOverlay(overlay);
 		overlay->OnAttach();
 	}
 

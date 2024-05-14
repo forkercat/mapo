@@ -67,7 +67,7 @@ namespace Mapo
 
 		UniqueRef<Window> m_window;
 
-		LayerStack m_layerStack;
+		LayerStack* m_layerStack;
 		ImGuiLayer* m_imguiLayer = nullptr;
 
 		bool m_running = true;

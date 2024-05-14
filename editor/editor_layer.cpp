@@ -92,7 +92,6 @@ namespace Mapo
 
 		// Set up systems.
 		Window& window = Application::Get().GetWindow();
-		m_imguiSystem = MakeUnique<ImGuiSystem>(window, renderer.GetRenderPass(), renderer.GetImageCount());
 		m_renderSystem = MakeUnique<SimpleRenderSystem>(renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		m_pointLightSystem = MakeUnique<PointLightSystem>(renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		m_rainbowSystem = MakeUnique<RainbowSystem>(0.4f);
@@ -105,7 +104,6 @@ namespace Mapo
 		m_rainbowSystem.release();
 		m_pointLightSystem.release();
 		m_renderSystem.release();
-		m_imguiSystem.release();
 
 		for (auto& pBuffer : s_uboBuffers)
 		{
@@ -130,54 +128,29 @@ namespace Mapo
 		F32 aspect = renderer.GetAspectRatio();
 		m_camera.SetPerspectiveProjection(MathOp::Radians(50.f), aspect, 0.1f, 100.f);
 
-		// Could be nullptr if, for example, the swapchain needs to be recreated.
-		if (VkCommandBuffer commandBuffer = renderer.BeginFrame())
-		{
-			// ImGui
-			m_imguiSystem->NewFrame();
+		/////////////////////////////////////////////////////////////////////////////////
 
-			// Prepare frame info
-			U32 frameIndex = renderer.GetCurrentFrameIndex();
+		// Prepare frame info
+		U32 frameIndex = renderer.GetCurrentFrameIndex();
 
-			FrameInfo frameInfo{
-				.frameIndex = frameIndex,
-				.frameTime = dt,
-				.commandBuffer = commandBuffer,
-				.globalDescriptorSet = s_globalDescriptorSets[frameIndex],
-				.camera = m_camera,
-				.gameObjects = sceneGameObjects
-			};
+		FrameInfo frameInfo{
+			.frameIndex = frameIndex,
+			.frameTime = dt,
+			.commandBuffer = renderer.GetCurrentCommandBuffer(),
+			.globalDescriptorSet = s_globalDescriptorSets[frameIndex],
+			.camera = m_camera,
+			.gameObjects = sceneGameObjects
+		};
 
-			// Update
-			GlobalUbo ubo{};
-			ubo.projection = m_camera.GetProjection();
-			ubo.view = m_camera.GetView();
-			s_uboBuffers[frameInfo.frameIndex]->WriteToBuffer(&ubo);
-			s_uboBuffers[frameInfo.frameIndex]->Flush();
+		// Update
+		GlobalUbo ubo{};
+		ubo.projection = m_camera.GetProjection();
+		ubo.view = m_camera.GetView();
+		s_uboBuffers[frameInfo.frameIndex]->WriteToBuffer(&ubo);
+		s_uboBuffers[frameInfo.frameIndex]->Flush();
 
-			// The reason why BeginFrame and BeginSwapchainRenderPass are separate functions is
-			// we want the app to control over this to enable us easily integrating multiple render passes.
-			//
-			// - BeginFrame to acquire image and begin command buffer
-			// - Begin offscreen shadow pass
-			// -   Render shadow casting objects
-			// - End offscreen shadow pass
-			// - Begin shading pass
-			// -   Render objects
-			// - End shading pass
-			// - Post processing...
-			renderer.BeginRenderPass(commandBuffer);
-
-			m_renderSystem->RenderGameObjects(frameInfo);
-			m_pointLightSystem->Render(frameInfo);
-
-			// Draw ImGui.
-			m_imguiSystem->RunExample();
-			m_imguiSystem->Render(commandBuffer);
-
-			renderer.EndRenderPass(commandBuffer);
-			renderer.EndFrame();
-		}
+		m_renderSystem->RenderGameObjects(frameInfo);
+		m_pointLightSystem->Render(frameInfo);
 	}
 
 	void EditorLayer::CreateScene()

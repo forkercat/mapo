@@ -44,8 +44,8 @@ namespace Mapo
 		// Functions to render.
 		VkCommandBuffer BeginFrame();
 		void			EndFrame();
-		void			BeginRenderPass(VkCommandBuffer commandBuffer);
-		void			EndRenderPass(VkCommandBuffer commandBuffer);
+		void			BeginRenderPass();
+		void			EndRenderPass();
 
 	private:
 		// Functions to create Vulkan resources.
