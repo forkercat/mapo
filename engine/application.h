@@ -63,8 +63,8 @@ namespace Mapo
 		bool OnWindowResize(WindowResizeEvent& event);
 
 	public:
-		static constexpr U32 WIDTH = 1280;
-		static constexpr U32 HEIGHT = 800;
+		static constexpr U32 WIDTH = 1024;
+		static constexpr U32 HEIGHT = 640;
 
 	private:
 		ApplicationCommandLineArgs m_commandLineArgs;

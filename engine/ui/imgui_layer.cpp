@@ -69,12 +69,13 @@ namespace Mapo
 		// Set up ImGui context.
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+
 		ImGuiIO& io = ImGui::GetIO();
 		(void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		// io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
@@ -86,8 +87,26 @@ namespace Mapo
 		// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Regular.ttf", fontSize * dpi);
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", fontSize * dpi);
 
+		// Icons
+		static const ImWchar iconRanges[] = { 0xe00f, 0xf8ff, 0 };
+		static ImFontConfig	 config;
+		config.MergeMode = false;
+		config.GlyphMinAdvanceX = fontSize;
+		io.Fonts->AddFontFromFileTTF("assets/fonts/FontAwesome5/fa-solid-900.ttf", fontSize * dpi, &config, iconRanges);
+
 		// Set up style.
 		ImGui::StyleColorsDark();
+
+		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular
+		// ones.
+		// ImGuiStyle& style = ImGui::GetStyle();
+		// if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		// {
+		// 	style.WindowRounding = 0.f;
+		// 	style.Colors[ImGuiCol_WindowBg].w = 1.f;
+		// }
+
+		// SetDarkThemeColors();
 
 		// Set up GLFW & Vulkan backends.
 		Window& window = Application::Get().GetWindow();
@@ -138,24 +157,24 @@ namespace Mapo
 
 	void ImGuiLayer::End()
 	{
-		// ?
-		// ImGuiIO& io = ImGui::GetIO();
-		// Application& app = Application::Get();
-		// io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+		ImGuiIO& io = ImGui::GetIO();
+		Window&	 window = Application::Get().GetWindow();
+		io.DisplaySize = ImVec2(window.GetWidth(), window.GetHeight());
 
 		ImGui::Render();
 
 		VkCommandBuffer currentCmdBuffer = RenderContext::GetRenderer().GetCurrentCommandBuffer();
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), currentCmdBuffer);
 
-		// ?
-		// if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		// {
-		// 	GLFWwindow* backup_current_context = glfwGetCurrentContext();
-		// 	ImGui::UpdatePlatformWindows();
-		// 	ImGui::RenderPlatformWindowsDefault();
-		// 	glfwMakeContextCurrent(backup_current_context);
-		// }
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			void* backupCurrentContext = window.GetCurrentContext();
+
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+
+			window.MakeCurrentContext(backupCurrentContext);
+		}
 	}
 
 	void ImGuiLayer::OnImGuiRender()
@@ -216,8 +235,12 @@ namespace Mapo
 
 	void ImGuiLayer::OnEvent(Event& event)
 	{
+		// TODO: Add comment.
 		if (m_blockEvents)
 		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.handled |= event.InCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.handled |= event.InCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
 		}
 	}
 

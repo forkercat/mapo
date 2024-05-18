@@ -255,6 +255,11 @@ namespace Mapo
 
 		ImGui::Text("Image count: %u", renderer.GetImageCount());
 
+		ImGui::NewLine();
+		ImGui::Separator();
+		static F32 color[3] { 1.0f, 0.0f, 0.0f };
+		ImGui::ColorEdit3("Test color", color);
+
 		ImGui::End(); // Test
 	}
 

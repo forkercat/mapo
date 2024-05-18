@@ -393,10 +393,20 @@ namespace Mapo
 	{
 		auto it = std::find_if(availableFormats.begin(), availableFormats.end(), [](VkSurfaceFormatKHR surfaceFormat) {
 			return surfaceFormat.format == VK_FORMAT_B8G8R8A8_SRGB && surfaceFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+			// return surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM && surfaceFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 		});
 
 		if (it != availableFormats.end())
 		{
+			if (it->format == VK_FORMAT_B8G8R8A8_SRGB == it->colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			{
+				MP_WARN("Surface format: {} ({})", "VK_FORMAT_B8G8R8A8_SRGB", "VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
+			}
+			else if (it->format == VK_FORMAT_B8G8R8A8_UNORM == it->colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR)
+			{
+				MP_WARN("Surface format: {} ({})", "VK_FORMAT_B8G8R8A8_UNORM", "VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
+			}
+
 			return *it;
 		}
 

@@ -143,7 +143,7 @@ namespace Mapo
 
 	bool Application::OnWindowResize(WindowResizeEvent& event)
 	{
-		MP_INFO("Event (WindowResize): Resize to [{}, {}]", event.GetWidth(), event.GetHeight());
+		// MP_INFO("Event (WindowResize): Resize to [{}, {}]", event.GetWidth(), event.GetHeight());
 
 		if (event.GetWidth() == 0 || event.GetHeight() == 0)
 		{

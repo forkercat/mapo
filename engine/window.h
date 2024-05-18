@@ -52,6 +52,8 @@ namespace Mapo
 		virtual void		 CreateWindowSurface(void* instance, void* surface) = 0;
 		virtual void		 GlfwWaitEvents() = 0;
 		virtual const char** GlfwGetRequiredExtensions(U32* count) = 0;
+		virtual void*		 GetCurrentContext() = 0;
+		virtual void		 MakeCurrentContext(void* context) = 0;
 
 		static UniqueRef<Window> Create(const WindowProps& props = {});
 	};

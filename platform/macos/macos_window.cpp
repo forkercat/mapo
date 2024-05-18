@@ -199,4 +199,14 @@ namespace Mapo
 		return glfwGetRequiredInstanceExtensions(count);
 	}
 
+	void* MacosWindow::GetCurrentContext()
+	{
+		return glfwGetCurrentContext();
+	}
+
+	void MacosWindow::MakeCurrentContext(void* context)
+	{
+		glfwMakeContextCurrent((GLFWwindow*)context);
+	}
+
 } // namespace Mapo

@@ -30,6 +30,8 @@ namespace Mapo
 		virtual void		 CreateWindowSurface(void* instance, void* surface) override;
 		virtual void		 GlfwWaitEvents() override;
 		virtual const char** GlfwGetRequiredExtensions(U32* count) override;
+		virtual void*		 GetCurrentContext() override;
+		virtual void		 MakeCurrentContext(void* context) override;
 
 	private:
 		void Init(const WindowProps& props);
