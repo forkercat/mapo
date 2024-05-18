@@ -151,7 +151,7 @@ namespace Mapo
 		m_device.CopyBuffer(stagingBuffer.GetBuffer(), m_indexBuffer->GetBuffer(), bufferSize);
 	}
 
-	UniqueRef<Model> Model::CreateCubeModel(Vector3 offset)
+	UniqueRef<Model> Model::CreateCubeModel()
 	{
 		// temporary helper function, creates a 1x1x1 cube centered at offset
 		Builder modelBuilder{};
@@ -193,11 +193,6 @@ namespace Mapo
 			{ { -.5f, .5f, -0.5f }, { .1f, .8f, .1f } },
 			{ { .5f, -.5f, -0.5f }, { .1f, .8f, .1f } },
 		};
-
-		for (auto& v : modelBuilder.vertices)
-		{
-			v.position += offset;
-		}
 
 		modelBuilder.indices = {
 			0, 1, 2, 0, 3, 1, 4, 5, 6, 4, 7, 5, 8, 9, 10, 8, 11, 9, 12, 13,

@@ -143,6 +143,8 @@ namespace Mapo
 
 	bool Application::OnWindowResize(WindowResizeEvent& event)
 	{
+		MP_INFO("Event (WindowResize): Resize to [{}, {}]", event.GetWidth(), event.GetHeight());
+
 		if (event.GetWidth() == 0 || event.GetHeight() == 0)
 		{
 			m_minimalized = true;
@@ -151,7 +153,7 @@ namespace Mapo
 
 		m_minimalized = false;
 
-		// TODO:
+		// Note that this is not needed because it is handled by framebuffer resize.
 		// Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
 
 		return false;

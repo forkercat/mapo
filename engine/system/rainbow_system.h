@@ -6,8 +6,8 @@
 
 #include "core/core.h"
 
-#include "engine/game_object.h"
-#include "engine/component.h"
+#include "engine/scene/game_object.h"
+#include "engine/scene/component.h"
 
 #include <random>
 #include <vector>

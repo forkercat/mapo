@@ -4,7 +4,7 @@
 
 #include "game_object.h"
 
-#include "engine/component.h"
+#include "engine/scene/component.h"
 
 namespace Mapo
 {

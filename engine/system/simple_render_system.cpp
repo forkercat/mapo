@@ -4,7 +4,7 @@
 
 #include "simple_render_system.h"
 
-#include "engine/component.h"
+#include "engine/scene/component.h"
 #include "engine/model.h"
 
 #include "engine/renderer/vk_common.h"

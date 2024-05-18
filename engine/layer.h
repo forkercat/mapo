@@ -19,7 +19,7 @@ namespace Mapo
 
 		virtual void OnAttach() { }
 		virtual void OnDetach() { }
-		virtual void OnUpdate(const Timestep dt) { }
+		virtual void OnUpdate(Timestep dt) { }
 		virtual void OnImGuiRender() { }
 		virtual void OnEvent(Event& event) { }
 

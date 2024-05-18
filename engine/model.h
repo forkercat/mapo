@@ -50,7 +50,7 @@ namespace Mapo
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 
-		static UniqueRef<Model> CreateCubeModel(Vector3 offset);
+		static UniqueRef<Model> CreateCubeModel();
 		static UniqueRef<Model> CreateModelFromFile(const std::string& filepath);
 
 	private:

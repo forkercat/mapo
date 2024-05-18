@@ -7,8 +7,11 @@
 #include "engine/application.h"
 #include "engine/window.h"
 #include "engine/model.h"
-#include "engine/game_object.h"
-#include "engine/component.h"
+
+#include "engine/scene/scene.h"
+#include "engine/scene/game_object.h"
+#include "engine/scene/component.h"
+#include "engine/scene/script_rotate.h"
 
 #include "engine/input/input.h"
 
@@ -21,8 +24,6 @@
 
 #include "engine/system/simple_render_system.h"
 #include "engine/system/point_light_system.h"
-#include "engine/system/rainbow_system.h"
-#include "engine/system/imgui_system.h"
 
 #include <imgui/imgui.h>
 
@@ -33,8 +34,8 @@ namespace Mapo
 		Matrix4 projection{ 1.0f };
 		Matrix4 view{ 1.0f };
 		Vector4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f }; // w is intensity
-		Vector3 lightPosition{ 0.0f, 0.0f, 0.0f };
-		alignas(16) Vector4 lightColor{ 1.0f, 1.0f, 1.0f, 0.5f }; // w is intensity
+		Vector3 lightPosition{ 0.0f, 1.0f, 0.0f };
+		alignas(16) Vector4 lightColor{ 1.0f, 1.0f, 0.0f, 0.5f }; // w is intensity
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +47,7 @@ namespace Mapo
 	/////////////////////////////////////////////////////////////////////////////////
 
 	EditorLayer::EditorLayer()
-		: Layer("EditorLayer")
+		: Layer("EditorLayer"), m_camera(45.0f, RenderContext::GetRenderer().GetAspectRatio())
 	{
 	}
 
@@ -93,17 +94,14 @@ namespace Mapo
 		}
 
 		// Set up systems.
-		Window& window = Application::Get().GetWindow();
 		m_renderSystem = MakeUnique<SimpleRenderSystem>(renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		m_pointLightSystem = MakeUnique<PointLightSystem>(renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
-		m_rainbowSystem = MakeUnique<RainbowSystem>(0.4f);
 	}
 
 	void EditorLayer::OnDetach()
 	{
 		// Need to do this to make sure model objects are deleted.
 		m_scene.release();
-		m_rainbowSystem.release();
 		m_pointLightSystem.release();
 		m_renderSystem.release();
 
@@ -115,22 +113,27 @@ namespace Mapo
 		s_globalDescriptorSets.resize(0);
 	}
 
-	void EditorLayer::OnUpdate(const Timestep dt)
+	void EditorLayer::OnUpdate(Timestep dt)
 	{
 		Renderer& renderer = RenderContext::GetRenderer();
 
 		// Retrieve all game objects before the loop. // GameObject is a lightweight class that just contains entity ids.
 		std::vector<GameObject> sceneGameObjects = m_scene->GetGameObjects();
 
-		m_controller.MoveInPlaneXZ(dt, m_player);
+		// / Resize
+		Window& window = Application::Get().GetWindow();
+		if (window.WasFramebufferResized())
+		{
+			m_camera.SetViewportSize(window.GetWidth(), window.GetHeight());
+		}
 
-		auto& viewerTransform = m_player.GetComponent<TransformComponent>();
-		m_camera.SetViewYXZ(viewerTransform.translation, viewerTransform.rotation);
-
-		F32 aspect = renderer.GetAspectRatio();
-		m_camera.SetPerspectiveProjection(MathOp::Radians(50.f), aspect, 0.1f, 100.f);
+		// Update
+		m_camera.OnUpdate(dt);
+		m_scene->OnUpdateEditor(dt, m_camera);
 
 		/////////////////////////////////////////////////////////////////////////////////
+
+		// TODO: The below code should be moved to the scene class?
 
 		// Prepare frame info
 		U32 frameIndex = renderer.GetCurrentFrameIndex();
@@ -146,8 +149,10 @@ namespace Mapo
 
 		// Update
 		GlobalUbo ubo{};
-		ubo.projection = m_camera.GetProjection();
-		ubo.view = m_camera.GetView();
+
+		ubo.projection = m_camera.GetProjectionMatrix();
+		ubo.view = m_camera.GetViewMatrix();
+
 		s_uboBuffers[frameInfo.frameIndex]->WriteToBuffer(&ubo);
 		s_uboBuffers[frameInfo.frameIndex]->Flush();
 
@@ -158,40 +163,51 @@ namespace Mapo
 	void EditorLayer::CreateScene()
 	{
 		// Model
+		Ref<Model> bunnyModel = Model::CreateModelFromFile("assets/models/bunny.obj");
 		Ref<Model> smoothModel = Model::CreateModelFromFile("assets/models/smooth_vase.obj");
 		Ref<Model> flatModel = Model::CreateModelFromFile("assets/models/flat_vase.obj");
 		Ref<Model> quadModel = Model::CreateModelFromFile("assets/models/quad.obj");
+		Ref<Model> cubeModel = Model::CreateCubeModel();
 
 		m_scene = MakeUnique<Scene>();
 
-		// 1
-		GameObject gameObject1 = m_scene->CreateGameObject("SmoothVase");
-		gameObject1.AddComponent<MeshComponent>(smoothModel);
+		// Bunny
+		GameObject bunnyObject = m_scene->CreateGameObject("Bunny");
+		bunnyObject.AddComponent<MeshComponent>(bunnyModel);
 
-		auto& transform1 = gameObject1.GetComponent<TransformComponent>();
-		transform1.translation = { -0.5f, 0.5f, 0.0f };
-		transform1.scale = Vector3(2.0f);
+		auto& transform1 = bunnyObject.GetComponent<TransformComponent>();
+		transform1.translation = { -1.0f, 0.0f, 0.0f };
+		transform1.scale = Vector3(4.0f);
 
-		// 2
-		GameObject gameObject2 = m_scene->CreateGameObject("FlatVase");
-		gameObject2.AddComponent<MeshComponent>(flatModel);
+		bunnyObject.AddComponent<NativeScriptComponent>().Bind<RotateScript>();
 
-		auto& transform2 = gameObject2.GetComponent<TransformComponent>();
-		transform2.translation = { 0.5f, 0.5f, 0.0f };
+		// Smooth Vase
+		GameObject vaseObject = m_scene->CreateGameObject("SmoothVase");
+		vaseObject.AddComponent<MeshComponent>(flatModel);
+
+		auto& transform2 = vaseObject.GetComponent<TransformComponent>();
+		transform2.translation = { 1.0f, 1.0f, 0.5f };
+		transform2.rotation = { MathOp::Radians(180), 0.0f, 0.0f };
 		transform2.scale = Vector3(2.0f);
 
-		// 3
-		GameObject gameObject3 = m_scene->CreateGameObject("Quad");
-		gameObject3.AddComponent<MeshComponent>(quadModel);
+		// Cubes
+		GameObject cubeX = m_scene->CreateGameObject("Cube +X");
+		cubeX.AddComponent<MeshComponent>(cubeModel);
+		cubeX.GetComponent<TransformComponent>().translation = { 3.0f, 0.0f, 0.0f };
+		cubeX.GetComponent<TransformComponent>().scale = Vector3(0.2f);
 
-		auto& transform3 = gameObject3.GetComponent<TransformComponent>();
-		transform3.translation = { 0.0f, 0.5f, 0.0f };
+		GameObject cubeZ = m_scene->CreateGameObject("Cube +Z");
+		cubeZ.AddComponent<MeshComponent>(cubeModel);
+		cubeZ.GetComponent<TransformComponent>().translation = { 0.0f, 0.0f, 5.0f };
+		cubeZ.GetComponent<TransformComponent>().scale = Vector3(0.2f);
+
+		// Plane
+		GameObject planeObject = m_scene->CreateGameObject("Plane");
+		planeObject.AddComponent<MeshComponent>(quadModel);
+
+		auto& transform3 = planeObject.GetComponent<TransformComponent>();
+		transform3.translation = { 0.0f, -1.0f, 0.0f };
 		transform3.scale = { 3.0f, 1.0f, 3.0f };
-
-		// Set up camera and player.
-		m_camera.SetViewTarget(Vector3(-1.0f, -2.0f, 2.0f), Vector3(0.0f, 0.0f, 2.5f));
-		m_player = m_scene->CreateGameObject("Player");
-		m_player.GetComponent<TransformComponent>().translation.z = -2.5f;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -200,6 +216,46 @@ namespace Mapo
 
 	void EditorLayer::OnImGuiRender()
 	{
+		ImGui::Begin("Test");
+
+		static bool showDemo = false;
+		ImGui::ShowDemoWindow(&showDemo);
+		ImGui::Checkbox("Show demo", &showDemo);
+
+		ImGui::NewLine();
+
+		ImGui::Text("Editor Camera");
+		ImGui::Separator();
+		ImGui::DragFloat3("Position##1", GLM_PTR(m_camera.GetPosition()));
+
+		auto gameObjects = m_scene->GetGameObjects();
+
+		ImGui::NewLine();
+
+		ImGui::Text("Game Objects");
+		ImGui::Separator();
+
+		for (GameObject& go : gameObjects)
+		{
+			auto& transform = go.GetComponent<TransformComponent>();
+			ImGui::DragFloat3(go.GetName().c_str(), GLM_PTR(transform.translation));
+		}
+
+		ImGui::NewLine();
+
+		ImGui::Text("Stats");
+		ImGui::Separator();
+		ImGui::Text("FPS: %.1f  (%.2f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+
+		Window& window = Application::Get().GetWindow();
+		ImGui::Text("Window: %u x %u", window.GetWidth(), window.GetHeight());
+
+		Renderer& renderer = RenderContext::GetRenderer();
+		ImGui::Text("Swapchain: %u x %u", renderer.GetSwapchainWidth(), renderer.GetSwapchainHeight());
+
+		ImGui::Text("Image count: %u", renderer.GetImageCount());
+
+		ImGui::End(); // Test
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -209,8 +265,7 @@ namespace Mapo
 	void EditorLayer::OnEvent(Event& event)
 	{
 		// Handles camera updates.
-		// m_camera
-		// m_controller
+		m_camera.OnEvent(event);
 
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<KeyPressedEvent>(MP_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
@@ -265,6 +320,44 @@ namespace Mapo
 	{
 		// TODO: Handles entity selection.
 		return false;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////
+
+	void EditorLayer::ShowCameraMatrix()
+	{
+		Matrix4& viewMatrix = m_camera.GetViewMatrix();
+		Matrix4& projMatrix = m_camera.GetProjectionMatrix();
+
+		ImGui::Text("View matrix:");
+		if (ImGui::BeginTable("View matrix", 4))
+		{
+			for (int row = 0; row < 4; row++)
+			{
+				ImGui::TableNextRow();
+				for (int column = 0; column < 4; column++)
+				{
+					ImGui::TableSetColumnIndex(column);
+					ImGui::Text("%.1f", viewMatrix[column][row]);
+				}
+			}
+			ImGui::EndTable();
+		}
+
+		ImGui::Text("Projection matrix:");
+		if (ImGui::BeginTable("Projection matrix", 4))
+		{
+			for (int row = 0; row < 4; row++)
+			{
+				ImGui::TableNextRow();
+				for (int column = 0; column < 4; column++)
+				{
+					ImGui::TableSetColumnIndex(column);
+					ImGui::Text("%.1f", projMatrix[column][row]);
+				}
+			}
+			ImGui::EndTable();
+		}
 	}
 
 } // namespace Mapo

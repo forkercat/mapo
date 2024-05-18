@@ -24,10 +24,12 @@ namespace Mapo
 		Renderer& operator=(const Renderer&) = delete;
 
 		// Public getter.
-		VkRenderPass GetRenderPass();
-		F32			 GetAspectRatio();
-		U32			 GetImageCount();
-		bool		 IsFrameInProgress();
+		VkRenderPass GetRenderPass() const;
+		F32			 GetAspectRatio() const;
+		U32			 GetImageCount() const;
+		bool		 IsFrameInProgress() const;
+		U32			 GetSwapchainWidth() const;
+		U32			 GetSwapchainHeight() const;
 
 		VkCommandBuffer GetCurrentCommandBuffer()
 		{
@@ -54,7 +56,7 @@ namespace Mapo
 		void RecreateSwapchain();
 
 	private:
-		Device& m_device;
+		Device&						 m_device;
 		UniqueRef<Swapchain>		 m_swapchain;
 		std::vector<VkCommandBuffer> m_commandBuffers;
 

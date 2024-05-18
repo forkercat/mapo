@@ -19,8 +19,8 @@ namespace Mapo
 
 		virtual void OnUpdate() override;
 
-		virtual bool  WasWindowResized() const override { return m_data.framebufferResized; }
-		virtual void  ResetWindowResizedFlag() override { m_data.framebufferResized = false; }
+		virtual bool  WasFramebufferResized() const override { return m_data.framebufferResized; }
+		virtual void  ResetFramebufferResizedFlag() override { m_data.framebufferResized = false; }
 		virtual void* GetNativeWindow() const override { return m_window; }
 		virtual U32	  GetWidth() const override { return m_data.width; }
 		virtual U32	  GetHeight() const override { return m_data.height; }

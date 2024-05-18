@@ -32,24 +32,34 @@ namespace Mapo
 	// Public Getters.
 	/////////////////////////////////////////////////////////////////////////////////
 
-	VkRenderPass Renderer::GetRenderPass()
+	VkRenderPass Renderer::GetRenderPass() const
 	{
 		return m_swapchain->GetRenderPass();
 	}
 
-	F32 Renderer::GetAspectRatio()
+	F32 Renderer::GetAspectRatio() const
 	{
 		return m_swapchain->GetExtentAspectRatio();
 	}
 
-	U32 Renderer::GetImageCount()
+	U32 Renderer::GetImageCount() const
 	{
 		return m_swapchain->GetImageCount();
 	}
 
-	bool Renderer::IsFrameInProgress()
+	bool Renderer::IsFrameInProgress() const
 	{
 		return m_isFrameStarted;
+	}
+
+	U32 Renderer::GetSwapchainWidth() const
+	{
+		return m_swapchain->GetWidth();
+	}
+
+	U32 Renderer::GetSwapchainHeight() const
+	{
+		return m_swapchain->GetHeight();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -105,9 +115,9 @@ namespace Mapo
 
 		Window& window = Application::Get().GetWindow();
 
-		if (submitResult == VK_ERROR_OUT_OF_DATE_KHR || submitResult == VK_SUBOPTIMAL_KHR || window.WasWindowResized())
+		if (submitResult == VK_ERROR_OUT_OF_DATE_KHR || submitResult == VK_SUBOPTIMAL_KHR || window.WasFramebufferResized())
 		{
-			window.ResetWindowResizedFlag();
+			window.ResetFramebufferResizedFlag();
 			RecreateSwapchain();
 		}
 		else if (submitResult != VK_SUCCESS)

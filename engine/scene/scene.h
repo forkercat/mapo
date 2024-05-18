@@ -6,6 +6,8 @@
 
 #include "core/core.h"
 
+#include "engine/scene/editor_camera.h"
+
 #include <entt/entity/registry.hpp>
 
 #include <vector>
@@ -18,16 +20,21 @@ namespace Mapo
 	{
 	public:
 		virtual ~Scene() = default;
+
 		Scene();
 
-		void OnUpdate(F32 dt);
+		void OnUpdateRuntime(Timestep dt);
+		void OnUpdateEditor(Timestep dt, EditorCamera& camera);
 
 		GameObject CreateGameObject(const String& name = "");
-
-		void DestroyGameObject(const GameObject& gameObject);
+		void	   DestroyGameObject(GameObject& gameObject);
 
 		// TODO: Should not do this.
 		std::vector<GameObject> GetGameObjects();
+
+	private:
+		template <typename T>
+		void OnComponentAdded(GameObject& gameObject, T& component);
 
 	private:
 		entt::registry m_registry;

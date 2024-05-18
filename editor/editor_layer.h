@@ -5,21 +5,20 @@
 #pragma once
 
 #include "engine/layer.h"
-#include "engine/scene.h"
-#include "engine/camera.h"
-#include "engine/keyboard_controller.h"
+
+#include "engine/scene/editor_camera.h"
 
 #include "engine/event/key_event.h"
 #include "engine/event/mouse_event.h"
 
 namespace Mapo
 {
-	class ImGuiSystem;
 	class SimpleRenderSystem;
 	class PointLightSystem;
-	class RainbowSystem;
 
 	class Buffer;
+
+	class Scene;
 
 	class EditorLayer : public Layer
 	{
@@ -31,7 +30,7 @@ namespace Mapo
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
-		virtual void OnUpdate(const Timestep dt) override;
+		virtual void OnUpdate(Timestep dt) override;
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& event) override;
 
@@ -47,18 +46,17 @@ namespace Mapo
 		void OpenScene() { MP_INFO("OpenScene()"); }
 		void SaveSceneAs() { MP_INFO("SaveSceneAs()"); }
 
+		// Testing
+		void ShowCameraMatrix();
+
 	private:
 		UniqueRef<Scene> m_scene;
 
-		Camera			   m_camera;
-		KeyboardController m_controller;
-
-		GameObject m_player;
+		EditorCamera m_camera;
 
 		// Systems
 		UniqueRef<SimpleRenderSystem> m_renderSystem{};
 		UniqueRef<PointLightSystem>	  m_pointLightSystem{};
-		UniqueRef<RainbowSystem>	  m_rainbowSystem{};
 	};
 
 } // namespace Mapo

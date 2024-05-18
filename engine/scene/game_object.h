@@ -6,7 +6,7 @@
 
 #include "core/core.h"
 
-#include "engine/scene.h"
+#include "scene.h"
 
 #include <entt/entity/registry.hpp>
 
@@ -19,9 +19,18 @@ namespace Mapo
 
 		// Default constructor needed for temp object.
 		GameObject() = default;
+		GameObject(const GameObject& other) = default;
 
 		operator bool() const { return m_entityHandle != entt::null; }
 		MP_FORCE_INLINE bool IsValid() const { return m_entityHandle != entt::null; }
+
+		bool operator==(const GameObject& other) const { return m_entityHandle == other.m_entityHandle && m_scene == other.m_scene; }
+		bool operator!=(const GameObject& other) const { return !(*this == other); }
+
+		operator entt::entity() const { return m_entityHandle; }
+		operator U32() const { return (U32)m_entityHandle; }
+
+		/////////////////////////////////////////////////////////////////////////////////
 
 		const String& GetName() const;
 
@@ -48,7 +57,10 @@ namespace Mapo
 		T& AddComponent(Args&&... args)
 		{
 			MP_ASSERT(!HasComponent<T>(), "The entity already has this type of components!");
-			return m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
+
+			T& component = m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
+			m_scene->OnComponentAdded<T>(*this, component);
+			return component;
 		}
 
 		template <typename T>

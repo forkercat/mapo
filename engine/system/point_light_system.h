@@ -6,8 +6,8 @@
 
 #include "core/core.h"
 
-#include "engine/camera.h"
-#include "engine/game_object.h"
+#include "engine/renderer/camera.h"
+#include "engine/scene/game_object.h"
 
 #include <vulkan/vulkan.h>
 

@@ -10,10 +10,6 @@ PUBLIC
 	layer.h
 	layer_stack.h
 	model.h
-	game_object.h
-	component.h
-	camera.h
-	keyboard_controller.h
 	utils.h
 	# Input
 	input/input.h
@@ -29,6 +25,15 @@ PUBLIC
 	renderer/buffer.h
 	renderer/descriptors.h
 	renderer/frame_info.h
+	renderer/camera.h
+	# Scene
+	scene/scene.h
+	scene/game_object.h
+	scene/component.h
+	scene/scene_camera.h
+	scene/editor_camera.h
+	scene/scriptable.h
+	scene/script_rotate.h
 	# UI
 	ui/imgui_layer.h
 	# Event
@@ -39,9 +44,7 @@ PUBLIC
 	# System
 	system/simple_render_system.h
 	system/point_light_system.h
-	system/imgui_system.h
 	system/rainbow_system.h
-	scene.h
 	# Platform
 	${PLATFORM_SRC_DIR}/macos/macos_window.h
 PRIVATE
@@ -50,10 +53,6 @@ PRIVATE
 	layer.cpp
 	layer_stack.cpp
 	model.cpp
-	game_object.cpp
-	component.cpp
-	camera.cpp
-	keyboard_controller.cpp
 	# Renderer
 	renderer/render_context.cpp
 	renderer/renderer.cpp
@@ -62,13 +61,19 @@ PRIVATE
 	renderer/swapchain.cpp
 	renderer/buffer.cpp
 	renderer/descriptors.cpp
+	renderer/camera.cpp
+	# Scene
+	scene/scene.cpp
+	scene/game_object.cpp
+	scene/component.cpp
+	scene/scene_camera.cpp
+	scene/editor_camera.cpp
+	scene/scriptable.cpp
 	# UI
 	ui/imgui_layer.cpp
 	# System
 	system/simple_render_system.cpp
 	system/point_light_system.cpp
-	system/imgui_system.cpp
-	scene.cpp
 	# Platform
 	${PLATFORM_SRC_DIR}/macos/macos_input.cpp
 	${PLATFORM_SRC_DIR}/macos/macos_window.cpp

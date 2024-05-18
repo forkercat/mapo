@@ -6,8 +6,8 @@
 
 #include "core/core.h"
 
-#include "engine/camera.h"
-#include "engine/game_object.h"
+#include "engine/scene/editor_camera.h"
+#include "engine/scene/game_object.h"
 
 #include <vulkan/vulkan.h>
 
@@ -19,7 +19,7 @@ namespace Mapo
 		F32 frameTime;
 		VkCommandBuffer commandBuffer;
 		VkDescriptorSet globalDescriptorSet;
-		Camera& camera;
+		EditorCamera& camera;
 		std::vector<GameObject>& gameObjects;
 	};
 

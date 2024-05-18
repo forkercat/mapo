@@ -9,8 +9,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/string_cast.hpp>
+
+// Use this for now.
+#define GLM_STR(value) glm::to_string(value)
+
+#define GLM_PTR(value) glm::value_ptr(value)
 
 namespace Mapo
 {
@@ -74,6 +82,12 @@ namespace Mapo
 		MP_FORCE_INLINE T Normalize(const T& value)
 		{
 			return glm::normalize(value);
+		}
+
+		template <typename T>
+		MP_FORCE_INLINE F32 Length(const T& value)
+		{
+			return glm::length(value);
 		}
 
 		template <typename T>
