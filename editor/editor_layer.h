@@ -11,7 +11,8 @@
 #include "engine/event/key_event.h"
 #include "engine/event/mouse_event.h"
 
-#include "editor/scene_panel.h"
+#include "editor/panel/scene_panel.h"
+#include "editor/panel/info_panel.h"
 
 namespace Mapo
 {
@@ -64,6 +65,7 @@ namespace Mapo
 
 		// Panels
 		ScenePanel m_scenePanel;
+		InfoPanel m_infoPanel;
 	};
 
 } // namespace Mapo

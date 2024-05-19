@@ -24,6 +24,7 @@ namespace Mapo
 		Renderer& operator=(const Renderer&) = delete;
 
 		// Public getter.
+		String		 GetVersion() const;
 		VkRenderPass GetRenderPass() const;
 		F32			 GetAspectRatio() const;
 		U32			 GetImageCount() const;

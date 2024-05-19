@@ -27,6 +27,8 @@
 
 #include <imgui/imgui.h>
 
+#include <ImGuizmo.h>
+
 namespace Mapo
 {
 	struct GlobalUbo
@@ -217,6 +219,7 @@ namespace Mapo
 	void EditorLayer::OnImGuiRender()
 	{
 		m_scenePanel.OnImGuiRender(m_camera);
+		m_infoPanel.OnImGuiRender();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////

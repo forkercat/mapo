@@ -15,6 +15,7 @@ namespace Mapo
 {
 	namespace StringOp
 	{
+		// TODO: Looks like this doesn't work!
 		String Format(const char* fmt, ...)
 		{
 			char buffer[MAX_FORMAT_STRING_LENGTH];

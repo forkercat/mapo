@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "editor/panel/panel.h"
+
 #include "engine/scene/scene.h"
 #include "engine/scene/game_object.h"
 
@@ -11,12 +13,12 @@ namespace Mapo
 {
 	class EditorCamera;
 
-	class ScenePanel
+	class ScenePanel : public Panel
 	{
 	public:
 		virtual ~ScenePanel() = default;
 
-		ScenePanel() = default;
+		ScenePanel();
 		ScenePanel(Ref<Scene> scene);
 
 		void SetContext(Ref<Scene> context);
@@ -24,6 +26,8 @@ namespace Mapo
 		void OnImGuiRender(EditorCamera& camera);
 
 	private:
+		void DrawHierarchy();
+		void DrawInspector();
 
 	private:
 		Ref<Scene> m_scene;

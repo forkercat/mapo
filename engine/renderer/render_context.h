@@ -21,6 +21,7 @@ namespace Mapo
 		static void Release();
 		static bool IsInitialized() { return s_context != nullptr; }
 		static void SwapBuffers();
+		static String GetRendererAPIVersion();
 
 		static U32 GetMaxFramesInFlight();
 

@@ -18,6 +18,8 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_vulkan.h>
 
+#include <ImGuizmo.h>
+
 namespace Mapo
 {
 	// We haven't yet covered descriptor pools in the tutorial series,
@@ -153,6 +155,8 @@ namespace Mapo
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame(); // Update input for instance.
 		ImGui::NewFrame();
+
+		// ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()

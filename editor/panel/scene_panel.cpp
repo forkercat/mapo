@@ -14,11 +14,15 @@
 #include "engine/scene/game_object.h"
 #include "engine/scene/component.h"
 
-#include <imgui/imgui.h>
+#include "3rdparty/imgui/imgui.h"
 
 namespace Mapo
 {
-	ScenePanel::ScenePanel(Ref<Scene> scene)
+	ScenePanel::ScenePanel() : Panel("Scene")
+	{
+	}
+
+	ScenePanel::ScenePanel(Ref<Scene> scene) : Panel("Scene")
 	{
 		m_scene = scene;
 	}
@@ -32,7 +36,9 @@ namespace Mapo
 	void ScenePanel::OnImGuiRender(EditorCamera& camera)
 	{
 		// Test
-		ImGui::Begin("Test");
+		ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
+
+		ImGui::Begin(GetPanelName().c_str(), nullptr, flags);
 
 		static bool showDemo = true;
 		ImGui::Checkbox("Show demo", &showDemo);
@@ -61,25 +67,21 @@ namespace Mapo
 		}
 
 		ImGui::NewLine();
-
-		ImGui::Text("Stats");
-		ImGui::Separator();
-		ImGui::Text("FPS: %.1f  (%.2f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
-
-		Window& window = Application::Get().GetWindow();
-		ImGui::Text("Window: %u x %u", window.GetWidth(), window.GetHeight());
-
-		Renderer& renderer = RenderContext::GetRenderer();
-		ImGui::Text("Swapchain: %u x %u", renderer.GetSwapchainWidth(), renderer.GetSwapchainHeight());
-
-		ImGui::Text("Image count: %u", renderer.GetImageCount());
-
-		ImGui::NewLine();
 		ImGui::Separator();
 		static F32 color[3]{ 1.0f, 0.0f, 0.0f };
 		ImGui::ColorEdit3("Test color", color);
 
 		ImGui::End(); // Test
+	}
+
+	void ScenePanel::DrawHierarchy()
+	{
+
+	}
+
+	void ScenePanel::DrawInspector()
+	{
+
 	}
 
 } // namespace Mapo

@@ -48,6 +48,11 @@ namespace Mapo
 		//
 	}
 
+	String RenderContext::GetRendererAPIVersion()
+	{
+		return s_context->m_renderer->GetVersion();
+	}
+
 	U32 RenderContext::GetMaxFramesInFlight()
 	{
 		return Swapchain::MAX_FRAMES_IN_FLIGHT;

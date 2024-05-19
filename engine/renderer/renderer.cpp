@@ -32,6 +32,30 @@ namespace Mapo
 	// Public Getters.
 	/////////////////////////////////////////////////////////////////////////////////
 
+	String Renderer::GetVersion() const
+	{
+		U32 apiVersion = 0;
+
+		// Check if vkEnumerateInstanceVersion is available (for Vulkan 1.1 and later)
+		if (vkEnumerateInstanceVersion != nullptr)
+		{
+			vkEnumerateInstanceVersion(&apiVersion);
+		}
+		else
+		{
+			// If the function is not available, assume Vulkan 1.0
+			apiVersion = VK_MAKE_VERSION(1, 0, 0);
+		}
+
+		U32 major = VK_VERSION_MAJOR(apiVersion);
+		U32 minor = VK_VERSION_MINOR(apiVersion);
+		U32 patch = VK_VERSION_PATCH(apiVersion);
+
+		std::stringstream ss;
+		ss << major << "." << minor << "." << patch;
+		return ss.str();
+	}
+
 	VkRenderPass Renderer::GetRenderPass() const
 	{
 		return m_swapchain->GetRenderPass();
