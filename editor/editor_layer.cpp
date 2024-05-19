@@ -101,7 +101,6 @@ namespace Mapo
 	void EditorLayer::OnDetach()
 	{
 		// Need to do this to make sure model objects are deleted.
-		m_scene.release();
 		m_pointLightSystem.release();
 		m_renderSystem.release();
 
@@ -162,14 +161,15 @@ namespace Mapo
 
 	void EditorLayer::CreateScene()
 	{
+		m_scene = MakeRef<Scene>();
+		m_scenePanel.SetContext(m_scene);
+
 		// Model
 		Ref<Model> bunnyModel = Model::CreateModelFromFile("assets/models/bunny.obj");
 		Ref<Model> smoothModel = Model::CreateModelFromFile("assets/models/smooth_vase.obj");
 		Ref<Model> flatModel = Model::CreateModelFromFile("assets/models/flat_vase.obj");
 		Ref<Model> quadModel = Model::CreateModelFromFile("assets/models/quad.obj");
 		Ref<Model> cubeModel = Model::CreateCubeModel();
-
-		m_scene = MakeUnique<Scene>();
 
 		// Bunny
 		GameObject bunnyObject = m_scene->CreateGameObject("Bunny");
@@ -216,51 +216,7 @@ namespace Mapo
 
 	void EditorLayer::OnImGuiRender()
 	{
-		ImGui::Begin("Test");
-
-		static bool showDemo = false;
-		ImGui::ShowDemoWindow(&showDemo);
-		ImGui::Checkbox("Show demo", &showDemo);
-
-		ImGui::NewLine();
-
-		ImGui::Text("Editor Camera");
-		ImGui::Separator();
-		ImGui::DragFloat3("Position##1", GLM_PTR(m_camera.GetPosition()));
-
-		auto gameObjects = m_scene->GetGameObjects();
-
-		ImGui::NewLine();
-
-		ImGui::Text("Game Objects");
-		ImGui::Separator();
-
-		for (GameObject& go : gameObjects)
-		{
-			auto& transform = go.GetComponent<TransformComponent>();
-			ImGui::DragFloat3(go.GetName().c_str(), GLM_PTR(transform.translation));
-		}
-
-		ImGui::NewLine();
-
-		ImGui::Text("Stats");
-		ImGui::Separator();
-		ImGui::Text("FPS: %.1f  (%.2f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
-
-		Window& window = Application::Get().GetWindow();
-		ImGui::Text("Window: %u x %u", window.GetWidth(), window.GetHeight());
-
-		Renderer& renderer = RenderContext::GetRenderer();
-		ImGui::Text("Swapchain: %u x %u", renderer.GetSwapchainWidth(), renderer.GetSwapchainHeight());
-
-		ImGui::Text("Image count: %u", renderer.GetImageCount());
-
-		ImGui::NewLine();
-		ImGui::Separator();
-		static F32 color[3] { 1.0f, 0.0f, 0.0f };
-		ImGui::ColorEdit3("Test color", color);
-
-		ImGui::End(); // Test
+		m_scenePanel.OnImGuiRender(m_camera);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +284,48 @@ namespace Mapo
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
+
+	void EditorLayer::DisplayMenuBar()
+	{
+		bool openScenePopup = false;
+		bool saveSceneAsPopup = false;
+
+		// MenuBars
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				// Disabling fullscreen would allow the window to be moved to the front of other windows,
+				// which we can't undo at the moment without finer window depth/z control.
+
+				// New
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+				{
+					NewScene();
+				}
+
+				if (ImGui::MenuItem("Open...", "Cmd+O"))
+				{
+					openScenePopup = true;
+				}
+
+				if (ImGui::MenuItem("Save As...", "Cmd+Shift+S"))
+				{
+					saveSceneAsPopup = true;
+				}
+
+				if (ImGui::MenuItem("Exit"))
+				{
+					Application::Get().Close();
+				}
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+
+	}
 
 	void EditorLayer::ShowCameraMatrix()
 	{

@@ -12,6 +12,7 @@ find_package(Vulkan REQUIRED)
 find_package(Stb REQUIRED)
 find_package(tinyobjloader REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
+find_package(ImGuizmo CONFIG REQUIRED)
 
 # Common interface target
 add_library(common INTERFACE)

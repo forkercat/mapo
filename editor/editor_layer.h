@@ -11,6 +11,8 @@
 #include "engine/event/key_event.h"
 #include "engine/event/mouse_event.h"
 
+#include "editor/scene_panel.h"
+
 namespace Mapo
 {
 	class SimpleRenderSystem;
@@ -46,17 +48,22 @@ namespace Mapo
 		void OpenScene() { MP_INFO("OpenScene()"); }
 		void SaveSceneAs() { MP_INFO("SaveSceneAs()"); }
 
+		void DisplayMenuBar();
+
 		// Testing
 		void ShowCameraMatrix();
 
 	private:
-		UniqueRef<Scene> m_scene;
+		Ref<Scene> m_scene;
 
 		EditorCamera m_camera;
 
 		// Systems
 		UniqueRef<SimpleRenderSystem> m_renderSystem{};
 		UniqueRef<PointLightSystem>	  m_pointLightSystem{};
+
+		// Panels
+		ScenePanel m_scenePanel;
 	};
 
 } // namespace Mapo

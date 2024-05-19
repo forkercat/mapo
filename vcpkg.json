@@ -23,5 +23,8 @@
   }, {
     "name" : "spdlog",
     "version>=" : "1.13.0"
+  }, {
+    "name" : "imguizmo",
+    "version>=" : "1.83#1"
   } ]
 }
