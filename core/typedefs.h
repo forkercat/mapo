@@ -80,3 +80,7 @@ namespace Mapo
 #ifndef MP_ALLOW_DISCARD
 	#define MP_ALLOW_DISCARD (void)
 #endif
+
+// ImGui
+#define ICON_NAME(icon, name) icon "  " name
+#define ICON_NAME2(icon, name) String(icon) + "  " + name

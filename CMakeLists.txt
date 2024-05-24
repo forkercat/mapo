@@ -16,7 +16,7 @@ find_package(ImGuizmo CONFIG REQUIRED)
 
 # Common interface target
 add_library(common INTERFACE)
-target_include_directories(common INTERFACE ${PROJECT_SOURCE_DIR})
+target_include_directories(common INTERFACE ${PROJECT_SOURCE_DIR} "3rdparty/")
 
 if(APPLE AND CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 	target_compile_definitions(common INTERFACE MP_MACOS_BUILD)

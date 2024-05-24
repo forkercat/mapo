@@ -18,9 +18,7 @@ namespace Mapo
 {
 	class SimpleRenderSystem;
 	class PointLightSystem;
-
 	class Buffer;
-
 	class Scene;
 
 	class EditorLayer : public Layer

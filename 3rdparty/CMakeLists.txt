@@ -32,4 +32,3 @@ PRIVATE
 	glfw
 	Vulkan::Vulkan
 )
-

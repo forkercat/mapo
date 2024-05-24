@@ -11,6 +11,8 @@
 
 #include <imgui/imgui.h>
 
+#include <IconFontCppHeaders/IconsFontAwesome5.h>
+
 namespace Mapo
 {
 	InfoPanel::InfoPanel()
@@ -27,15 +29,23 @@ namespace Mapo
 
 		ImGui::Begin(GetPanelName().c_str(), nullptr, flags);
 
-		ImGui::Text("Renderer: Vulkan (%s)", RenderContext::GetRendererAPIVersion().c_str());
-
 		ImGui::Text("FPS: %.1f  (%.2f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+
+		ImGui::Text("Renderer: Vulkan (%s)", RenderContext::GetRendererAPIVersion().c_str());
 
 		ImGui::Text("Window: %u x %u", window.GetWidth(), window.GetHeight());
 
 		ImGui::Text("Swapchain: %u x %u", renderer.GetSwapchainWidth(), renderer.GetSwapchainHeight());
 
-		ImGui::Text("Image count: %u", renderer.GetImageCount());
+		ImGui::Text("#Images: %u | #Frames: %u", renderer.GetImageCount(), RenderContext::GetMaxFramesInFlight());
+
+		// ImGui demo
+		static bool showDemo = true;
+		// ImGui::Checkbox("Show demo", &showDemo);
+		if (showDemo)
+		{
+			ImGui::ShowDemoWindow(&showDemo);
+		}
 
 		ImGui::End(); // root
 	}

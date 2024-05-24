@@ -31,6 +31,7 @@ namespace Mapo
 		bool		 IsFrameInProgress() const;
 		U32			 GetSwapchainWidth() const;
 		U32			 GetSwapchainHeight() const;
+		Vector3&     ClearColor() { return m_clearColor; }
 
 		VkCommandBuffer GetCurrentCommandBuffer()
 		{
@@ -64,6 +65,9 @@ namespace Mapo
 		U32	 m_currentImageIndex = 0;
 		U32	 m_currentFrameIndex = 0;
 		bool m_isFrameStarted = false;
+
+		// Render data.
+		Vector3 m_clearColor { 0.117f, 0.117f, 0.117f };
 	};
 
 } // namespace Mapo

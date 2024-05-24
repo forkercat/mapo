@@ -19,6 +19,7 @@
 #include <imgui/backends/imgui_impl_vulkan.h>
 
 #include <ImGuizmo.h>
+#include <IconFontCppHeaders/IconsFontAwesome5.h>
 
 namespace Mapo
 {
@@ -83,18 +84,22 @@ namespace Mapo
 
 		// Set up ImGui DPI.
 		const F32 dpi = 2.0f;
-		const F32 fontSize = 15.0f;
+		const F32 fontSize = 14.0f;
+		const F32 iconSize = 10.0f;
 		io.FontGlobalScale = 1 / dpi;
-		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Bold.ttf", fontSize * dpi);
+		// io.Fonts->AddFontFromFileTTF("assets/fonts/Ruda/Ruda-Bold.ttf", fontSize * dpi);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/Ruda/Ruda-Regular.ttf", fontSize * dpi);
+		// io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Bold.ttf", fontSize * dpi);
 		// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Regular.ttf", fontSize * dpi);
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", fontSize * dpi);
+		// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", fontSize * dpi);
 
 		// Icons
-		static const ImWchar iconRanges[] = { 0xe00f, 0xf8ff, 0 };
+		// static const ImWchar iconRanges[] = { 0xe00f, 0xf8ff, 0 };
+		static const ImWchar iconRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 		static ImFontConfig	 config;
-		config.MergeMode = false;
-		config.GlyphMinAdvanceX = fontSize;
-		io.Fonts->AddFontFromFileTTF("assets/fonts/FontAwesome5/fa-solid-900.ttf", fontSize * dpi, &config, iconRanges);
+		config.MergeMode = true;
+		config.GlyphMinAdvanceX = iconSize;
+		io.Fonts->AddFontFromFileTTF("assets/fonts/FontAwesome5/fa-solid-900.ttf", iconSize * dpi, &config, iconRanges);
 
 		// Set up style.
 		ImGui::StyleColorsDark();

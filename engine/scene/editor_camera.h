@@ -35,6 +35,9 @@ namespace Mapo
 		const Vector3& GetPosition() const { return m_position; }
 		Vector3&	   GetPosition() { return m_position; }
 
+		// Fov
+		F32& GetFov() { return m_fov; }
+
 		// Orientation
 		glm::quat GetOrientation() const { return glm::quat(Vector3(-m_pitch, -m_yaw, 0.0f)); }
 
@@ -43,10 +46,11 @@ namespace Mapo
 
 		void SetViewportSize(F32 width, F32 height);
 
-	private:
 		// Update matrix
 		void UpdateProjection();
 		void UpdateView();
+
+	private:
 
 		// Movement
 		void MousePan(const Vector2& offset);

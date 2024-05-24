@@ -14,15 +14,18 @@
 #include "engine/scene/game_object.h"
 #include "engine/scene/component.h"
 
-#include "3rdparty/imgui/imgui.h"
+#include <imgui/imgui.h>
+#include <IconFontCppHeaders/IconsFontAwesome5.h>
 
 namespace Mapo
 {
-	ScenePanel::ScenePanel() : Panel("Scene")
+	ScenePanel::ScenePanel()
+		: Panel("Scene")
 	{
 	}
 
-	ScenePanel::ScenePanel(Ref<Scene> scene) : Panel("Scene")
+	ScenePanel::ScenePanel(Ref<Scene> scene)
+		: Panel("Scene")
 	{
 		m_scene = scene;
 	}
@@ -35,19 +38,11 @@ namespace Mapo
 
 	void ScenePanel::OnImGuiRender(EditorCamera& camera)
 	{
-		// Test
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
+		Renderer& renderer = RenderContext::GetRenderer();
 
-		ImGui::Begin(GetPanelName().c_str(), nullptr, flags);
+		// ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
 
-		static bool showDemo = true;
-		ImGui::Checkbox("Show demo", &showDemo);
-		if (showDemo)
-		{
-			ImGui::ShowDemoWindow(&showDemo);
-		}
-
-		ImGui::NewLine();
+		ImGui::Begin(GetPanelName().c_str());
 
 		ImGui::Text("Editor Camera");
 		ImGui::Separator();
@@ -68,8 +63,9 @@ namespace Mapo
 
 		ImGui::NewLine();
 		ImGui::Separator();
-		static F32 color[3]{ 1.0f, 0.0f, 0.0f };
-		ImGui::ColorEdit3("Test color", color);
+		ImGui::ColorEdit3("Clear color", GLM_PTR(renderer.ClearColor()));
+
+		ImGui::Button(ICON_FA_SEARCH " Search");
 
 		ImGui::End(); // Test
 	}

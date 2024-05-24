@@ -37,15 +37,10 @@ namespace Mapo
 		U32 apiVersion = 0;
 
 		// Check if vkEnumerateInstanceVersion is available (for Vulkan 1.1 and later)
-		if (vkEnumerateInstanceVersion != nullptr)
-		{
-			vkEnumerateInstanceVersion(&apiVersion);
-		}
-		else
-		{
-			// If the function is not available, assume Vulkan 1.0
-			apiVersion = VK_MAKE_VERSION(1, 0, 0);
-		}
+		vkEnumerateInstanceVersion(&apiVersion);
+
+		// If the function is not available, assume Vulkan 1.0
+		// apiVersion = VK_MAKE_VERSION(1, 0, 0);
 
 		U32 major = VK_VERSION_MAJOR(apiVersion);
 		U32 minor = VK_VERSION_MINOR(apiVersion);
@@ -169,7 +164,7 @@ namespace Mapo
 		renderPassBeginInfo.renderArea.extent = m_swapchain->GetSwapchainExtent();
 
 		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { { 0.01f, 0.01f, 0.01f, 1.0f } };
+		clearValues[0].color = { { m_clearColor.x, m_clearColor.y, m_clearColor.z, 1.0f } };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		renderPassBeginInfo.clearValueCount = static_cast<U32>(clearValues.size());
