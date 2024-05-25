@@ -20,6 +20,9 @@ namespace Mapo
 	using I16 = std::int16_t;
 	using I8 = std::int8_t;
 
+	// TODO: Implement you own string class!
+	using String = std::string;
+
 // Floats
 #ifdef FORCE_FLOAT_64
 	using F32 = double;

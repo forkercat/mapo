@@ -13,6 +13,7 @@
 #pragma warning(push, 0)
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
+#include <spdlog/sinks/ringbuffer_sink.h>
 #pragma warning(pop)
 
 namespace Mapo
@@ -27,9 +28,13 @@ namespace Mapo
 		static Ref<spdlog::logger>& GetEngineLogger() { return s_engineLogger; }
 		static Ref<spdlog::logger>& GetAppLogger() { return s_appLogger; }
 
+		static String GetLastMessage();
+
 	private:
 		static Ref<spdlog::logger> s_engineLogger;
 		static Ref<spdlog::logger> s_appLogger;
+
+		static Ref<spdlog::sinks::ringbuffer_sink_mt> s_ringbufferSink;
 	};
 
 } // namespace Mapo

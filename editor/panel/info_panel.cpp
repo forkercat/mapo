@@ -9,9 +9,9 @@
 #include "engine/renderer/render_context.h"
 #include "engine/renderer/renderer.h"
 
-#include <imgui/imgui.h>
+#include "engine/ui/imgui_utils.h"
 
-#include <IconFontCppHeaders/IconsFontAwesome5.h>
+#include <imgui/imgui.h>
 
 namespace Mapo
 {
@@ -25,7 +25,11 @@ namespace Mapo
 		Window&	  window = Application::Get().GetWindow();
 		Renderer& renderer = RenderContext::GetRenderer();
 
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
+		ImGuiWindowFlags flags = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_AlwaysAutoResize;
+
+		ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+		ImGui::SetNextWindowPos(ImVec2(displaySize.x, ImGuiUI::Padding), ImGuiCond_None, ImVec2(1.0f, 0.0f));
 
 		ImGui::Begin(GetPanelName().c_str(), nullptr, flags);
 

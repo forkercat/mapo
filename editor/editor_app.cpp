@@ -18,7 +18,7 @@ namespace Mapo
 	{
 	public:
 		EditorApp(ApplicationCommandLineArgs args)
-			: Application("Editor App (Vulkan)", args)
+			: Application("Editor - macOS [Vulkan on Apple M1 Max]", args)
 		{
 			PushLayer(MP_NEW(EditorLayer));
 		}

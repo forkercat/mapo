@@ -225,6 +225,7 @@ namespace Mapo
 	{
 		m_scenePanel.OnImGuiRender(m_camera);
 		m_infoPanel.OnImGuiRender();
+		m_logPanel.OnImGuiRender();
 
 		OnGizmoUpdate();
 	}
@@ -235,10 +236,6 @@ namespace Mapo
 
 		if (selected.IsValid() && m_gizmoType != INVALID_GIZMO_TYPE)
 		{
-			// ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
-			// ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
-			// ImVec2 viewportOffset = ImGui::GetWindowPos();
-
 			bool isViewportFocused = ImGui::IsWindowFocused();
 			bool isViewportHovered = ImGui::IsWindowHovered();
 			// TODO: Block events!

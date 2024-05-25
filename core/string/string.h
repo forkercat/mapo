@@ -10,9 +10,6 @@
 
 namespace Mapo
 {
-	// TODO: Implement you own string class!
-	using String = std::string;
-
 	namespace StringOp
 	{
 		String Format(const char* fmt, ...);

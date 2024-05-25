@@ -22,6 +22,11 @@ namespace Mapo
 		static F32 Dpi = 2.0f;
 	}
 
+	namespace ImGuiUI
+	{
+		static F32 Padding = 6.0f;
+	}
+
 	namespace ImGuiTheme
 	{
 		// static ImColor MainTheme{ 214, 166, 48, 255 };  // yellow
@@ -36,11 +41,12 @@ namespace Mapo
 		static ImU32 ComponentZ = IM_COL32(90, 143, 194, 255);
 		static ImU32 ComponentHoveredZ = IM_COL32(102, 166, 230, 255);
 
-		// Console
+		// Console/Log
 		static ImU32 ConsoleDebug = IM_COL32(102, 230, 102, 255);
 		static ImU32 ConsoleInfo = IM_COL32(230, 230, 230, 255);
 		static ImU32 ConsoleWarn = IM_COL32(230, 230, 102, 255);
 		static ImU32 ConsoleError = IM_COL32(230, 102, 102, 255);
+		static ImU32 LogText = IM_COL32(230, 230, 102, 255);
 
 		// General
 		static ImU32 WindowBg = IM_COL32(38, 38, 38, 255);

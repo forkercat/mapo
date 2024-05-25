@@ -46,12 +46,13 @@ namespace Mapo
 
 	void ScenePanel::OnImGuiRender(EditorCamera& camera)
 	{
-		// ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
-		// ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+
+		ImGui::SetNextWindowSize(ImVec2(230.0f, 0.0f));
 
 		static const String panelName = ICON_NAME2(ICON_FA_SITEMAP, GetPanelName());
 
-		ImGui::Begin(panelName.c_str());
+		ImGui::Begin(panelName.c_str(), nullptr, flags);
 
 		DrawHierarchy(camera);
 		DrawSelectedGameObject();
@@ -82,7 +83,7 @@ namespace Mapo
 		ImGui::SeparatorText(ICON_NAME(ICON_FA_CAMERA, "Editor Camera"));
 		ImGui::DragFloat3("Position", GLM_PTR(camera.GetPosition()));
 
-		if (ImGui::SliderFloat("Field of view", &camera.GetFov(), 10.0f, 120.0f, "%.1f"))
+		if (ImGui::SliderFloat("Fov", &camera.GetFov(), 10.0f, 120.0f, "%.1f"))
 		{
 			camera.UpdateProjection();
 		}

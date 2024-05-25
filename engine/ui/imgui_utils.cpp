@@ -75,26 +75,22 @@ namespace Mapo
 
 	void ImGuiUtils::DrawGizmoControls(int& currentGizmoType)
 	{
+		static U32	  numButton = 4;
+		static ImVec2 buttonSize{ 32.0f, 23.0f };
+
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking
 			| ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings
 			| ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(ImGuiUI::Padding, ImGuiUI::Padding));
 
-		ImVec2 viewportPos = ImGui::GetWindowPos();
-		F32	   tabBarHeight = 23.0f;
-		ImVec2 buttonSize = ImVec2(32.0f, 23.0f);
-		ImVec2 viewportWindowSize = ImGui::GetWindowSize();
-		F32	   spacing = 8.0f;
-		U32	   numButton = 4;
+		ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 
-		ImVec2 controlWindowSize = ImVec2(buttonSize.x * numButton + spacing * (numButton - 1), buttonSize.y);
+		ImVec2 controlSize = ImVec2(buttonSize.x * numButton + ImGuiUI::Padding * (numButton - 1) + ImGuiUI::Padding * 2, buttonSize.y + ImGuiUI::Padding * 2);
 
-		// ImGui::SetNextWindowPos(
-		// 	ImVec2(viewportPos.x + viewportWindowSize.x / 2.0 - controlWindowSize.x / 2.0, 0),
-		// 	// viewportPos.y + tabBarHeight + paddingSize),
-		// 	0, ImVec2(0, 0));
-		// ImGui::SetNextWindowSize(controlWindowSize, 0);
+		ImGui::SetNextWindowPos(ImVec2(displaySize.x / 2.0f, ImGuiUI::Padding * 2.0f), ImGuiCond_None, ImVec2(0.5f, 0.0f));
+		ImGui::SetNextWindowSize(controlSize, ImGuiCond_None);
 
 		ImGui::Begin("GizmoControls", nullptr, flags);
 
@@ -102,17 +98,17 @@ namespace Mapo
 		{
 			// currentGizmoType = INVALID_GIZMO_TYPE;
 		}
-		ImGui::SameLine(0, spacing);
+		ImGui::SameLine(0, ImGuiUI::Padding);
 		ImGuiUtils::DrawGizmoControlButton(ICON_FA_ARROWS_ALT, (int)ImGuizmo::OPERATION::TRANSLATE == currentGizmoType, buttonSize);
 		{
 			// currentGizmoType = (int)ImGuizmo::OPERATION::TRANSLATE;
 		}
-		ImGui::SameLine(0, spacing);
+		ImGui::SameLine(0, ImGuiUI::Padding);
 		ImGuiUtils::DrawGizmoControlButton(ICON_FA_SYNC_ALT, (int)ImGuizmo::OPERATION::ROTATE == currentGizmoType, buttonSize);
 		{
 			// currentGizmoType = (int)ImGuizmo::OPERATION::ROTATE;
 		}
-		ImGui::SameLine(0, spacing);
+		ImGui::SameLine(0, ImGuiUI::Padding);
 		ImGuiUtils::DrawGizmoControlButton(ICON_FA_EXPAND, (int)ImGuizmo::OPERATION::SCALE == currentGizmoType, buttonSize);
 		{
 			// currentGizmoType = (int)ImGuizmo::OPERATION::SCALE;
@@ -120,7 +116,7 @@ namespace Mapo
 
 		ImGui::End();
 
-		ImGui::PopStyleVar(1);
+		ImGui::PopStyleVar(2);
 	}
 
 	bool ImGuiUtils::DrawGizmoControlButton(const char* icon, bool selected, ImVec2 buttonSize)

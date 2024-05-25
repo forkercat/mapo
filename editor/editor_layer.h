@@ -13,6 +13,7 @@
 
 #include "editor/panel/scene_panel.h"
 #include "editor/panel/info_panel.h"
+#include "editor/panel/log_panel.h"
 
 class ImVec2;
 
@@ -73,6 +74,7 @@ namespace Mapo
 		// Panels
 		ScenePanel m_scenePanel;
 		InfoPanel  m_infoPanel;
+		LogPanel m_logPanel;
 	};
 
 } // namespace Mapo
