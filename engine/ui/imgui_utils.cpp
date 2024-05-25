@@ -96,22 +96,22 @@ namespace Mapo
 
 		if (ImGuiUtils::DrawGizmoControlButton(ICON_FA_HAND_PAPER, INVALID_GIZMO_TYPE == currentGizmoType, buttonSize))
 		{
-			// currentGizmoType = INVALID_GIZMO_TYPE;
+			currentGizmoType = INVALID_GIZMO_TYPE;
 		}
 		ImGui::SameLine(0, ImGuiUI::Padding);
-		ImGuiUtils::DrawGizmoControlButton(ICON_FA_ARROWS_ALT, (int)ImGuizmo::OPERATION::TRANSLATE == currentGizmoType, buttonSize);
+		if (ImGuiUtils::DrawGizmoControlButton(ICON_FA_ARROWS_ALT, (int)ImGuizmo::OPERATION::TRANSLATE == currentGizmoType, buttonSize))
 		{
-			// currentGizmoType = (int)ImGuizmo::OPERATION::TRANSLATE;
+			currentGizmoType = (int)ImGuizmo::OPERATION::TRANSLATE;
 		}
 		ImGui::SameLine(0, ImGuiUI::Padding);
-		ImGuiUtils::DrawGizmoControlButton(ICON_FA_SYNC_ALT, (int)ImGuizmo::OPERATION::ROTATE == currentGizmoType, buttonSize);
+		if (ImGuiUtils::DrawGizmoControlButton(ICON_FA_SYNC_ALT, (int)ImGuizmo::OPERATION::ROTATE == currentGizmoType, buttonSize))
 		{
-			// currentGizmoType = (int)ImGuizmo::OPERATION::ROTATE;
+			currentGizmoType = (int)ImGuizmo::OPERATION::ROTATE;
 		}
 		ImGui::SameLine(0, ImGuiUI::Padding);
-		ImGuiUtils::DrawGizmoControlButton(ICON_FA_EXPAND, (int)ImGuizmo::OPERATION::SCALE == currentGizmoType, buttonSize);
+		if (ImGuiUtils::DrawGizmoControlButton(ICON_FA_EXPAND, (int)ImGuizmo::OPERATION::SCALE == currentGizmoType, buttonSize))
 		{
-			// currentGizmoType = (int)ImGuizmo::OPERATION::SCALE;
+			currentGizmoType = (int)ImGuizmo::OPERATION::SCALE;
 		}
 
 		ImGui::End();
@@ -122,10 +122,6 @@ namespace Mapo
 	bool ImGuiUtils::DrawGizmoControlButton(const char* icon, bool selected, ImVec2 buttonSize)
 	{
 		bool buttonPressed = false;
-
-		static String gizmoTypeId = String("GizmoTypeButton");
-
-		ImGui::PushID((gizmoTypeId + icon).c_str());
 
 		if (selected)
 		{
@@ -142,11 +138,11 @@ namespace Mapo
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGuiTheme::Disabled);
 		}
 
-		ImGui::Button(icon, buttonSize);
-		// if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-		// {
-		// 	buttonPressed = true;
-		// }
+		ImGui::PushID("GizmoTypeButton");
+		if (ImGui::Button(icon, buttonSize))
+		{
+			buttonPressed = true;
+		}
 
 		ImGui::PopStyleColor(3);
 		ImGui::PopID();
