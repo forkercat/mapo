@@ -38,45 +38,45 @@ namespace Mapo
 			if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
 			{
 				MouseRotate(offset);
+
+				// Key
+				Vector2 moveDir{ 0.0f, 0.0f };
+
+				if (Input::IsKeyPressed(Key::W))
+				{
+					moveDir.y -= 1.0f;
+				}
+				if (Input::IsKeyPressed(Key::S))
+				{
+					moveDir.y += 1.0f;
+				}
+				if (Input::IsKeyPressed(Key::A))
+				{
+					moveDir.x -= 1.0f;
+				}
+				if (Input::IsKeyPressed(Key::D))
+				{
+					moveDir.x += 1.0f;
+				}
+
+				if (MathOp::Length(moveDir) > std::numeric_limits<F32>::epsilon())
+				{
+					moveDir = MathOp::Normalize(moveDir);
+					MouseMove(moveDir * dt.GetSeconds());
+				}
+
+				if (Input::IsKeyPressed(Key::Q))
+				{
+					MouseMoveVertical(-1.0f * dt.GetSeconds());
+				}
+				else if (Input::IsKeyPressed(Key::E))
+				{
+					MouseMoveVertical(1.0f * dt.GetSeconds());
+				}
 			}
 			else if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
 			{
 				MousePan(offset);
-			}
-
-			// Key
-			Vector2 moveDir{ 0.0f, 0.0f };
-
-			if (Input::IsKeyPressed(Key::W))
-			{
-				moveDir.y -= 1.0f;
-			}
-			if (Input::IsKeyPressed(Key::S))
-			{
-				moveDir.y += 1.0f;
-			}
-			if (Input::IsKeyPressed(Key::A))
-			{
-				moveDir.x -= 1.0f;
-			}
-			if (Input::IsKeyPressed(Key::D))
-			{
-				moveDir.x += 1.0f;
-			}
-
-			if (MathOp::Length(moveDir) > std::numeric_limits<F32>::epsilon())
-			{
-				moveDir = MathOp::Normalize(moveDir);
-				MouseMove(moveDir * dt.GetSeconds());
-			}
-
-			if (Input::IsKeyPressed(Key::Q))
-			{
-				MouseMoveVertical(-1.0f * dt.GetSeconds());
-			}
-			else if (Input::IsKeyPressed(Key::E))
-			{
-				MouseMoveVertical(1.0f * dt.GetSeconds());
 			}
 		}
 

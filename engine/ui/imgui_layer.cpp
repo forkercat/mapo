@@ -12,6 +12,8 @@
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/device.h"
 
+#include "engine/ui/imgui_utils.h"
+
 #include <vulkan/vulkan.h>
 
 #include <imgui/imgui.h>
@@ -78,17 +80,16 @@ namespace Mapo
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
 		// Set up ImGui DPI.
-		const F32 dpi = 2.0f;
 		const F32 fontSize = 14.0f;
 		const F32 iconSize = 10.0f;
-		io.FontGlobalScale = 1 / dpi;
+		io.FontGlobalScale = 1 / ImGuiConfig::Dpi;
 		// io.Fonts->AddFontFromFileTTF("assets/fonts/Ruda/Ruda-Bold.ttf", fontSize * dpi);
-		io.Fonts->AddFontFromFileTTF("assets/fonts/Ruda/Ruda-Regular.ttf", fontSize * dpi);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/Ruda/Ruda-Regular.ttf", fontSize * ImGuiConfig::Dpi);
 		// io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Bold.ttf", fontSize * dpi);
 		// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto/Roboto-Regular.ttf", fontSize * dpi);
 		// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", fontSize * dpi);
@@ -99,10 +100,11 @@ namespace Mapo
 		static ImFontConfig	 config;
 		config.MergeMode = true;
 		config.GlyphMinAdvanceX = iconSize;
-		io.Fonts->AddFontFromFileTTF("assets/fonts/FontAwesome5/fa-solid-900.ttf", iconSize * dpi, &config, iconRanges);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/FontAwesome5/fa-solid-900.ttf", iconSize * ImGuiConfig::Dpi, &config, iconRanges);
 
 		// Set up style.
 		ImGui::StyleColorsDark();
+		SetStyles();
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular
 		// ones.
@@ -112,8 +114,6 @@ namespace Mapo
 		// 	style.WindowRounding = 0.f;
 		// 	style.Colors[ImGuiCol_WindowBg].w = 1.f;
 		// }
-
-		// SetDarkThemeColors();
 
 		// Set up GLFW & Vulkan backends.
 		Window& window = Application::Get().GetWindow();
@@ -161,7 +161,7 @@ namespace Mapo
 		ImGui_ImplGlfw_NewFrame(); // Update input for instance.
 		ImGui::NewFrame();
 
-		// ImGuizmo::BeginFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()
@@ -253,37 +253,86 @@ namespace Mapo
 		}
 	}
 
-	void ImGuiLayer::SetDarkThemeColors()
+	void ImGuiLayer::SetStyles()
 	{
-		auto& colors = ImGui::GetStyle().Colors;
-		colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
+		ImGuiStyle& style = ImGui::GetStyle();
 
-		// Headers
-		colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-		colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
-		colors[ImGuiCol_HeaderActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		// style.WindowMinSize.x = 200.0f;
 
-		// Buttons
-		colors[ImGuiCol_Button] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-		colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
-		colors[ImGuiCol_ButtonActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		// Spacing
+		style.ItemSpacing.y = 5.0f;
 
-		// Frame BG
-		colors[ImGuiCol_FrameBg] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-		colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
-		colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		// Rounding
+		style.WindowRounding = 4.0f;
+		style.ChildRounding = 4.0f;
+		style.FrameRounding = 4.0f;
+		style.TabRounding = 4.0f;
+		style.PopupRounding = 4.0f;
+		style.GrabRounding = 3.0f;
 
-		// Tabs
-		colors[ImGuiCol_Tab] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TabHovered] = ImVec4{ 0.38f, 0.3805f, 0.381f, 1.0f };
-		colors[ImGuiCol_TabActive] = ImVec4{ 0.28f, 0.2805f, 0.281f, 1.0f };
-		colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+		// Padding
+		style.FramePadding = ImVec2(6, 3);
 
-		// Title
-		colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		// Size
+		style.GrabMinSize = 11.0f;
+
+		// SeparatorText
+		style.SeparatorTextAlign.x = 0.48f;
+
+		// Show/Hide window menu button
+		style.WindowMenuButtonPosition = ImGuiDir_None;
+
+		// Colors
+		static bool useCustomColor = true;
+		if (useCustomColor)
+		{
+			auto& colors = ImGui::GetStyle().Colors;
+			colors[ImGuiCol_WindowBg] = ImColor(ImGuiTheme::WindowBg);
+			colors[ImGuiCol_PopupBg] = ImColor(ImGuiTheme::PopupBg);
+			colors[ImGuiCol_Text] = ImColor(ImGuiTheme::Text);
+
+			// Use the main theme color
+			colors[ImGuiCol_DockingPreview] = ImColor(ImGuiTheme::MainTheme);
+			colors[ImGuiCol_CheckMark] = ImColor(ImGuiTheme::MainTheme);
+			colors[ImGuiCol_SliderGrab] = ImColor(ImGuiTheme::MainTheme);
+			colors[ImGuiCol_SliderGrabActive] = ImColor(ImGuiTheme::MainTheme);
+			colors[ImGuiCol_ResizeGrip] = ImColor(ImGuiTheme::MainTheme);
+
+			// Headers
+			colors[ImGuiCol_Header] = ImColor(ImGuiTheme::Normal);
+			colors[ImGuiCol_HeaderHovered] = ImColor(ImGuiTheme::Normal);
+			colors[ImGuiCol_HeaderActive] = ImColor(ImGuiTheme::Normal); // change to normal
+
+			// Buttons
+			colors[ImGuiCol_Button] = ImColor(ImGuiTheme::Normal);
+			colors[ImGuiCol_ButtonHovered] = ImColor(ImGuiTheme::Hovered);
+			colors[ImGuiCol_ButtonActive] = ImColor(ImGuiTheme::Active);
+
+			// Frame BG
+			colors[ImGuiCol_FrameBg] = ImColor(ImGuiTheme::Normal);
+			colors[ImGuiCol_FrameBgHovered] = ImColor(ImGuiTheme::Hovered);
+			colors[ImGuiCol_FrameBgActive] = ImColor(ImGuiTheme::Active);
+
+			// Tabs
+			colors[ImGuiCol_Tab] = ImColor(ImGuiTheme::TabNormal);
+			colors[ImGuiCol_TabHovered] = ImColor(ImGuiTheme::TabHovered);
+			colors[ImGuiCol_TabActive] = ImColor(ImGuiTheme::TabActive);
+			colors[ImGuiCol_TabUnfocused] = ImColor(ImGuiTheme::TabUnfocused);
+			colors[ImGuiCol_TabUnfocusedActive] = ImColor(ImGuiTheme::TabUnfocusedActive);
+
+			// Title
+			colors[ImGuiCol_TitleBg] = ImColor(ImGuiTheme::TitleBg);
+			colors[ImGuiCol_TitleBgActive] = ImColor(ImGuiTheme::TitleBgActive);
+			colors[ImGuiCol_TitleBgCollapsed] = ImColor(ImGuiTheme::TitleBgCollapsed);
+
+			// Separator
+			colors[ImGuiCol_Separator] = ImColor(ImGuiTheme::Separator);
+			colors[ImGuiCol_SeparatorHovered] = ImColor(ImGuiTheme::SeparatorHovered);
+			colors[ImGuiCol_SeparatorActive] = ImColor(ImGuiTheme::SeparatorActive);
+
+			// ScrollBar
+			colors[ImGuiCol_TitleBg] = ImColor(ImGuiTheme::TitleBg);
+		}
 	}
 
 } // namespace Mapo

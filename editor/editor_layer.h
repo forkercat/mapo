@@ -14,6 +14,8 @@
 #include "editor/panel/scene_panel.h"
 #include "editor/panel/info_panel.h"
 
+class ImVec2;
+
 namespace Mapo
 {
 	class SimpleRenderSystem;
@@ -49,6 +51,11 @@ namespace Mapo
 
 		void DisplayMenuBar();
 
+		void OnGizmoUpdate();
+		void DrawGizmoControls();
+
+		void FocusOnGameObject();
+
 		// Testing
 		void ShowCameraMatrix();
 
@@ -57,13 +64,15 @@ namespace Mapo
 
 		EditorCamera m_camera;
 
+		int m_gizmoType{ INVALID_GIZMO_TYPE };
+
 		// Systems
 		UniqueRef<SimpleRenderSystem> m_renderSystem{};
 		UniqueRef<PointLightSystem>	  m_pointLightSystem{};
 
 		// Panels
 		ScenePanel m_scenePanel;
-		InfoPanel m_infoPanel;
+		InfoPanel  m_infoPanel;
 	};
 
 } // namespace Mapo

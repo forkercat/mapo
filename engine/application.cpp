@@ -138,7 +138,7 @@ namespace Mapo
 
 	bool Application::OnEscPressed(KeyPressedEvent& event)
 	{
-		return true;
+		return false;
 	}
 
 	bool Application::OnWindowResize(WindowResizeEvent& event)

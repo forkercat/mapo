@@ -52,6 +52,8 @@ namespace Mapo
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
+		ImGuiLayer* GetImGuiLayer() { return m_imguiLayer; }
+
 	private:
 		// Subclass cannot override.
 		void Run();

@@ -12,6 +12,11 @@ namespace Mapo
 	class RotateScript : public Scriptable
 	{
 	public:
+		RotateScript()
+			: Scriptable("RotateScript")
+		{
+		}
+
 		virtual void OnCreate() override
 		{
 			MP_APP_INFO("RotateScript: OnCreate!");
@@ -22,7 +27,16 @@ namespace Mapo
 			const F32 rotateSpeed = 30.0f;
 
 			auto& transform = GetComponent<TransformComponent>();
-			transform.rotation.y += MathOp::Radians(rotateSpeed * dt);
+			transform.rotation.y += rotateSpeed * dt;
+
+			if (transform.rotation.y > 360.0f)
+			{
+				transform.rotation.y -= 720.0f;
+			}
+			else if (transform.rotation.y < -360.0f)
+			{
+				transform.rotation.y += 720.0f;
+			}
 		}
 	};
 } // namespace Mapo

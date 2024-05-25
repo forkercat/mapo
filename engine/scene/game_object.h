@@ -32,7 +32,12 @@ namespace Mapo
 
 		/////////////////////////////////////////////////////////////////////////////////
 
-		const String& GetName() const;
+		const String& GetName() const; // tag
+		String&		  GetName();
+
+		bool  IsEnabled() const { return m_enabled; }
+		void  SetEnabled(bool enabled) { m_enabled = enabled; }
+		bool& GetEnabled() { return m_enabled; }
 
 		void OnUpdate(const F32 dt);
 
@@ -78,6 +83,9 @@ namespace Mapo
 		// communicate with the EnTT registry.
 		entt::entity m_entityHandle{ entt::null };
 		Scene*		 m_scene{ nullptr };
+
+		// Data
+		bool m_enabled{ true };
 
 		friend class Scene;
 	};

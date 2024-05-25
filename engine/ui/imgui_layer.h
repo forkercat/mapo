@@ -31,7 +31,7 @@ namespace Mapo
 
 		void BlockEvents(bool block) { m_blockEvents = block; }
 
-		void SetDarkThemeColors();
+		void SetStyles();
 
 	public:
 		bool showDemoWindow = true;
@@ -40,7 +40,7 @@ namespace Mapo
 	private:
 		Device& m_device;
 
-		bool m_blockEvents = true;
+		bool m_blockEvents = false;
 	};
 
 } // namespace Mapo

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "core/typedefs.h"
+
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -118,6 +120,11 @@ namespace Mapo
 		{
 			return glm::max(v1, v2);
 		}
+
+		/////////////////////////////////////////////////////////////////////////////////
+
+		bool DecomposeTransform(const Matrix4& transform, Vector3& translation,
+			Vector3& rotation, Vector3& scale);
 
 	} // namespace MathOp
 } // namespace Mapo

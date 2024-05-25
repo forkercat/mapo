@@ -84,3 +84,5 @@ namespace Mapo
 // ImGui
 #define ICON_NAME(icon, name) icon "  " name
 #define ICON_NAME2(icon, name) String(icon) + "  " + name
+
+#define INVALID_GIZMO_TYPE -1

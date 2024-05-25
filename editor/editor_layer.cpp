@@ -15,6 +15,8 @@
 
 #include "engine/input/input.h"
 
+#include "engine/ui/imgui_utils.h"
+
 #include "engine/renderer/render_context.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/device.h"
@@ -98,6 +100,9 @@ namespace Mapo
 		// Set up systems.
 		m_renderSystem = MakeUnique<SimpleRenderSystem>(renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
 		m_pointLightSystem = MakeUnique<PointLightSystem>(renderer.GetRenderPass(), globalSetLayout->GetDescriptorSetLayout());
+
+		// Default gizmo type.
+		m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
 	}
 
 	void EditorLayer::OnDetach()
@@ -220,6 +225,77 @@ namespace Mapo
 	{
 		m_scenePanel.OnImGuiRender(m_camera);
 		m_infoPanel.OnImGuiRender();
+
+		OnGizmoUpdate();
+	}
+
+	void EditorLayer::OnGizmoUpdate()
+	{
+		GameObject& selected = m_scenePanel.GetSelection();
+
+		if (selected.IsValid() && m_gizmoType != INVALID_GIZMO_TYPE)
+		{
+			// ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
+			// ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+			// ImVec2 viewportOffset = ImGui::GetWindowPos();
+
+			bool isViewportFocused = ImGui::IsWindowFocused();
+			bool isViewportHovered = ImGui::IsWindowHovered();
+			// TODO: Block events!
+			// Application::Get().GetImGuiLayer()->BlockEvents(!isViewportFocused && !isViewportHovered);
+
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
+
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+			ImGuizmo::AllowAxisFlip(false);
+
+			// Snapping
+			bool snap = Input::IsKeyPressed(Key::LeftShift);
+			F32	 snapValue = m_gizmoType == ImGuizmo::OPERATION::ROTATE ? 45.0f : 0.5f;
+			F32	 snapValues[3]{ snapValue, snapValue, snapValue };
+
+			auto&	transform = selected.GetComponent<TransformComponent>();
+			Matrix4 transformMatrix = transform.GetTransformMatrix();
+
+			Matrix4 projectionMatrix = m_camera.GetProjectionMatrix();
+			projectionMatrix[1][1] *= -1; // flip back to the OpenGL version
+			const Matrix4& viewMatrix = m_camera.GetViewMatrix();
+
+			ImGuizmo::Enable(true);
+
+			ImGuizmo::Manipulate(
+				GLM_PTR(viewMatrix),
+				GLM_PTR(projectionMatrix),
+				(ImGuizmo::OPERATION)m_gizmoType,
+				ImGuizmo::LOCAL,
+				GLM_PTR(transformMatrix),
+				nullptr,
+				snap ? snapValues : nullptr);
+
+			if (ImGuizmo::IsUsing())
+			{
+				// Update object's transform.
+				Vector3 newTranslation{};
+				Vector3 newRotation{};
+				Vector3 newScale{};
+				MathOp::DecomposeTransform(transformMatrix, newTranslation, newRotation, newScale);
+				Vector3 rotationDelta = newRotation - transform.rotation; // avoid gimbal lock
+
+				transform.translation = newTranslation;
+				transform.rotation += rotationDelta;
+				transform.scale = newScale;
+			}
+
+			// Cube and grid
+			// ImGuizmo::DrawCubes(GLM_PTR(viewMatrix), GLM_PTR(projectionMatrix), GLM_PTR(transformMatrix), 1);
+			// ImGuizmo::DrawGrid(GLM_PTR(viewMatrix), GLM_PTR(projectionMatrix), GLM_PTR(transformMatrix), 10);
+		}
+
+		// Draw
+		ImGuiUtils::DrawGizmoControls(m_gizmoType);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -251,30 +327,75 @@ namespace Mapo
 #endif
 		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
 
-		switch (event.GetKeyCode())
-		{
-				// Scenes
-			case Key::N:
-				if (control)
-				{
-					NewScene();
-				}
-				break;
-			case Key::O:
-				if (control)
-				{
-					OpenScene();
-				}
-				break;
-			case Key::S:
-				if (control && shift)
-				{
-					SaveSceneAs();
-				}
-				break;
+		bool mouse = Input::IsMouseButtonPressed(Mouse::ButtonLeft) || Input::IsMouseButtonPressed(Mouse::ButtonRight) || Input::IsMouseButtonPressed(Mouse::ButtonMiddle);
 
-				// Gizmos
-				// TODO: Add ImGuizmo support.
+		if (!mouse)
+		{
+			switch (event.GetKeyCode())
+			{
+					// Scenes
+				case Key::N:
+					if (control)
+					{
+						NewScene();
+					}
+					break;
+				case Key::O:
+					if (control)
+					{
+						OpenScene();
+					}
+					break;
+				case Key::S:
+					if (control && shift)
+					{
+						SaveSceneAs();
+					}
+					break;
+
+					// Gizmos
+				case Key::Q: // Select
+				{
+					if (!ImGuizmo::IsUsing())
+					{
+						MP_WARN("SELECT");
+						m_gizmoType = INVALID_GIZMO_TYPE;
+					}
+					break;
+				}
+				case Key::W: // Translate
+				{
+					if (!ImGuizmo::IsUsing())
+					{
+						MP_WARN("TRANSLATE");
+						m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+					}
+					break;
+				}
+				case Key::E: // Rotate
+				{
+					if (!ImGuizmo::IsUsing())
+					{
+						MP_WARN("ROTATE");
+						m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+					}
+					break;
+				}
+				case Key::R: // Scale
+				{
+					if (!ImGuizmo::IsUsing())
+					{
+						MP_WARN("SCALE");
+						m_gizmoType = ImGuizmo::OPERATION::SCALE;
+					}
+					break;
+				}
+					// Focus camera on the selected object.
+				case Key::F:
+				{
+					FocusOnGameObject();
+				}
+			}
 		}
 
 		return true;
@@ -326,8 +447,18 @@ namespace Mapo
 			}
 			ImGui::EndMenuBar();
 		}
+	}
 
+	void EditorLayer::FocusOnGameObject()
+	{
+		if (GameObject& selected = m_scenePanel.GetSelection(); selected.IsValid())
+		{
+			static F32 focusLength = 5.0f;
 
+			Vector3 newPosition = selected.GetComponent<TransformComponent>().translation;
+			newPosition += m_camera.GetForwardDirection() * focusLength;
+			m_camera.SetPosition(newPosition);
+		}
 	}
 
 	void EditorLayer::ShowCameraMatrix()

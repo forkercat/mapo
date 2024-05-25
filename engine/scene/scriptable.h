@@ -13,11 +13,16 @@ namespace Mapo
 	public:
 		~Scriptable() = default;
 
+		Scriptable(const String& scriptName)
+			: m_scriptName(scriptName) { }
+
 		template <typename T>
 		T& GetComponent()
 		{
 			return m_gameObject.GetComponent<T>();
 		}
+
+		virtual const String& GetScriptName() const { return m_scriptName; }
 
 	protected:
 		virtual void OnCreate() { }
@@ -27,6 +32,8 @@ namespace Mapo
 
 	private:
 		GameObject m_gameObject;
+
+		String m_scriptName{};
 
 		friend class Scene;
 		friend struct NativeScriptComponent;

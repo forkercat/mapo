@@ -22,6 +22,7 @@ namespace Mapo
 		Input& operator=(const Input&) = delete;
 
 		static bool IsKeyPressed(KeyCode keycode);
+		static bool IsAnyModifierPressed();
 		static bool IsMouseButtonPressed(MouseCode button);
 
 		static Vector2 GetMousePosition();

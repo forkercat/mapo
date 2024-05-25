@@ -9,52 +9,93 @@
 #include "engine/scene/scene_camera.h"
 #include "engine/scene/scriptable.h"
 
+#include <IconFontCppHeaders/IconsFontAwesome5.h>
+
+#define MP_COMPONENT_NAME(name)              \
+	static const String& GetName()           \
+	{                                        \
+		static String componentName{ name }; \
+		return componentName;                \
+	}
+
+#define MP_COMPONENT_ICON(name)     \
+	static const String& GetIcon()  \
+	{                               \
+		static String icon{ name }; \
+		return icon;                \
+	}
+
 namespace Mapo
 {
 	class Model;
 
-	struct TagComponent
+	struct Component
 	{
-		String tag{};
+		virtual ~Component() = default;
+
+		bool enabled{ true };
 	};
 
-	struct TransformComponent
+	struct InfoComponent : public Component
+	{
+		String objectName{};
+
+		MP_COMPONENT_NAME("Info");
+		MP_COMPONENT_ICON(ICON_FA_INFO);
+	};
+
+	struct TransformComponent : public Component
 	{
 		Vector3 translation{};
 		Vector3 rotation{};
 		Vector3 scale{ 1.0f, 1.0f, 1.0f };
 
-		Matrix4 GetTransform();
+		Matrix4 GetTransformMatrix();
 
 		Matrix3 GetNormalMatrix();
+
+		MP_COMPONENT_NAME("Transform");
+		MP_COMPONENT_ICON(ICON_FA_LOCATION_ARROW);
 	};
 
-	struct MeshComponent
+	struct MeshComponent : public Component
 	{
 		MeshComponent(Ref<Model> m)
 			: model(m) { }
 
 		Ref<Model> model{};
+
+		MP_COMPONENT_NAME("Mesh");
+		MP_COMPONENT_ICON(ICON_FA_VECTOR_SQUARE);
 	};
 
-	struct MaterialComponent
+	struct MaterialComponent : public Component
 	{
 		Vector3 color;
+
+		MP_COMPONENT_NAME("Material");
+		MP_COMPONENT_ICON(ICON_FA_BRUSH);
 	};
 
-	struct LightComponent
+	struct LightComponent : public Component
 	{
 		F32		intensity;
 		Vector3 color;
+
+		MP_COMPONENT_NAME("Light");
+		MP_COMPONENT_ICON(ICON_FA_LIGHTBULB);
 	};
 
-	struct CameraComponent
+	struct CameraComponent : public Component
 	{
 		SceneCamera camera;
 		bool		primary = true;
+
+		MP_COMPONENT_NAME("Camera");
+		MP_COMPONENT_ICON(ICON_FA_CAMERA);
 	};
 
-	struct NativeScriptComponent
+	struct NativeScriptComponent : public Component
 	{
 		Scriptable* scriptable = nullptr;
 
@@ -80,6 +121,9 @@ namespace Mapo
 		}
 
 		bool runInEditor = true;
+
+		MP_COMPONENT_NAME("Script");
+		MP_COMPONENT_ICON(ICON_FA_CODE);
 	};
 
 } // namespace Mapo

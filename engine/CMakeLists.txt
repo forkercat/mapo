@@ -36,6 +36,7 @@ PUBLIC
 	scene/script_rotate.h
 	# UI
 	ui/imgui_layer.h
+	ui/imgui_utils.h
 	# Event
 	event/event.h
 	event/application_event.h
@@ -71,6 +72,7 @@ PRIVATE
 	scene/scriptable.cpp
 	# UI
 	ui/imgui_layer.cpp
+	ui/imgui_utils.cpp
 	# System
 	system/simple_render_system.cpp
 	system/point_light_system.cpp

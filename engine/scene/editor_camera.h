@@ -34,6 +34,11 @@ namespace Mapo
 		// Position (cannot be set)
 		const Vector3& GetPosition() const { return m_position; }
 		Vector3&	   GetPosition() { return m_position; }
+		void		   SetPosition(const Vector3& position)
+		{
+			m_position = position;
+			UpdateView();
+		}
 
 		// Fov
 		F32& GetFov() { return m_fov; }
@@ -51,7 +56,6 @@ namespace Mapo
 		void UpdateView();
 
 	private:
-
 		// Movement
 		void MousePan(const Vector2& offset);
 		void MouseRotate(const Vector2& offset);

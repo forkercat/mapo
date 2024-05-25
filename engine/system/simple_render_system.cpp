@@ -98,7 +98,7 @@ namespace Mapo
 				auto& mesh = gameObject.GetComponent<MeshComponent>();
 
 				SimplePushConstantData push{};
-				push.modelMatrix = transform.GetTransform();
+				push.modelMatrix = transform.GetTransformMatrix();
 				push.normalMatrix = transform.GetNormalMatrix(); // glm automatically converts from mat4 to mat3
 
 				vkCmdPushConstants(frameInfo.commandBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,

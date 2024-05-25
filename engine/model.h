@@ -23,7 +23,7 @@ namespace Mapo
 			Vector3 normal;
 			Vector2 uv;
 
-			static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions();
+			static std::vector<VkVertexInputBindingDescription>	  GetBindingDescriptions();
 			static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
 
 			bool operator==(const Vertex& other) const
@@ -35,9 +35,11 @@ namespace Mapo
 		struct Builder
 		{
 			std::vector<Vertex> vertices{};
-			std::vector<U32> indices{};
+			std::vector<U32>	indices{};
 
-			void LoadModel(const std::string& filepath);
+			String modelName{};
+
+			void LoadModel(const String& filepath);
 		};
 
 		virtual ~Model();
@@ -50,8 +52,12 @@ namespace Mapo
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 
+		const String& GetModelName() const { return m_modelName; }
+		U32			  GetVertexCount() const { return m_vertexCount; }
+		U32			  GetIndexCount() const { return m_indexCount; }
+
 		static UniqueRef<Model> CreateCubeModel();
-		static UniqueRef<Model> CreateModelFromFile(const std::string& filepath);
+		static UniqueRef<Model> CreateModelFromFile(const String& filepath);
 
 	private:
 		void CreateVertexBuffers(const std::vector<Vertex>& vertices);
@@ -61,11 +67,13 @@ namespace Mapo
 		Device& m_device;
 
 		UniqueRef<Buffer> m_vertexBuffer;
-		U32 m_vertexCount;
+		U32				  m_vertexCount;
 
-		bool m_hasIndexBuffer = false;
+		bool			  m_hasIndexBuffer = false;
 		UniqueRef<Buffer> m_indexBuffer;
-		U32 m_indexCount;
+		U32				  m_indexCount;
+
+		String m_modelName{};
 	};
 
 } // namespace Mapo

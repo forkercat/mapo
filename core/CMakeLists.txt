@@ -9,6 +9,7 @@ PUBLIC
 	timer.h
 	timestep.h
 	optional.h
+	math.h
 	# string
 	string/string.h
 	string/string_name.h
@@ -22,6 +23,7 @@ PRIVATE
 	core.cpp
 	timer.cpp
 	logging.cpp
+	math.cpp
 	# string
 	string/string.cpp
 	string/string_name.cpp

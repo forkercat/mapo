@@ -44,8 +44,8 @@ namespace Mapo
 	{
 		GameObject gameObject = GameObject(m_registry.create(), this);
 
+		gameObject.AddComponent<InfoComponent>().objectName = name.empty() ? "GameObject" : name;
 		gameObject.AddComponent<TransformComponent>();
-		gameObject.AddComponent<TagComponent>().tag = name.empty() ? "GameObject" : name;
 
 		return gameObject;
 	}
@@ -75,6 +75,11 @@ namespace Mapo
 	}
 
 	template <>
+	void Scene::OnComponentAdded<InfoComponent>(GameObject& gameObject, InfoComponent& component)
+	{
+	}
+
+	template <>
 	void Scene::OnComponentAdded<TransformComponent>(GameObject& gameObject, TransformComponent& component)
 	{
 	}
@@ -92,11 +97,6 @@ namespace Mapo
 
 	template <>
 	void Scene::OnComponentAdded<MaterialComponent>(GameObject& gameObject, MaterialComponent& component)
-	{
-	}
-
-	template <>
-	void Scene::OnComponentAdded<TagComponent>(GameObject& gameObject, TagComponent& component)
 	{
 	}
 

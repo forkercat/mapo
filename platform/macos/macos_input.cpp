@@ -22,6 +22,15 @@ namespace Mapo
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
+	bool Input::IsAnyModifierPressed()
+	{
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+		bool super = Input::IsKeyPressed(Key::LeftSuper) || Input::IsKeyPressed(Key::RightSuper);
+		bool alt = Input::IsKeyPressed(Key::LeftAlt) || Input::IsKeyPressed(Key::RightAlt);
+		return control || shift || super || alt;
+	}
+
 	bool Input::IsMouseButtonPressed(MouseCode button)
 	{
 		Application& app = Application::Get();

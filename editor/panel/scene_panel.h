@@ -25,9 +25,19 @@ namespace Mapo
 
 		void OnImGuiRender(EditorCamera& camera);
 
+		GameObject& GetSelection() { return m_selectedGameObject; };
+
 	private:
-		void DrawHierarchy();
-		void DrawInspector();
+		// Scene Hierarchy
+		void DrawHierarchy(EditorCamera& camera);
+		void DrawGameObjectNode(GameObject& gameObject, EditorCamera& camera);
+
+		// Inspector
+		void DrawSelectedGameObject();
+		void DrawComponents(GameObject& gameObject);
+
+		// Menu
+		void DrawGameObjectCreationMenu();
 
 	private:
 		Ref<Scene> m_scene;

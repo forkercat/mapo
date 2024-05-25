@@ -15,7 +15,12 @@ namespace Mapo
 
 	const String& GameObject::GetName() const
 	{
-		return m_scene->m_registry.get<TagComponent>(m_entityHandle).tag;
+		return m_scene->m_registry.get<InfoComponent>(m_entityHandle).objectName;
+	}
+
+	String& GameObject::GetName()
+	{
+		return m_scene->m_registry.get<InfoComponent>(m_entityHandle).objectName;
 	}
 
 	void GameObject::OnUpdate(const F32 dt)

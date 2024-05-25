@@ -53,6 +53,8 @@ namespace Mapo
 	Model::Model(const Builder& builder)
 		: m_device(RenderContext::GetDevice())
 	{
+		m_modelName = builder.modelName;
+
 		CreateVertexBuffers(builder.vertices);
 		CreateIndexBuffers(builder.indices);
 	}
@@ -156,6 +158,8 @@ namespace Mapo
 		// temporary helper function, creates a 1x1x1 cube centered at offset
 		Builder modelBuilder{};
 
+		modelBuilder.modelName = "Cube";
+
 		modelBuilder.vertices = {
 			// left face (white)
 			{ { -.5f, -.5f, -.5f }, { .9f, .9f, .9f } },
@@ -202,7 +206,7 @@ namespace Mapo
 		return MakeUnique<Model>(modelBuilder);
 	}
 
-	UniqueRef<Model> Model::CreateModelFromFile(const std::string& filepath)
+	UniqueRef<Model> Model::CreateModelFromFile(const String& filepath)
 	{
 		Builder builder{};
 		builder.LoadModel(filepath);
@@ -210,8 +214,10 @@ namespace Mapo
 		return MakeUnique<Model>(builder);
 	}
 
-	void Model::Builder::LoadModel(const std::string& filepath)
+	void Model::Builder::LoadModel(const String& filepath)
 	{
+		modelName = filepath;
+
 		using tinyobj::attrib_t;
 		using tinyobj::index_t;
 		using tinyobj::material_t;
