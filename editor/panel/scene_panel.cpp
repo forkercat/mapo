@@ -269,9 +269,9 @@ namespace Mapo
 	void ScenePanel::DrawComponents(GameObject& gameObject)
 	{
 		DrawComponent<TransformComponent>(gameObject, [](auto& component) {
-			ImGui::InputFloat3("Position", GLM_PTR(component.translation), "%.2f");
-			ImGui::InputFloat3("Rotation", GLM_PTR(component.rotation), "%.2f");
-			ImGui::InputFloat3("Scale", GLM_PTR(component.scale), "%.2f");
+			ImGui::DragFloat3("Position", GLM_PTR(component.translation), 1.0f, 0.0f, 0.0f, "%.2f");
+			ImGui::DragFloat3("Rotation", GLM_PTR(component.rotation), 1.0f, 0.0f, 0.0f, "%.2f");
+			ImGui::DragFloat3("Scale", GLM_PTR(component.scale), 1.0f, 0.0f, 0.0f, "%.2f");
 		});
 
 		DrawComponent<MeshComponent>(gameObject, [](auto& component) {

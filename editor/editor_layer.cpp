@@ -39,7 +39,7 @@ namespace Mapo
 		Matrix4 view{ 1.0f };
 		Vector4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f }; // w is intensity
 		Vector3 lightPosition{ 0.0f, 1.0f, 0.0f };
-		alignas(16) Vector4 lightColor{ 1.0f, 1.0f, 0.0f, 0.5f }; // w is intensity
+		alignas(16) Vector4 lightColor{ 1.0f, 1.0f, 1.0f, 1.0f }; // w is intensity
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -175,16 +175,38 @@ namespace Mapo
 		Ref<Model> bunnyModel = Model::CreateModelFromFile("assets/models/bunny.obj");
 		Ref<Model> smoothModel = Model::CreateModelFromFile("assets/models/smooth_vase.obj");
 		Ref<Model> flatModel = Model::CreateModelFromFile("assets/models/flat_vase.obj");
+		Ref<Model> vikingRoomModel = Model::CreateModelFromFile("assets/models/viking_room.obj");
 		Ref<Model> quadModel = Model::CreateModelFromFile("assets/models/quad.obj");
-		Ref<Model> cubeModel = Model::CreateCubeModel();
+		Ref<Model> coloredCube = Model::CreateModelFromFile("assets/models/colored_cube.obj");
+		Ref<Model> cubeModel = Model::CreateModelFromFile("assets/models/cube.obj");
+		// Ref<Model> cubeModel = Model::CreateCubeModel();
+
+		// Plane
+		GameObject planeObject = m_scene->CreateGameObject("Plane");
+		planeObject.AddComponent<MeshComponent>(quadModel);
+
+		auto& planeTransform = planeObject.GetComponent<TransformComponent>();
+		planeTransform.translation = { 0.0f, -1.0f, 0.0f };
+		planeTransform.scale = { 3.0f, 1.0f, 3.0f };
+
+		// Cubes
+		GameObject cubeX = m_scene->CreateGameObject("Cube +X");
+		cubeX.AddComponent<MeshComponent>(cubeModel);
+		cubeX.GetComponent<TransformComponent>().translation = { 3.0f, 0.0f, 0.0f };
+		cubeX.GetComponent<TransformComponent>().scale = Vector3(0.1f);
+
+		GameObject cubeZ = m_scene->CreateGameObject("Cube +Z");
+		cubeZ.AddComponent<MeshComponent>(cubeModel);
+		cubeZ.GetComponent<TransformComponent>().translation = { 0.0f, 0.0f, 5.0f };
+		cubeZ.GetComponent<TransformComponent>().scale = Vector3(0.1f);
 
 		// Bunny
 		GameObject bunnyObject = m_scene->CreateGameObject("Bunny");
 		bunnyObject.AddComponent<MeshComponent>(bunnyModel);
 
-		auto& transform1 = bunnyObject.GetComponent<TransformComponent>();
-		transform1.translation = { -1.0f, 0.0f, 0.0f };
-		transform1.scale = Vector3(4.0f);
+		auto& bunnyTransform = bunnyObject.GetComponent<TransformComponent>();
+		bunnyTransform.translation = { -1.0f, 0.0f, 0.0f };
+		bunnyTransform.scale = Vector3(4.0f);
 
 		bunnyObject.AddComponent<NativeScriptComponent>().Bind<RotateScript>();
 
@@ -192,29 +214,17 @@ namespace Mapo
 		GameObject vaseObject = m_scene->CreateGameObject("SmoothVase");
 		vaseObject.AddComponent<MeshComponent>(flatModel);
 
-		auto& transform2 = vaseObject.GetComponent<TransformComponent>();
-		transform2.translation = { 1.0f, 1.0f, 0.5f };
-		transform2.rotation = { MathOp::Radians(180), 0.0f, 0.0f };
-		transform2.scale = Vector3(2.0f);
+		auto& vaseTransform = vaseObject.GetComponent<TransformComponent>();
+		vaseTransform.translation = { 1.0f, 1.0f, 0.5f };
+		vaseTransform.rotation = { 0.0f, 0.0f, 0.0f };
+		vaseTransform.scale = Vector3(2.0f);
 
-		// Cubes
-		GameObject cubeX = m_scene->CreateGameObject("Cube +X");
-		cubeX.AddComponent<MeshComponent>(cubeModel);
-		cubeX.GetComponent<TransformComponent>().translation = { 3.0f, 0.0f, 0.0f };
-		cubeX.GetComponent<TransformComponent>().scale = Vector3(0.2f);
-
-		GameObject cubeZ = m_scene->CreateGameObject("Cube +Z");
-		cubeZ.AddComponent<MeshComponent>(cubeModel);
-		cubeZ.GetComponent<TransformComponent>().translation = { 0.0f, 0.0f, 5.0f };
-		cubeZ.GetComponent<TransformComponent>().scale = Vector3(0.2f);
-
-		// Plane
-		GameObject planeObject = m_scene->CreateGameObject("Plane");
-		planeObject.AddComponent<MeshComponent>(quadModel);
-
-		auto& transform3 = planeObject.GetComponent<TransformComponent>();
-		transform3.translation = { 0.0f, -1.0f, 0.0f };
-		transform3.scale = { 3.0f, 1.0f, 3.0f };
+		// Viking Room
+		GameObject roomObject = m_scene->CreateGameObject("Viking Room");
+		roomObject.AddComponent<MeshComponent>(vikingRoomModel);
+		auto& roomTransform = roomObject.GetComponent<TransformComponent>();
+		roomTransform.translation = { 2.0f, -0.9f, -1.0f };
+		roomTransform.rotation = { -90, -180, 3.0f };
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -268,6 +278,7 @@ namespace Mapo
 				GLM_PTR(projectionMatrix),
 				(ImGuizmo::OPERATION)m_gizmoType,
 				ImGuizmo::LOCAL,
+				// ImGuizmo::WORLD,
 				GLM_PTR(transformMatrix),
 				nullptr,
 				snap ? snapValues : nullptr);
