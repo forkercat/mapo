@@ -44,8 +44,8 @@ namespace Mapo
 		ImGui::Text("#Images: %u | #Frames: %u", renderer.GetImageCount(), RenderContext::GetMaxFramesInFlight());
 
 		// ImGui demo
-		static bool showDemo = true;
-		// ImGui::Checkbox("Show demo", &showDemo);
+		static bool showDemo = false;
+		ImGui::Checkbox("ImGui Demo", &showDemo);
 		if (showDemo)
 		{
 			ImGui::ShowDemoWindow(&showDemo);

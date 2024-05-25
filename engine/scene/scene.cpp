@@ -61,9 +61,11 @@ namespace Mapo
 
 		auto gameObjectView = m_registry.view<TransformComponent>(); // all components
 
-		for (entt::entity entity : gameObjectView)
+		// for (entt::entity entity : gameObjectView)
+		for (auto iter = gameObjectView.rbegin(); iter != gameObjectView.rend(); ++iter)
 		{
-			gameObjects.push_back({ entity, this });
+			// Use reserve iterator such that game objects are sorted on entity ids.
+			gameObjects.push_back({ *iter, this });
 		}
 
 		return gameObjects;

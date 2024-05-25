@@ -8,7 +8,6 @@ PRIVATE
 
 target_link_libraries(main-cpp
 PRIVATE
-	core
 	engine
 )
 

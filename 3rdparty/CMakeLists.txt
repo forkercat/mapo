@@ -1,4 +1,4 @@
-# ImGui 1.90.5 docking
+# ImGui
 add_library(ImGui STATIC)
 
 target_sources(ImGui

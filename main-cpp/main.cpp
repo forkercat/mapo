@@ -24,7 +24,4 @@ struct MeshComponent
 
 int main()
 {
-	MP_PRINT("123123!");
-
-
 }
