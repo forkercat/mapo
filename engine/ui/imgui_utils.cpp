@@ -26,7 +26,7 @@ namespace Mapo
 		ImGui::PushItemWidth(ImGui::CalcItemWidth());
 
 		const F32 itemInnerSpacing = 4;
-		const F32 itemOutterSpacing = 4;
+		const F32 itemOuterSpacing = 4;
 
 		// X
 		ImGui::PushStyleColor(ImGuiCol_Button, ImGuiTheme::ComponentX);
@@ -40,7 +40,7 @@ namespace Mapo
 		ImGui::SameLine(0, itemInnerSpacing);
 		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, format);
 		ImGui::PopItemWidth();
-		ImGui::SameLine(0, itemOutterSpacing);
+		ImGui::SameLine(0, itemOuterSpacing);
 
 		// Y
 		ImGui::PushStyleColor(ImGuiCol_Button, ImGuiTheme::ComponentY);
@@ -54,7 +54,7 @@ namespace Mapo
 		ImGui::SameLine(0, itemInnerSpacing);
 		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, format);
 		ImGui::PopItemWidth();
-		ImGui::SameLine(0, itemOutterSpacing);
+		ImGui::SameLine(0, itemOuterSpacing);
 
 		// Z
 		ImGui::PushStyleColor(ImGuiCol_Button, ImGuiTheme::ComponentZ);

@@ -48,7 +48,7 @@ namespace Mapo
 	{
 		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
 
-		ImGui::SetNextWindowSize(ImVec2(230.0f, 0.0f));
+		ImGui::SetNextWindowSize(ImVec2(240.0f, 0.0f));
 
 		static const String panelName = ICON_NAME2(ICON_FA_SITEMAP, GetPanelName());
 
@@ -81,7 +81,7 @@ namespace Mapo
 
 		// Scene
 		ImGui::SeparatorText(ICON_NAME(ICON_FA_CAMERA, "Editor Camera"));
-		ImGui::DragFloat3("Position", GLM_PTR(camera.GetPosition()));
+		ImGui::DragFloat3("Translation", GLM_PTR(camera.GetPosition()));
 
 		if (ImGui::SliderFloat("Fov", &camera.GetFov(), 10.0f, 120.0f, "%.1f"))
 		{
@@ -252,9 +252,7 @@ namespace Mapo
 			// Show tree
 			if (treeOpened)
 			{
-				ImGui::Unindent(10.0f);
 				drawWidgetsFn(component);
-				ImGui::Indent(10.0f);
 				ImGui::TreePop();
 			}
 
@@ -269,7 +267,7 @@ namespace Mapo
 	void ScenePanel::DrawComponents(GameObject& gameObject)
 	{
 		DrawComponent<TransformComponent>(gameObject, [](auto& component) {
-			ImGui::DragFloat3("Position", GLM_PTR(component.translation), 1.0f, 0.0f, 0.0f, "%.2f");
+			ImGui::DragFloat3("Translation", GLM_PTR(component.translation), 1.0f, 0.0f, 0.0f, "%.2f");
 			ImGui::DragFloat3("Rotation", GLM_PTR(component.rotation), 1.0f, 0.0f, 0.0f, "%.2f");
 			ImGui::DragFloat3("Scale", GLM_PTR(component.scale), 1.0f, 0.0f, 0.0f, "%.2f");
 		});

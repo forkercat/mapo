@@ -95,7 +95,12 @@ namespace Mapo
 
 			if (gameObject.HasComponent<MeshComponent>())
 			{
-				auto& mesh = gameObject.GetComponent<MeshComponent>();
+				auto& meshComponent = gameObject.GetComponent<MeshComponent>();
+
+				if (!meshComponent.enabled)
+				{
+					continue;
+				}
 
 				SimplePushConstantData push{};
 				push.modelMatrix = transform.GetTransformMatrix();
@@ -104,8 +109,8 @@ namespace Mapo
 				vkCmdPushConstants(frameInfo.commandBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
 					sizeof(SimplePushConstantData), &push);
 
-				mesh.model->Bind(frameInfo.commandBuffer);
-				mesh.model->Draw(frameInfo.commandBuffer);
+				meshComponent.model->Bind(frameInfo.commandBuffer);
+				meshComponent.model->Draw(frameInfo.commandBuffer);
 			}
 		}
 	}

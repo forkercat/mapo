@@ -22,7 +22,7 @@ namespace Mapo
 	{
 		// Run scripts.
 		m_registry.view<NativeScriptComponent>().each([=](entt::entity entityHandle, NativeScriptComponent& scriptComponent) {
-			if (scriptComponent.runInEditor)
+			if (scriptComponent.enabled && scriptComponent.runInEditor)
 			{
 				if (!scriptComponent.scriptable)
 				{
@@ -35,6 +35,7 @@ namespace Mapo
 			}
 		});
 
+		// TODO
 		// Begin render.
 
 		// End render.

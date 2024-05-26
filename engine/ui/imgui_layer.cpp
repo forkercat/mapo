@@ -269,6 +269,7 @@ namespace Mapo
 		style.TabRounding = 4.0f;
 		style.PopupRounding = 4.0f;
 		style.GrabRounding = 3.0f;
+		style.IndentSpacing = 6.0f;
 
 		// Padding
 		style.FramePadding = ImVec2(6, 3);
