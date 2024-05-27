@@ -175,16 +175,17 @@ namespace Mapo
 		Ref<Model> bunnyModel = Model::CreateModelFromFile("assets/models/bunny.obj");
 		Ref<Model> smoothModel = Model::CreateModelFromFile("assets/models/smooth_vase.obj");
 		Ref<Model> flatModel = Model::CreateModelFromFile("assets/models/flat_vase.obj");
-		Ref<Model> vikingRoomModel = Model::CreateModelFromFile("assets/models/viking_room.obj");
+		Ref<Model> vikingRoomModel = Model::CreateModelFromFile("assets/models/viking_room/viking_room.obj");
 		Ref<Model> quadModel = Model::CreateModelFromFile("assets/models/quad.obj");
 		Ref<Model> coloredCube = Model::CreateModelFromFile("assets/models/colored_cube.obj");
 		Ref<Model> cubeModel = Model::CreateModelFromFile("assets/models/cube.obj");
+		Ref<Model> catModel = Model::CreateModelFromFile("assets/models/cat/cat.obj");
+		Ref<Model> fatCatModel = Model::CreateModelFromFile("assets/models/fat_cat/fat_cat.obj");
 		// Ref<Model> cubeModel = Model::CreateCubeModel();
 
 		// Plane
 		GameObject planeObject = m_scene->CreateGameObject("Plane");
 		planeObject.AddComponent<MeshComponent>(quadModel);
-
 		auto& planeTransform = planeObject.GetComponent<TransformComponent>();
 		planeTransform.translation = { 0.0f, -1.0f, 0.0f };
 		planeTransform.scale = { 3.0f, 1.0f, 3.0f };
@@ -194,7 +195,6 @@ namespace Mapo
 		cubeX.AddComponent<MeshComponent>(cubeModel);
 		cubeX.GetComponent<TransformComponent>().translation = { 3.0f, 0.0f, 0.0f };
 		cubeX.GetComponent<TransformComponent>().scale = Vector3(0.1f);
-
 		GameObject cubeZ = m_scene->CreateGameObject("Cube +Z");
 		cubeZ.AddComponent<MeshComponent>(cubeModel);
 		cubeZ.GetComponent<TransformComponent>().translation = { 0.0f, 0.0f, 5.0f };
@@ -203,20 +203,17 @@ namespace Mapo
 		// Bunny
 		GameObject bunnyObject = m_scene->CreateGameObject("Bunny");
 		bunnyObject.AddComponent<MeshComponent>(bunnyModel);
-
 		auto& bunnyTransform = bunnyObject.GetComponent<TransformComponent>();
-		bunnyTransform.translation = { -1.0f, 0.0f, 0.0f };
-		bunnyTransform.scale = Vector3(4.0f);
-
+		bunnyTransform.translation = { -1.0f, 0.5f, 0.0f };
+		bunnyTransform.scale = Vector3(0.6f);
 		bunnyObject.AddComponent<NativeScriptComponent>().Bind<RotateScript>();
 
 		// Smooth Vase
 		GameObject vaseObject = m_scene->CreateGameObject("SmoothVase");
 		vaseObject.AddComponent<MeshComponent>(flatModel);
-
 		auto& vaseTransform = vaseObject.GetComponent<TransformComponent>();
 		vaseTransform.translation = { 1.0f, 1.0f, 0.5f };
-		vaseTransform.rotation = { 0.0f, 0.0f, 0.0f };
+		vaseTransform.rotation.x = 180.0f;
 		vaseTransform.scale = Vector3(2.0f);
 
 		// Viking Room
@@ -225,6 +222,23 @@ namespace Mapo
 		auto& roomTransform = roomObject.GetComponent<TransformComponent>();
 		roomTransform.translation = { 2.0f, -0.9f, -1.0f };
 		roomTransform.rotation = { -90, -180, 3.0f };
+
+		// Cat
+		GameObject catObject = m_scene->CreateGameObject("Cat V1");
+		catObject.AddComponent<MeshComponent>(catModel);
+		auto& catTransform = catObject.GetComponent<TransformComponent>();
+		catTransform.translation = { -1.5f, -1.0f, 2.0f };
+		catTransform.rotation.x = -90.0f;
+		catTransform.scale = Vector3(0.03f);
+		catObject.AddComponent<NativeScriptComponent>().Bind<RotateScript>();
+
+		// Fat Cat
+		GameObject fatCatObject = m_scene->CreateGameObject("Fat Cat");
+		fatCatObject.AddComponent<MeshComponent>(fatCatModel);
+		auto& fatCatTransform = fatCatObject.GetComponent<TransformComponent>();
+		fatCatTransform.translation = { 1.5f, -0.7f, 2.0f };
+		fatCatTransform.scale = Vector3(0.03f);
+		fatCatObject.AddComponent<NativeScriptComponent>().Bind<RotateScript>();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////

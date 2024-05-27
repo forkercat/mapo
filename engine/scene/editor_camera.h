@@ -86,7 +86,7 @@ namespace Mapo
 		F32 m_viewportWidth = 1280;
 		F32 m_viewportHeight = 800;
 
-		Vector3 m_position = { 0.0f, 0.0f, 8.0f };
+		Vector3 m_position = { 0.0f, 0.5f, 8.0f };
 		Vector2 m_lastMousePosition = { 0.0f, 0.0f };
 
 		F32 m_pitch = 0.0f;

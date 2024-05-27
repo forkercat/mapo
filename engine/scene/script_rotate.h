@@ -12,20 +12,22 @@ namespace Mapo
 	class RotateScript : public Scriptable
 	{
 	public:
-		RotateScript()
-			: Scriptable("RotateScript")
+		RotateScript(F32 speed = 30.0f)
+			: Scriptable("RotateScript"), rotateSpeed(speed)
 		{
 		}
 
 		virtual void OnCreate() override
 		{
 			MP_APP_INFO("RotateScript: OnCreate!");
+
+			static F32 randomRotateSpeed = rotateSpeed;
+			rotateSpeed = -randomRotateSpeed;
+			randomRotateSpeed = rotateSpeed;
 		}
 
 		virtual void OnUpdateEditor(Timestep dt) override
 		{
-			const F32 rotateSpeed = 30.0f;
-
 			auto& transform = GetComponent<TransformComponent>();
 			transform.rotation.y += rotateSpeed * dt;
 
@@ -38,5 +40,8 @@ namespace Mapo
 				transform.rotation.y += 720.0f;
 			}
 		}
+
+	public:
+		F32 rotateSpeed = 30.0f;
 	};
 } // namespace Mapo
